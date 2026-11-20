@@ -1,8 +1,19 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/|src/assets/|og-image\\.png|robots\\.txt|sitemap\\.xml|llms\\.txt|favicon\\.ico).*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/og-image.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
     }
   ]
 }

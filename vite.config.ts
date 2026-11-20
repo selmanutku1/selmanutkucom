@@ -5,10 +5,33 @@ import path from 'path';
 import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
+  const resolvedSiteOrigin = (
+    process.env.VITE_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : '') ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
+    'https://selmanutku.com'
+  ).replace(/\/+$/, '');
+
   return {
     plugins: [
       react(),
       tailwindcss(),
+      {
+        name: 'resolve-og-image-origin',
+        transformIndexHtml(html: string): string {
+          if (resolvedSiteOrigin === 'https://selmanutku.com') {
+            return html;
+          }
+          return html
+            .replaceAll('https://selmanutku.com/og-image.png', `${resolvedSiteOrigin}/og-image.png`)
+            .replaceAll(
+              'content="https://selmanutku.com/"',
+              `content="${resolvedSiteOrigin}/"`,
+            );
+        },
+      },
       // Copies src/assets into dist/ so root-relative URLs like
       // "/src/assets/images/..." (e.g. generate_image output) still resolve
       // in production builds. Do not remove.

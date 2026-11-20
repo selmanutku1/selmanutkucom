@@ -39,9 +39,9 @@ export const SITE_CONFIG = {
   googleScholarUrl: 'https://scholar.google.com/scholar?q=Selman+Utku',
   // Portre fotoğrafını değiştirmek için yalnızca aşağıdaki görsel yolunu güncelleyin.
   portraitImage: '/assets/aistudio/selman-utku-com_c1d77ca5.png',
-  ogImage: '/assets/aistudio/selman-utku-com_c1d77ca5.png',
-  ogImageWidth: 1254,
-  ogImageHeight: 1254,
+  ogImage: '/og-image.png',
+  ogImageWidth: 1216,
+  ogImageHeight: 560,
   geo: {
     region: 'TR-34',
     placename: 'Istanbul, Türkiye',
