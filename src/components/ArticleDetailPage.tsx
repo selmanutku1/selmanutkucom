@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Check, Link2 } from 'lucide-react';
 import { getArticles, type ArticleItem } from '../data/articles';
 import { SITE_CONFIG } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getArticlePath, getHomePath, getSectionHref } from '../lib/routes';
 import { useDocumentSEO } from '../lib/seo';
 import { MediaFrame } from './MediaFrame';
 
@@ -17,8 +18,16 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
   const allArticles = getArticles(lang);
   const [copied, setCopied] = useState(false);
 
-  const jsonLd = useMemo(
-    () => ({
+  const routePath = getArticlePath(article.slug, lang);
+  const enArticlePath = getArticlePath(article.slug, 'en');
+  const trArticlePath = getArticlePath(article.slug, 'tr');
+
+  const jsonLd = useMemo(() => {
+    const routeUrl = `${SITE_CONFIG.siteUrl}${routePath}`;
+    const homeUrl = `${SITE_CONFIG.siteUrl}${getHomePath(lang)}`;
+    const researchSectionUrl = `${SITE_CONFIG.siteUrl}${getSectionHref('research', lang)}`;
+
+    return {
       '@context': 'https://schema.org',
       '@graph': [
         {
@@ -38,7 +47,7 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
           publisher: {
             '@id': `${SITE_CONFIG.siteUrl}/#person`,
           },
-          mainEntityOfPage: `${SITE_CONFIG.siteUrl}/yazilar/${article.slug}`,
+          mainEntityOfPage: routeUrl,
         },
         {
           '@type': 'BreadcrumbList',
@@ -47,37 +56,40 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
               '@type': 'ListItem',
               position: 1,
               name: lang === 'tr' ? 'Ana Sayfa' : 'Home',
-              item: `${SITE_CONFIG.siteUrl}/`,
+              item: homeUrl,
             },
             {
               '@type': 'ListItem',
               position: 2,
               name: lang === 'tr' ? 'Araştırma' : 'Research',
-              item: `${SITE_CONFIG.siteUrl}/#yazilar`,
+              item: researchSectionUrl,
             },
             {
               '@type': 'ListItem',
               position: 3,
               name: article.title,
-              item: `${SITE_CONFIG.siteUrl}/yazilar/${article.slug}`,
+              item: routeUrl,
             },
           ],
         },
       ],
-    }),
-    [article, lang],
-  );
+    };
+  }, [article, lang, routePath]);
 
   useDocumentSEO({
     title: article.seoTitle,
     description: article.seoDescription,
-    path: `/yazilar/${article.slug}`,
+    path: routePath,
     type: 'article',
     lang,
-    image: article.coverImage,
+    image: SITE_CONFIG.ogImage,
     imageAlt: article.coverAlt,
     publishedTime: article.isoDate,
     modifiedTime: article.isoDate,
+    alternatePaths: {
+      en: enArticlePath,
+      tr: trArticlePath,
+    },
     jsonLd,
   });
 
@@ -104,7 +116,7 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
         {/* Back Link */}
         <button
           type="button"
-          onClick={() => onNavigate('#yazilar')}
+          onClick={() => onNavigate(getSectionHref('research', lang))}
           className="inline-flex items-center gap-2 text-[13.5px] font-medium text-[#4B6075] transition-colors hover:text-[#145DA0]"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
@@ -213,7 +225,7 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
           </div>
           <button
             type="button"
-            onClick={() => onNavigate('#iletisim')}
+            onClick={() => onNavigate(getSectionHref('contact', lang))}
             className="whitespace-nowrap shrink-0 rounded-md bg-[#0C2340] px-5 py-2.5 text-[13.5px] font-medium text-white transition-colors hover:bg-[#143966]"
           >
             {copy.discussCta}
@@ -236,7 +248,7 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
               <button
                 key={related.slug}
                 type="button"
-                onClick={() => onNavigate(`/yazilar/${related.slug}`)}
+                onClick={() => onNavigate(getArticlePath(related.slug, lang))}
                 className="group flex flex-col justify-between rounded-lg border border-[#DCE7F2] p-6 text-left transition-colors hover:border-[#94BBE0] hover:bg-[#F8FBFE]"
               >
                 <div>

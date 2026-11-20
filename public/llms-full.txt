@@ -64,21 +64,21 @@ Selman Utku is an Istanbul-based Tech Analyst, Bilişim Vadisi Sports Technology
 ## 3. Founded Ventures & Internal Project URLs
 
 ### 01. SportTech Türkiye
-- **Internal Case Study URL:** https://selmanutku.com/projeler/sporttech-turkiye
+- **Internal Case Study URLs:** EN https://selmanutku.com/projects/sporttech-turkiye | TR https://selmanutku.com/projeler/sporttech-turkiye
 - **Official Website:** https://sporttech.com.tr
 - **Category:** Sports Technology · Ecosystem & Community (2023 – Present)
 - **Summary:** An innovation and knowledge-sharing platform uniting sports technology founders, clubs, industry leaders, and academia across Türkiye.
 - **Key Focus:** Ecosystem & community strategy, SportTech trend intelligence, stakeholder partnerships, digital content architecture, and connecting domestic ventures with global practices.
 
 ### 02. Sporsepeti
-- **Internal Case Study URL:** https://selmanutku.com/projeler/sporsepeti
+- **Internal Case Study URLs:** EN https://selmanutku.com/projects/sporsepeti | TR https://selmanutku.com/projeler/sporsepeti
 - **Official Website:** https://sporsepeti.com.tr
 - **Category:** Sports Information Technology (Spor Bilgi Teknolojisi / Spor Bilişimi) · Sports Ecosystem (2023 – Present)
 - **Summary:** Sporsepeti (sporsepeti.com.tr) is a sports technology venture offering digital management software, event discovery platforms, and sports content for sports clubs, businesses, and sports enthusiasts.
 - **Key Focus:** Sports information technology architecture, digital management software for clubs and businesses, event discovery platform, technical SEO & Schema.org, and ecosystem analytics.
 
 ### 03. SportsFly
-- **Internal Case Study URL:** https://selmanutku.com/projeler/sportsfly
+- **Internal Case Study URLs:** EN https://selmanutku.com/projects/sportsfly | TR https://selmanutku.com/projeler/sportsfly
 - **Official Website:** https://sportsfly.com.tr
 - **Category:** Sports Technology · SaaS Platform (2024 – Present)
 - **Summary:** End-to-end digital management SaaS platform built for sports academies, clubs, and athletic facilities covering athlete registration, attendance tracking, dues management, training schedules, parent communication, and progression analytics.
@@ -89,27 +89,33 @@ Selman Utku is an Istanbul-based Tech Analyst, Bilişim Vadisi Sports Technology
 ## 4. Research Topics & Briefs
 
 1. **The Strategic Role of Business Analysis in Enterprise Digital Transformation**
-   - URL: https://selmanutku.com/yazilar/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu
+   - EN URL: https://selmanutku.com/research/strategic-role-of-business-analysis-in-digital-transformation
+   - TR URL: https://selmanutku.com/arastirma/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu
    - Topic: Digital Transformation — Digitizing a broken workflow accelerates inefficiency; structured business analysis translates executive strategy into measurable software delivery.
 
 2. **AI-Powered Business Workflows and Institutional Productivity**
-   - URL: https://selmanutku.com/yazilar/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik
+   - EN URL: https://selmanutku.com/research/ai-powered-business-workflows-and-institutional-productivity
+   - TR URL: https://selmanutku.com/arastirma/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik
    - Topic: Artificial Intelligence — Validating AI in focused, high-leverage workflows with human-in-the-loop checkpoints, data quality, and governance standards.
 
 3. **Digital Management Architecture for Sports Clubs and Facilities**
-   - URL: https://selmanutku.com/yazilar/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi
+   - EN URL: https://selmanutku.com/research/digital-management-architecture-for-sports-clubs-and-facilities
+   - TR URL: https://selmanutku.com/arastirma/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi
    - Topic: Sports Technology & Sports Informatics — Operational data is as vital as performance data; unifying coach, administrator, and parent workflows powers scalable academy growth.
 
 4. **Technology Strategy: From Tool Selection to Value Architecture**
-   - URL: https://selmanutku.com/yazilar/teknoloji-stratejisi-arac-seciminden-deger-mimarisine
+   - EN URL: https://selmanutku.com/research/technology-strategy-from-tool-selection-to-value-architecture
+   - TR URL: https://selmanutku.com/arastirma/teknoloji-stratejisi-arac-seciminden-deger-mimarisine
    - Topic: Technology Strategy — Treating strategy as a prioritization framework grounded in interoperability, data ownership, and modular roadmaps.
 
 5. **Product Development and Entrepreneurship in the SportTech Ecosystem**
-   - URL: https://selmanutku.com/yazilar/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik
+   - EN URL: https://selmanutku.com/research/product-development-and-entrepreneurship-in-sporttech
+   - TR URL: https://selmanutku.com/arastirma/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik
    - Topic: Sports Entrepreneurship — Translating on-field coaching and club realities into lean, high-trust SportTech products.
 
 6. **Building an Internal Innovation Culture for Sustainable Change**
-   - URL: https://selmanutku.com/yazilar/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim
+   - EN URL: https://selmanutku.com/research/building-an-internal-innovation-culture-for-sustainable-change
+   - TR URL: https://selmanutku.com/arastirma/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim
    - Topic: Innovation Management — Embedding continuous improvement, rapid pilot testing, and interdisciplinary thinking across institutions.
 
 ---

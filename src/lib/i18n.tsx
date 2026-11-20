@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
+import { detectLanguageFromLocation, translateUrlForLanguage } from './routes';
 
 export type Language = 'tr' | 'en';
 
@@ -14,8 +15,7 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(undefine
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'en';
-    const saved = window.localStorage.getItem(STORAGE_KEY);
-    return saved === 'en' || saved === 'tr' ? saved : 'en';
+    return detectLanguageFromLocation(window.location.pathname, window.location.hash);
   });
 
   useEffect(() => {
@@ -27,9 +27,30 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }, [lang]);
 
-  const setLang = (next: Language) => {
+  useEffect(() => {
+    const handlePopState = () => {
+      const nextLang = detectLanguageFromLocation(window.location.pathname, window.location.hash);
+      setLangState(nextLang);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const setLang = useCallback((next: Language) => {
     setLangState(next);
-  };
+    if (typeof window !== 'undefined') {
+      const translatedUrl = translateUrlForLanguage(
+        window.location.pathname,
+        window.location.hash,
+        next,
+      );
+      const currentUrl = `${window.location.pathname}${window.location.hash}`;
+      if (currentUrl !== translatedUrl) {
+        window.history.pushState({}, '', translatedUrl);
+        window.dispatchEvent(new Event('app:urlchange'));
+      }
+    }
+  }, []);
 
   return (
     <LanguageContext.Provider value={{ lang, setLang }}>

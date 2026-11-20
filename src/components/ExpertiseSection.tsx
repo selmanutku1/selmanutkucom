@@ -1,6 +1,7 @@
 import { Activity, Compass, Cpu, Workflow } from 'lucide-react';
 import { getExpertiseAreas, type ExpertiseIconKey } from '../data/expertise';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getSectionId } from '../lib/routes';
 
 function ExpertiseIcon({ icon }: { icon: ExpertiseIconKey }) {
   const props = { className: 'h-5 w-5 text-[#0C2340]', strokeWidth: 1.6, 'aria-hidden': true as const };
@@ -23,7 +24,7 @@ export function ExpertiseSection() {
 
   return (
     <section
-      id="uzmanlik"
+      id={getSectionId('expertise', lang)}
       aria-labelledby="expertise-heading"
       className="relative overflow-hidden border-t border-[#DCE7F2] bg-[#F3F8FC] py-20 lg:py-28"
     >

@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import { getProfileContent } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getSectionId } from '../lib/routes';
 
 export function AboutSection() {
   const { lang } = useLanguage();
@@ -9,7 +10,7 @@ export function AboutSection() {
 
   return (
     <section
-      id="hakkimda"
+      id={getSectionId('about', lang)}
       aria-labelledby="about-heading"
       className="border-t border-[#DCE7F2] bg-white py-20 lg:py-28"
     >

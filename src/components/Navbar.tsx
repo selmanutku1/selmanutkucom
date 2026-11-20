@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { SITE_CONFIG } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getHomePath, getSectionHref, type SectionKey } from '../lib/routes';
 import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface NavbarProps {
   onNavigate: (to: string) => void;
-  activeSection?: string;
+  activeSection?: SectionKey;
 }
 
 export function Navbar({ onNavigate, activeSection }: NavbarProps) {
@@ -14,14 +15,17 @@ export function Navbar({ onNavigate, activeSection }: NavbarProps) {
   const copy = UI_COPY[lang].nav;
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const navItems = [
-    { label: copy.home, href: '#ana-sayfa', id: 'ana-sayfa' },
-    { label: copy.about, href: '#hakkimda', id: 'hakkimda' },
-    { label: copy.expertise, href: '#uzmanlik', id: 'uzmanlik' },
-    { label: copy.experience, href: '#deneyim', id: 'deneyim' },
-    { label: copy.projects, href: '#projeler', id: 'projeler' },
-    { label: copy.articles, href: '#yazilar', id: 'yazilar' },
-    { label: copy.academic, href: '#akademik', id: 'akademik' },
+  const homeHref = getHomePath(lang);
+  const contactHref = getSectionHref('contact', lang);
+
+  const navItems: { label: string; href: string; key: SectionKey }[] = [
+    { label: copy.home, href: homeHref, key: 'home' },
+    { label: copy.about, href: getSectionHref('about', lang), key: 'about' },
+    { label: copy.expertise, href: getSectionHref('expertise', lang), key: 'expertise' },
+    { label: copy.experience, href: getSectionHref('experience', lang), key: 'experience' },
+    { label: copy.projects, href: getSectionHref('projects', lang), key: 'projects' },
+    { label: copy.articles, href: getSectionHref('research', lang), key: 'research' },
+    { label: copy.academic, href: getSectionHref('academic', lang), key: 'academic' },
   ];
 
   useEffect(() => {
@@ -34,10 +38,6 @@ export function Navbar({ onNavigate, activeSection }: NavbarProps) {
 
   const handleNavClick = (href: string) => {
     setMobileOpen(false);
-    if (href === '#ana-sayfa') {
-      onNavigate('/');
-      return;
-    }
     onNavigate(href);
   };
 
@@ -46,10 +46,10 @@ export function Navbar({ onNavigate, activeSection }: NavbarProps) {
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-6 px-6 lg:h-[72px] lg:gap-8 lg:px-8">
         {/* Zone 1: Brand Wordmark */}
         <a
-          href="/"
+          href={homeHref}
           onClick={(e) => {
             e.preventDefault();
-            handleNavClick('#ana-sayfa');
+            handleNavClick(homeHref);
           }}
           className="whitespace-nowrap shrink-0 text-[17px] font-bold tracking-[-0.02em] text-[#0A192F] transition-opacity duration-150 hover:opacity-75"
         >
@@ -62,10 +62,10 @@ export function Navbar({ onNavigate, activeSection }: NavbarProps) {
           className="hidden items-center gap-5 xl:gap-6 lg:flex"
         >
           {navItems.map((item) => {
-            const isActive = activeSection === item.id;
+            const isActive = activeSection === item.key;
             return (
               <a
-                key={item.id}
+                key={item.key}
                 href={item.href}
                 onClick={(e) => {
                   e.preventDefault();
@@ -83,15 +83,15 @@ export function Navbar({ onNavigate, activeSection }: NavbarProps) {
           })}
         </nav>
 
-        {/* Zone 3: Language Switcher + Primary Action (İletişim) + Mobile Toggle */}
+        {/* Zone 3: Language Switcher + Primary Action (Contact / İletişim) + Mobile Toggle */}
         <div className="flex items-center gap-2.5 shrink-0">
           <LanguageSwitcher />
 
           <a
-            href="#iletisim"
+            href={contactHref}
             onClick={(e) => {
               e.preventDefault();
-              handleNavClick('#iletisim');
+              handleNavClick(contactHref);
             }}
             className="hidden h-10 items-center whitespace-nowrap shrink-0 rounded-lg bg-[#0C2340] px-4 text-[13px] font-medium text-white transition-colors duration-150 hover:bg-[#143966] lg:inline-flex"
           >
@@ -125,7 +125,7 @@ export function Navbar({ onNavigate, activeSection }: NavbarProps) {
           <div className="flex flex-col divide-y divide-[#EAF1F8] text-center">
             {navItems.map((item) => (
               <a
-                key={item.id}
+                key={item.key}
                 href={item.href}
                 onClick={(e) => {
                   e.preventDefault();
@@ -138,10 +138,10 @@ export function Navbar({ onNavigate, activeSection }: NavbarProps) {
             ))}
             <div className="pt-4">
               <a
-                href="#iletisim"
+                href={contactHref}
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavClick('#iletisim');
+                  handleNavClick(contactHref);
                 }}
                 className="inline-flex w-full items-center justify-center rounded-lg bg-[#0C2340] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#143966]"
               >

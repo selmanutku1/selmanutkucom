@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Maximize2, X } from 'lucide-react'
 import { getProjects, type ProjectItem, type ProjectScreenshot } from '../data/projects';
 import { SITE_CONFIG } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getHomePath, getProjectPath, getSectionHref } from '../lib/routes';
 import { useDocumentSEO } from '../lib/seo';
 import { MediaFrame } from './MediaFrame';
 
@@ -17,8 +18,14 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
   const allProjects = getProjects(lang);
   const [lightboxImage, setLightboxImage] = useState<ProjectScreenshot | null>(null);
 
+  const routePath = getProjectPath(project.slug, lang);
+  const enProjectPath = getProjectPath(project.slug, 'en');
+  const trProjectPath = getProjectPath(project.slug, 'tr');
+
   const jsonLd = useMemo(() => {
-    const routeUrl = `${SITE_CONFIG.siteUrl}/projeler/${project.slug}`;
+    const routeUrl = `${SITE_CONFIG.siteUrl}${routePath}`;
+    const homeUrl = `${SITE_CONFIG.siteUrl}${getHomePath(lang)}`;
+    const projectsSectionUrl = `${SITE_CONFIG.siteUrl}${getSectionHref('projects', lang)}`;
     const imageUrl = project.coverImage.startsWith('http')
       ? project.coverImage
       : `${SITE_CONFIG.siteUrl}${project.coverImage.startsWith('/') ? '' : '/'}${project.coverImage}`;
@@ -87,13 +94,13 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
               '@type': 'ListItem',
               position: 1,
               name: lang === 'tr' ? 'Ana Sayfa' : 'Home',
-              item: `${SITE_CONFIG.siteUrl}/`,
+              item: homeUrl,
             },
             {
               '@type': 'ListItem',
               position: 2,
               name: lang === 'tr' ? 'Projeler' : 'Projects',
-              item: `${SITE_CONFIG.siteUrl}/#projeler`,
+              item: projectsSectionUrl,
             },
             {
               '@type': 'ListItem',
@@ -105,16 +112,20 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
         },
       ],
     };
-  }, [project, lang]);
+  }, [project, lang, routePath]);
 
   useDocumentSEO({
     title: project.seoTitle,
     description: project.seoDescription,
-    path: `/projeler/${project.slug}`,
+    path: routePath,
     type: 'website',
     lang,
     image: SITE_CONFIG.ogImage,
     imageAlt: `${project.title} – Selman Utku`,
+    alternatePaths: {
+      en: enProjectPath,
+      tr: trProjectPath,
+    },
     jsonLd,
   });
 
@@ -140,7 +151,7 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
         {/* Back Link */}
         <button
           type="button"
-          onClick={() => onNavigate('#projeler')}
+          onClick={() => onNavigate(getSectionHref('projects', lang))}
           className="inline-flex items-center gap-2 text-[13.5px] font-medium text-[#4B6075] transition-colors hover:text-[#145DA0]"
         >
           <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
@@ -293,7 +304,7 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
                   ) : (
                     <button
                       type="button"
-                      onClick={() => onNavigate(project.projectUrl || '#iletisim')}
+                      onClick={() => onNavigate(project.projectUrl || getSectionHref('contact', lang))}
                       className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#0C2340] px-5 py-3 text-[13.5px] font-medium text-white transition-colors hover:bg-[#143966]"
                     >
                       <span>{project.projectUrlLabel || copy.projectLinkFallback}</span>
@@ -355,7 +366,7 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
           <div className="mt-16 border-t border-[#DCE7F2] pt-10">
             <button
               type="button"
-              onClick={() => onNavigate(`/projeler/${nextProject.slug}`)}
+              onClick={() => onNavigate(getProjectPath(nextProject.slug, lang))}
               className="group flex w-full items-center justify-between gap-4 rounded-lg border border-[#DCE7F2] bg-[#F3F8FC] p-6 text-left transition-colors hover:border-[#94BBE0] hover:bg-white lg:p-8"
             >
               <div>

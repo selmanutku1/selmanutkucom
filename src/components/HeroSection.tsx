@@ -2,6 +2,7 @@ import { ArrowRight, ArrowDownRight, ArrowUpRight, Linkedin } from 'lucide-react
 import { motion } from 'motion/react';
 import { getProfileContent, SITE_CONFIG } from '../data/profile';
 import { useLanguage } from '../lib/i18n';
+import { getSectionHref, getSectionId } from '../lib/routes';
 import { MediaFrame } from './MediaFrame';
 
 interface HeroSectionProps {
@@ -14,7 +15,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
 
   return (
     <section
-      id="ana-sayfa"
+      id={getSectionId('home', lang)}
       aria-labelledby="hero-heading"
       className="relative overflow-hidden bg-white"
     >
@@ -73,7 +74,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4 pt-2 lg:justify-start">
               <button
                 type="button"
-                onClick={() => onNavigate('#hakkimda')}
+                onClick={() => onNavigate(getSectionHref('about', lang))}
                 className="inline-flex min-h-[46px] items-center gap-2.5 whitespace-nowrap shrink-0 rounded-md bg-[#0C2340] px-6 py-3 text-[14px] font-medium text-white transition-colors duration-150 hover:bg-[#143966]"
               >
                 <span>{profile.hero.primaryCta}</span>
@@ -82,7 +83,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
 
               <button
                 type="button"
-                onClick={() => onNavigate('#projeler')}
+                onClick={() => onNavigate(getSectionHref('projects', lang))}
                 className="inline-flex min-h-[46px] items-center gap-2.5 whitespace-nowrap shrink-0 rounded-md border border-[#C6D8EA] bg-white/80 px-6 py-3 text-[14px] font-medium text-[#0A192F] backdrop-blur-sm transition-colors duration-150 hover:border-[#145DA0] hover:bg-[#F3F8FC]"
               >
                 <span>{profile.hero.secondaryCta}</span>

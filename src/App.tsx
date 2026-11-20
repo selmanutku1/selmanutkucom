@@ -18,29 +18,26 @@ import { SITE_CONFIG } from './data/profile';
 import { initAnalytics, trackPageView } from './lib/analytics';
 import { LanguageProvider, UI_COPY, useLanguage } from './lib/i18n';
 import { useRouter } from './lib/router';
+import {
+  getHomePath,
+  getSectionId,
+  SECTION_KEYS,
+  type SectionKey,
+} from './lib/routes';
 import { useDocumentSEO } from './lib/seo';
-
-const SECTION_IDS = [
-  'ana-sayfa',
-  'hakkimda',
-  'uzmanlik',
-  'deneyim',
-  'projeler',
-  'yazilar',
-  'akademik',
-  'iletisim',
-];
 
 function HomePage({ onNavigate }: { onNavigate: (to: string) => void }) {
   const { lang } = useLanguage();
   const seo = UI_COPY[lang].seo;
+  const homePath = getHomePath(lang);
+  const homeUrl = `${SITE_CONFIG.siteUrl}${homePath}`;
 
   const homeJsonLd = useMemo(
     () => ({
       '@context': 'https://schema.org',
       '@type': 'ProfilePage',
       name: seo.homeTitle,
-      url: SITE_CONFIG.siteUrl,
+      url: homeUrl,
       inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
       description: seo.homeDesc,
       primaryImageOfPage: {
@@ -53,13 +50,13 @@ function HomePage({ onNavigate }: { onNavigate: (to: string) => void }) {
         '@id': `${SITE_CONFIG.siteUrl}/#person`,
       },
     }),
-    [lang, seo.homeDesc, seo.homeTitle],
+    [lang, homeUrl, seo.homeDesc, seo.homeTitle],
   );
 
   useDocumentSEO({
     title: seo.homeTitle,
     description: seo.homeDesc,
-    path: '/',
+    path: homePath,
     type: 'profile',
     lang,
     image: SITE_CONFIG.ogImage,
@@ -67,6 +64,10 @@ function HomePage({ onNavigate }: { onNavigate: (to: string) => void }) {
       lang === 'tr'
         ? 'Selman Utku – Dijital Dönüşüm, İnovasyon ve Spor Teknolojileri'
         : 'Selman Utku – Digital Transformation, Innovation & Sports Technology',
+    alternatePaths: {
+      en: '/',
+      tr: '/tr',
+    },
     jsonLd: homeJsonLd,
   });
 
@@ -87,11 +88,12 @@ function HomePage({ onNavigate }: { onNavigate: (to: string) => void }) {
 function NotFoundView({ onNavigate }: { onNavigate: (to: string) => void }) {
   const { lang } = useLanguage();
   const copy = UI_COPY[lang].notFound;
+  const homePath = getHomePath(lang);
 
   useDocumentSEO({
     title: copy.seoTitle,
     description: copy.seoDesc,
-    path: '/',
+    path: homePath,
     lang,
     noIndex: true,
   });
@@ -107,7 +109,7 @@ function NotFoundView({ onNavigate }: { onNavigate: (to: string) => void }) {
       </p>
       <button
         type="button"
-        onClick={() => onNavigate('/')}
+        onClick={() => onNavigate(homePath)}
         className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#0C2340] px-6 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#143966]"
       >
         <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
@@ -120,7 +122,7 @@ function NotFoundView({ onNavigate }: { onNavigate: (to: string) => void }) {
 function AppShell() {
   const { lang } = useLanguage();
   const { route, navigate } = useRouter();
-  const [activeSection, setActiveSection] = useState<string>('ana-sayfa');
+  const [activeSection, setActiveSection] = useState<SectionKey>('home');
 
   useEffect(() => {
     initAnalytics();
@@ -129,17 +131,22 @@ function AppShell() {
 
   useEffect(() => {
     if (route.type === 'project') {
-      setActiveSection('projeler');
+      setActiveSection('projects');
       return;
     }
     if (route.type === 'article') {
-      setActiveSection('yazilar');
+      setActiveSection('research');
       return;
     }
 
-    const elements = SECTION_IDS.map((id) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => Boolean(el),
-    );
+    const idToKey = new Map<string, SectionKey>();
+    const elements: HTMLElement[] = [];
+    for (const key of SECTION_KEYS) {
+      const domId = getSectionId(key, lang);
+      idToKey.set(domId, key);
+      const el = document.getElementById(domId);
+      if (el) elements.push(el);
+    }
     if (elements.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -147,8 +154,10 @@ function AppShell() {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]?.target.id) {
-          setActiveSection(visible[0].target.id);
+        const topId = visible[0]?.target.id;
+        if (topId) {
+          const matchedKey = idToKey.get(topId);
+          if (matchedKey) setActiveSection(matchedKey);
         }
       },
       {
@@ -159,7 +168,7 @@ function AppShell() {
 
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [route]);
+  }, [route, lang]);
 
   const renderMainContent = () => {
     if (route.type === 'project') {

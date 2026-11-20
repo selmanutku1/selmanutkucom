@@ -1,5 +1,6 @@
 import { getAcademicProfile } from '../data/academic';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getSectionId } from '../lib/routes';
 
 export function AcademicSection() {
   const { lang } = useLanguage();
@@ -8,7 +9,7 @@ export function AcademicSection() {
 
   return (
     <section
-      id="akademik"
+      id={getSectionId('academic', lang)}
       aria-labelledby="academic-heading"
       className="relative overflow-hidden border-t border-[#DCE7F2] bg-[#F3F8FC] py-20 lg:py-28"
     >

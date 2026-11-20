@@ -124,7 +124,10 @@
       "@id": "https://selmanutku.com/#sporttech-turkiye",
       "name": "SportTech Türkiye",
       "url": "https://sporttech.com.tr",
-      "mainEntityOfPage": "https://selmanutku.com/projeler/sporttech-turkiye",
+      "mainEntityOfPage": [
+        "https://selmanutku.com/projects/sporttech-turkiye",
+        "https://selmanutku.com/projeler/sporttech-turkiye"
+      ],
       "founder": {
         "@id": "https://selmanutku.com/#person"
       },
@@ -136,7 +139,10 @@
       "@id": "https://selmanutku.com/#sporsepeti",
       "name": "Sporsepeti",
       "url": "https://sporsepeti.com.tr",
-      "mainEntityOfPage": "https://selmanutku.com/projeler/sporsepeti",
+      "mainEntityOfPage": [
+        "https://selmanutku.com/projects/sporsepeti",
+        "https://selmanutku.com/projeler/sporsepeti"
+      ],
       "founder": {
         "@id": "https://selmanutku.com/#person"
       },
@@ -148,7 +154,10 @@
       "@id": "https://selmanutku.com/#sportsfly",
       "name": "SportsFly",
       "url": "https://sportsfly.com.tr",
-      "mainEntityOfPage": "https://selmanutku.com/projeler/sportsfly",
+      "mainEntityOfPage": [
+        "https://selmanutku.com/projects/sportsfly",
+        "https://selmanutku.com/projeler/sportsfly"
+      ],
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
       "creator": {

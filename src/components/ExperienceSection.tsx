@@ -1,5 +1,6 @@
 import { getExperiences } from '../data/experience';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getSectionId } from '../lib/routes';
 
 export function ExperienceSection() {
   const { lang } = useLanguage();
@@ -8,7 +9,7 @@ export function ExperienceSection() {
 
   return (
     <section
-      id="deneyim"
+      id={getSectionId('experience', lang)}
       aria-labelledby="experience-heading"
       className="border-t border-[#DCE7F2] bg-white py-20 lg:py-28"
     >

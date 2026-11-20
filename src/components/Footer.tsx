@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import { getProfileContent, SITE_CONFIG } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getHomePath, getSectionHref } from '../lib/routes';
 
 interface FooterProps {
   onNavigate: (to: string) => void;
@@ -12,16 +13,17 @@ export function Footer({ onNavigate }: FooterProps) {
   const footerCopy = UI_COPY[lang].footer;
   const profile = getProfileContent(lang);
   const currentYear = new Date().getFullYear();
+  const homeHref = getHomePath(lang);
 
   const footerLinks = [
-    { label: nav.home, href: '/' },
-    { label: nav.about, href: '#hakkimda' },
-    { label: nav.expertise, href: '#uzmanlik' },
-    { label: nav.experience, href: '#deneyim' },
-    { label: nav.projects, href: '#projeler' },
-    { label: nav.articles, href: '#yazilar' },
-    { label: nav.academic, href: '#akademik' },
-    { label: nav.contact, href: '#iletisim' },
+    { label: nav.home, href: homeHref },
+    { label: nav.about, href: getSectionHref('about', lang) },
+    { label: nav.expertise, href: getSectionHref('expertise', lang) },
+    { label: nav.experience, href: getSectionHref('experience', lang) },
+    { label: nav.projects, href: getSectionHref('projects', lang) },
+    { label: nav.articles, href: getSectionHref('research', lang) },
+    { label: nav.academic, href: getSectionHref('academic', lang) },
+    { label: nav.contact, href: getSectionHref('contact', lang) },
   ];
 
   return (
@@ -31,10 +33,10 @@ export function Footer({ onNavigate }: FooterProps) {
           {/* Brand & Summary */}
           <div className="md:col-span-5">
             <a
-              href="/"
+              href={homeHref}
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate('/');
+                onNavigate(homeHref);
               }}
               className="text-[15px] font-bold tracking-[0.14em] text-[#0A192F]"
             >

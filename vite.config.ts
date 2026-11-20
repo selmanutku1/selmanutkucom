@@ -5,6 +5,13 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import {getArticles} from './src/data/articles';
 import {getProjects} from './src/data/projects';
+import {
+  getArticlePath,
+  getHomePath,
+  getProjectPath,
+  getSectionHref,
+  type RouteLanguage,
+} from './src/lib/routes';
 
 function escapeHtml(value: string): string {
   return value
@@ -16,19 +23,13 @@ function escapeHtml(value: string): string {
 
 function replaceMetaByName(html: string, name: string, content: string): string {
   const escaped = escapeHtml(content);
-  const regex = new RegExp(
-    `<meta\\s+[^>]*name=["']${name}["'][^>]*>`,
-    'i',
-  );
+  const regex = new RegExp(`<meta\\s+[^>]*name=["']${name}["'][^>]*>`, 'i');
   return html.replace(regex, `<meta name="${name}" content="${escaped}" />`);
 }
 
 function replaceMetaByProperty(html: string, property: string, content: string): string {
   const escaped = escapeHtml(content);
-  const regex = new RegExp(
-    `<meta\\s+[^>]*property=["']${property}["'][^>]*>`,
-    'i',
-  );
+  const regex = new RegExp(`<meta\\s+[^>]*property=["']${property}["'][^>]*>`, 'i');
   return html.replace(regex, `<meta property="${property}" content="${escaped}" />`);
 }
 
@@ -36,48 +37,61 @@ function buildRouteHtml(
   templateHtml: string,
   options: {
     origin: string;
+    lang: RouteLanguage;
     routePath: string;
+    enPath: string;
+    trPath: string;
     title: string;
     description: string;
-    ogType: 'website' | 'article';
+    ogType: 'profile' | 'website' | 'article';
     publishedTime?: string;
-    routeSchema: Record<string, unknown>;
+    routeSchema?: Record<string, unknown>;
     noscriptHtml: string;
   },
 ): string {
   const canonicalUrl = `${options.origin}${options.routePath}`;
+  const enUrl = `${options.origin}${options.enPath}`;
+  const trUrl = `${options.origin}${options.trPath}`;
   let html = templateHtml;
 
+  html = html.replace(/<html\s+lang="[^"]*"/i, `<html lang="${options.lang}"`);
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(options.title)}</title>`);
   html = replaceMetaByName(html, 'description', options.description);
   html = replaceMetaByProperty(html, 'og:type', options.ogType);
+  html = replaceMetaByProperty(html, 'og:locale', options.lang === 'tr' ? 'tr_TR' : 'en_US');
+  html = replaceMetaByProperty(
+    html,
+    'og:locale:alternate',
+    options.lang === 'tr' ? 'en_US' : 'tr_TR',
+  );
   html = replaceMetaByProperty(html, 'og:title', options.title);
   html = replaceMetaByProperty(html, 'og:description', options.description);
   html = replaceMetaByProperty(html, 'og:url', canonicalUrl);
   html = replaceMetaByName(html, 'twitter:title', options.title);
   html = replaceMetaByName(html, 'twitter:description', options.description);
 
-  // Update canonical and hreflang links to the route-specific URL
+  // Update canonical and bilingual hreflang links
   html = html.replace(
     /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i,
     `<link rel="canonical" href="${escapeHtml(canonicalUrl)}" />`,
   );
   html = html.replace(
     /<link\s+rel="alternate"\s+hreflang="en"\s+href="[^"]*"\s*\/?>/i,
-    `<link rel="alternate" hreflang="en" href="${escapeHtml(canonicalUrl)}" />`,
+    `<link rel="alternate" hreflang="en" href="${escapeHtml(enUrl)}" />`,
   );
   html = html.replace(
     /<link\s+rel="alternate"\s+hreflang="tr-TR"\s+href="[^"]*"\s*\/?>/i,
-    `<link rel="alternate" hreflang="tr-TR" href="${escapeHtml(canonicalUrl)}" />`,
+    `<link rel="alternate" hreflang="tr-TR" href="${escapeHtml(trUrl)}" />`,
   );
   html = html.replace(
     /<link\s+rel="alternate"\s+hreflang="x-default"\s+href="[^"]*"\s*\/?>/i,
-    `<link rel="alternate" hreflang="x-default" href="${escapeHtml(canonicalUrl)}" />`,
+    `<link rel="alternate" hreflang="x-default" href="${escapeHtml(enUrl)}" />`,
   );
 
-  // Remove homepage profile:* meta tags on subpages
-  html = html.replace(/<meta\s+property="profile:first_name"[^>]*>\s*/gi, '');
-  html = html.replace(/<meta\s+property="profile:last_name"[^>]*>\s*/gi, '');
+  if (options.ogType !== 'profile') {
+    html = html.replace(/<meta\s+property="profile:first_name"[^>]*>\s*/gi, '');
+    html = html.replace(/<meta\s+property="profile:last_name"[^>]*>\s*/gi, '');
+  }
 
   const extraHeadTags: string[] = [];
   if (options.publishedTime) {
@@ -85,12 +99,17 @@ function buildRouteHtml(
       `    <meta property="article:published_time" content="${escapeHtml(options.publishedTime)}" />`,
     );
   }
-  const safeJsonLd = JSON.stringify(options.routeSchema).replaceAll('</script>', '<\\/script>');
-  extraHeadTags.push(
-    `    <script type="application/ld+json" id="schema-route">${safeJsonLd}</script>`,
-  );
+  if (options.routeSchema) {
+    const safeJsonLd = JSON.stringify(options.routeSchema).replaceAll('</script>', '<\\/script>');
+    extraHeadTags.push(
+      `    <script type="application/ld+json" id="schema-route">${safeJsonLd}</script>`,
+    );
+  }
 
-  html = html.replace('</head>', `${extraHeadTags.join('\n')}\n  </head>`);
+  if (extraHeadTags.length > 0) {
+    html = html.replace('</head>', `${extraHeadTags.join('\n')}\n  </head>`);
+  }
+
   html = html.replace(
     /<noscript>[\s\S]*?<\/noscript>/i,
     `<noscript>\n      ${options.noscriptHtml}\n    </noscript>`,
@@ -127,9 +146,8 @@ export default defineConfig(() => {
             );
         },
       },
-      // Generates dedicated static HTML files for every internal project and research route
-      // so search engines and zero-JS AI crawlers (OAI-SearchBot, PerplexityBot, ClaudeBot, GPTBot)
-      // receive unique canonical, Open Graph, Schema.org JSON-LD, and semantic content per URL.
+      // Generates dedicated static HTML files for ALL bilingual routes (EN + TR):
+      // /tr, /projects/*, /projeler/*, /research/*, and /arastirma/*
       {
         name: 'generate-static-seo-routes',
         apply: 'build',
@@ -144,213 +162,273 @@ export default defineConfig(() => {
           }
 
           const templateHtml = fs.readFileSync(indexHtmlPath, 'utf-8');
-          const projectsEn = getProjects('en');
-          const projectsTr = getProjects('tr');
-          const articlesEn = getArticles('en');
-          const articlesTr = getArticles('tr');
+          const projectsByLang = {
+            en: getProjects('en'),
+            tr: getProjects('tr'),
+          };
+          const articlesByLang = {
+            en: getArticles('en'),
+            tr: getArticles('tr'),
+          };
 
-          // 1. Pre-generate internal project detail routes (/projeler/<slug>)
-          for (const projectEn of projectsEn) {
-            const projectTr = projectsTr.find((item) => item.slug === projectEn.slug);
-            const routePath = `/projeler/${projectEn.slug}`;
-            const routeUrl = `${resolvedSiteOrigin}${routePath}`;
-            const imageUrl = projectEn.coverImage.startsWith('http')
-              ? projectEn.coverImage
-              : `${resolvedSiteOrigin}${projectEn.coverImage.startsWith('/') ? '' : '/'}${projectEn.coverImage}`;
-            const entityId = `${routeUrl}#entity`;
-            const isSoftware = projectEn.slug === 'sportsfly';
-
-            const entityNode = isSoftware
-              ? {
-                  '@type': 'SoftwareApplication',
-                  '@id': entityId,
-                  name: projectEn.title,
-                  url: projectEn.projectUrl || routeUrl,
-                  mainEntityOfPage: routeUrl,
-                  applicationCategory: 'BusinessApplication',
-                  operatingSystem: 'Web',
-                  image: imageUrl,
-                  description: projectEn.overview,
-                  creator: {'@id': `${resolvedSiteOrigin}/#person`},
-                }
-              : {
-                  '@type': 'Organization',
-                  '@id': entityId,
-                  name: projectEn.title,
-                  url: projectEn.projectUrl || routeUrl,
-                  mainEntityOfPage: routeUrl,
-                  logo: imageUrl,
-                  description: projectEn.overview,
-                  founder: {'@id': `${resolvedSiteOrigin}/#person`},
-                  areaServed: 'TR',
-                };
-
-            const routeSchema = {
-              '@context': 'https://schema.org',
-              '@graph': [
-                entityNode,
-                {
-                  '@type': 'CreativeWork',
-                  '@id': `${routeUrl}#case-study`,
-                  name: projectEn.title,
-                  description: projectEn.seoDescription,
-                  inLanguage: ['en-US', 'tr-TR'],
-                  genre: projectEn.category,
-                  keywords: projectEn.technologies.join(', '),
-                  image: imageUrl,
-                  url: routeUrl,
-                  sameAs: projectEn.projectUrl ? [projectEn.projectUrl] : undefined,
-                  about: {'@id': entityId},
-                  author: {'@id': `${resolvedSiteOrigin}/#person`},
-                  creator: {'@id': `${resolvedSiteOrigin}/#person`},
-                },
-                {
-                  '@type': 'BreadcrumbList',
-                  itemListElement: [
-                    {
-                      '@type': 'ListItem',
-                      position: 1,
-                      name: 'Home',
-                      item: `${resolvedSiteOrigin}/`,
-                    },
-                    {
-                      '@type': 'ListItem',
-                      position: 2,
-                      name: 'Projects',
-                      item: `${resolvedSiteOrigin}/#projeler`,
-                    },
-                    {
-                      '@type': 'ListItem',
-                      position: 3,
-                      name: projectEn.title,
-                      item: routeUrl,
-                    },
-                  ],
-                },
-              ],
-            };
-
-            const externalLinkHtml = projectEn.projectUrl
-              ? `<p><strong>Official Website:</strong> <a href="${escapeHtml(projectEn.projectUrl)}">${escapeHtml(projectEn.projectUrl)}</a></p>`
-              : '';
-            const trBlockHtml = projectTr
-              ? `<section lang="tr"><h2>${escapeHtml(projectTr.title)} (Türkçe Özet)</h2><p>${escapeHtml(projectTr.overview)}</p><ul>${projectTr.outcomes.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul></section>`
-              : '';
-
-            const noscriptHtml = `<main style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
-        <p><a href="${escapeHtml(resolvedSiteOrigin)}/">Selman Utku</a> / Projects / ${escapeHtml(projectEn.title)}</p>
-        <h1>${escapeHtml(projectEn.title)} – ${escapeHtml(projectEn.category)}</h1>
-        <p>${escapeHtml(projectEn.overview)}</p>
-        ${externalLinkHtml}
-        <h2>Problem &amp; Need</h2>
-        ${projectEn.problemAndNeed.map((p) => `<p>${escapeHtml(p)}</p>`).join('')}
-        <h2>Solution Architecture</h2>
-        <ul>${projectEn.solutionDeveloped.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
-        <h2>Key Outcomes</h2>
-        <ul>${projectEn.outcomes.map((o) => `<li>${escapeHtml(o)}</li>`).join('')}</ul>
-        <h2>Capabilities &amp; Stack</h2>
-        <p>${escapeHtml(projectEn.technologies.join(' · '))}</p>
-        ${trBlockHtml}
-        <p>Founded by <a href="${escapeHtml(resolvedSiteOrigin)}/">Selman Utku</a> · Istanbul, Türkiye · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+          // 1. Pre-generate Turkish homepage (/tr)
+          const trHomeNoscript = `<main lang="tr" style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
+        <h1>Selman Utku – Spor Teknolojileri, Spor Bilişimi ve Spor Yönetimi</h1>
+        <p>İstanbul merkezli Tech Analyst, Bilişim Vadisi Spor Teknolojileri Mentoru ve SportTech kurucusu. Spor yönetimi, spor bilişimi, spor teknolojileri, dijital dönüşüm, inovasyon yönetimi ve yapay zekâ otomasyonu alanlarının kesişiminde çalışmaktadır.</p>
+        <h2>Kurulan Girişimler ve Projeler</h2>
+        <ul>
+          ${projectsByLang.tr
+            .map(
+              (p) =>
+                `<li><a href="${escapeHtml(resolvedSiteOrigin)}${escapeHtml(getProjectPath(p.slug, 'tr'))}">${escapeHtml(p.title)}</a>${p.projectUrl ? ` (<a href="${escapeHtml(p.projectUrl)}">${escapeHtml(p.projectUrlLabel || p.projectUrl)}</a>)` : ''} – ${escapeHtml(p.shortDescription)}</li>`,
+            )
+            .join('\n          ')}
+        </ul>
+        <h2>Araştırma Başlıkları</h2>
+        <ul>
+          ${articlesByLang.tr
+            .map(
+              (a) =>
+                `<li><a href="${escapeHtml(resolvedSiteOrigin)}${escapeHtml(getArticlePath(a.slug, 'tr'))}">${escapeHtml(a.title)}</a></li>`,
+            )
+            .join('\n          ')}
+        </ul>
+        <p><a href="${escapeHtml(resolvedSiteOrigin)}/">English Version</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
       </main>`;
 
-            const routeHtml = buildRouteHtml(templateHtml, {
-              origin: resolvedSiteOrigin,
-              routePath,
-              title: projectEn.seoTitle,
-              description: projectEn.seoDescription,
-              ogType: 'website',
-              routeSchema,
-              noscriptHtml,
-            });
+          const trHomeHtml = buildRouteHtml(templateHtml, {
+            origin: resolvedSiteOrigin,
+            lang: 'tr',
+            routePath: '/tr',
+            enPath: '/',
+            trPath: '/tr',
+            title: 'Selman Utku – Dijital Dönüşüm, İnovasyon & Spor Teknolojileri',
+            description:
+              'Selman Utku – Tech Analyst, Bilişim Vadisi Spor Teknolojileri Mentoru ve SportTech Türkiye, Sporsepeti & SportsFly kurucusu. Spor teknolojileri, spor bilişimi ve spor yönetimi referans portfolyosu.',
+            ogType: 'profile',
+            routeSchema: {
+              '@context': 'https://schema.org',
+              '@type': 'ProfilePage',
+              name: 'Selman Utku – Dijital Dönüşüm, İnovasyon & Spor Teknolojileri',
+              url: `${resolvedSiteOrigin}/tr`,
+              inLanguage: 'tr-TR',
+              mainEntity: {'@id': `${resolvedSiteOrigin}/#person`},
+            },
+            noscriptHtml: trHomeNoscript,
+          });
+          const trDir = path.join(distDir, 'tr');
+          fs.mkdirSync(trDir, {recursive: true});
+          fs.writeFileSync(path.join(trDir, 'index.html'), trHomeHtml, 'utf-8');
 
-            const outDir = path.join(distDir, 'projeler', projectEn.slug);
-            fs.mkdirSync(outDir, {recursive: true});
-            fs.writeFileSync(path.join(outDir, 'index.html'), routeHtml, 'utf-8');
+          // 2. Pre-generate bilingual project detail routes (/projects/* & /projeler/*)
+          for (const lang of ['en', 'tr'] as const) {
+            const folder = lang === 'tr' ? 'projeler' : 'projects';
+            for (const project of projectsByLang[lang]) {
+              const routePath = getProjectPath(project.slug, lang);
+              const enPath = getProjectPath(project.slug, 'en');
+              const trPath = getProjectPath(project.slug, 'tr');
+              const routeUrl = `${resolvedSiteOrigin}${routePath}`;
+              const homeUrl = `${resolvedSiteOrigin}${getHomePath(lang)}`;
+              const projectsSectionUrl = `${resolvedSiteOrigin}${getSectionHref('projects', lang)}`;
+              const imageUrl = project.coverImage.startsWith('http')
+                ? project.coverImage
+                : `${resolvedSiteOrigin}${project.coverImage.startsWith('/') ? '' : '/'}${project.coverImage}`;
+              const entityId = `${routeUrl}#entity`;
+              const isSoftware = project.slug === 'sportsfly';
+
+              const entityNode = isSoftware
+                ? {
+                    '@type': 'SoftwareApplication',
+                    '@id': entityId,
+                    name: project.title,
+                    url: project.projectUrl || routeUrl,
+                    mainEntityOfPage: routeUrl,
+                    applicationCategory: 'BusinessApplication',
+                    operatingSystem: 'Web',
+                    image: imageUrl,
+                    description: project.overview,
+                    creator: {'@id': `${resolvedSiteOrigin}/#person`},
+                  }
+                : {
+                    '@type': 'Organization',
+                    '@id': entityId,
+                    name: project.title,
+                    url: project.projectUrl || routeUrl,
+                    mainEntityOfPage: routeUrl,
+                    logo: imageUrl,
+                    description: project.overview,
+                    founder: {'@id': `${resolvedSiteOrigin}/#person`},
+                    areaServed: 'TR',
+                  };
+
+              const routeSchema = {
+                '@context': 'https://schema.org',
+                '@graph': [
+                  entityNode,
+                  {
+                    '@type': 'CreativeWork',
+                    '@id': `${routeUrl}#case-study`,
+                    name: project.title,
+                    description: project.seoDescription,
+                    inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
+                    genre: project.category,
+                    keywords: project.technologies.join(', '),
+                    image: imageUrl,
+                    url: routeUrl,
+                    sameAs: project.projectUrl ? [project.projectUrl] : undefined,
+                    about: {'@id': entityId},
+                    author: {'@id': `${resolvedSiteOrigin}/#person`},
+                    creator: {'@id': `${resolvedSiteOrigin}/#person`},
+                  },
+                  {
+                    '@type': 'BreadcrumbList',
+                    itemListElement: [
+                      {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: lang === 'tr' ? 'Ana Sayfa' : 'Home',
+                        item: homeUrl,
+                      },
+                      {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: lang === 'tr' ? 'Projeler' : 'Projects',
+                        item: projectsSectionUrl,
+                      },
+                      {
+                        '@type': 'ListItem',
+                        position: 3,
+                        name: project.title,
+                        item: routeUrl,
+                      },
+                    ],
+                  },
+                ],
+              };
+
+              const externalLinkHtml = project.projectUrl
+                ? `<p><strong>${lang === 'tr' ? 'Resmi Web Sitesi' : 'Official Website'}:</strong> <a href="${escapeHtml(project.projectUrl)}">${escapeHtml(project.projectUrl)}</a></p>`
+                : '';
+
+              const noscriptHtml = `<main lang="${lang}" style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
+        <p><a href="${escapeHtml(homeUrl)}">Selman Utku</a> / ${lang === 'tr' ? 'Projeler' : 'Projects'} / ${escapeHtml(project.title)}</p>
+        <h1>${escapeHtml(project.title)} – ${escapeHtml(project.category)}</h1>
+        <p>${escapeHtml(project.overview)}</p>
+        ${externalLinkHtml}
+        <h2>${lang === 'tr' ? 'Problem ve İhtiyaç' : 'Problem &amp; Need'}</h2>
+        ${project.problemAndNeed.map((p) => `<p>${escapeHtml(p)}</p>`).join('')}
+        <h2>${lang === 'tr' ? 'Geliştirilen Çözüm' : 'Solution Architecture'}</h2>
+        <ul>${project.solutionDeveloped.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+        <h2>${lang === 'tr' ? 'Proje Çıktıları' : 'Key Outcomes'}</h2>
+        <ul>${project.outcomes.map((o) => `<li>${escapeHtml(o)}</li>`).join('')}</ul>
+        <p>${lang === 'tr' ? 'Kurucu' : 'Founded by'}: <a href="${escapeHtml(homeUrl)}">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+      </main>`;
+
+              const routeHtml = buildRouteHtml(templateHtml, {
+                origin: resolvedSiteOrigin,
+                lang,
+                routePath,
+                enPath,
+                trPath,
+                title: project.seoTitle,
+                description: project.seoDescription,
+                ogType: 'website',
+                routeSchema,
+                noscriptHtml,
+              });
+
+              const outDir = path.join(distDir, folder, project.slug);
+              fs.mkdirSync(outDir, {recursive: true});
+              fs.writeFileSync(path.join(outDir, 'index.html'), routeHtml, 'utf-8');
+            }
           }
 
-          // 2. Pre-generate internal research routes (/yazilar/<slug>)
-          for (const articleEn of articlesEn) {
-            const articleTr = articlesTr.find((item) => item.slug === articleEn.slug);
-            const routePath = `/yazilar/${articleEn.slug}`;
-            const routeUrl = `${resolvedSiteOrigin}${routePath}`;
-            const imageUrl = `${resolvedSiteOrigin}/og-image.png`;
+          // 3. Pre-generate bilingual research routes (/research/* & /arastirma/*)
+          for (const lang of ['en', 'tr'] as const) {
+            const folder = lang === 'tr' ? 'arastirma' : 'research';
+            for (const article of articlesByLang[lang]) {
+              const routePath = getArticlePath(article.slug, lang);
+              const enPath = getArticlePath(article.slug, 'en');
+              const trPath = getArticlePath(article.slug, 'tr');
+              const routeUrl = `${resolvedSiteOrigin}${routePath}`;
+              const homeUrl = `${resolvedSiteOrigin}${getHomePath(lang)}`;
+              const researchSectionUrl = `${resolvedSiteOrigin}${getSectionHref('research', lang)}`;
+              const imageUrl = `${resolvedSiteOrigin}/og-image.png`;
 
-            const routeSchema = {
-              '@context': 'https://schema.org',
-              '@graph': [
-                {
-                  '@type': 'Article',
-                  '@id': `${routeUrl}#article`,
-                  headline: articleEn.title,
-                  description: articleEn.seoDescription,
-                  inLanguage: ['en-US', 'tr-TR'],
-                  articleSection: articleEn.category,
-                  datePublished: articleEn.isoDate,
-                  dateModified: articleEn.isoDate,
-                  image: imageUrl,
-                  author: {'@id': `${resolvedSiteOrigin}/#person`},
-                  publisher: {'@id': `${resolvedSiteOrigin}/#person`},
-                  mainEntityOfPage: {
-                    '@type': 'WebPage',
-                    '@id': routeUrl,
+              const routeSchema = {
+                '@context': 'https://schema.org',
+                '@graph': [
+                  {
+                    '@type': 'Article',
+                    '@id': `${routeUrl}#article`,
+                    headline: article.title,
+                    description: article.seoDescription,
+                    inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
+                    articleSection: article.category,
+                    datePublished: article.isoDate,
+                    dateModified: article.isoDate,
+                    image: imageUrl,
+                    author: {'@id': `${resolvedSiteOrigin}/#person`},
+                    publisher: {'@id': `${resolvedSiteOrigin}/#person`},
+                    mainEntityOfPage: {
+                      '@type': 'WebPage',
+                      '@id': routeUrl,
+                    },
                   },
-                },
-                {
-                  '@type': 'BreadcrumbList',
-                  itemListElement: [
-                    {
-                      '@type': 'ListItem',
-                      position: 1,
-                      name: 'Home',
-                      item: `${resolvedSiteOrigin}/`,
-                    },
-                    {
-                      '@type': 'ListItem',
-                      position: 2,
-                      name: 'Research',
-                      item: `${resolvedSiteOrigin}/#yazilar`,
-                    },
-                    {
-                      '@type': 'ListItem',
-                      position: 3,
-                      name: articleEn.title,
-                      item: routeUrl,
-                    },
-                  ],
-                },
-              ],
-            };
+                  {
+                    '@type': 'BreadcrumbList',
+                    itemListElement: [
+                      {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: lang === 'tr' ? 'Ana Sayfa' : 'Home',
+                        item: homeUrl,
+                      },
+                      {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: lang === 'tr' ? 'Araştırma' : 'Research',
+                        item: researchSectionUrl,
+                      },
+                      {
+                        '@type': 'ListItem',
+                        position: 3,
+                        name: article.title,
+                        item: routeUrl,
+                      },
+                    ],
+                  },
+                ],
+              };
 
-            const trArticleHtml = articleTr
-              ? `<section lang="tr"><h2>${escapeHtml(articleTr.title)}</h2><p>${escapeHtml(articleTr.excerpt)}</p><ul>${articleTr.keyTakeaways.map((k) => `<li>${escapeHtml(k)}</li>`).join('')}</ul></section>`
-              : '';
-
-            const noscriptHtml = `<main style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
-        <p><a href="${escapeHtml(resolvedSiteOrigin)}/">Selman Utku</a> / Research / ${escapeHtml(articleEn.category)}</p>
-        <h1>${escapeHtml(articleEn.title)}</h1>
-        <p>${escapeHtml(articleEn.excerpt)}</p>
-        <h2>Key Takeaways</h2>
-        <ul>${articleEn.keyTakeaways.map((k) => `<li>${escapeHtml(k)}</li>`).join('')}</ul>
-        ${articleEn.sections.map((sec) => `<section><h2>${escapeHtml(sec.heading)}</h2>${sec.paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join('')}</section>`).join('')}
-        ${trArticleHtml}
-        <p>Author: <a href="${escapeHtml(resolvedSiteOrigin)}/">Selman Utku</a> · Istanbul, Türkiye · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+              const noscriptHtml = `<main lang="${lang}" style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
+        <p><a href="${escapeHtml(homeUrl)}">Selman Utku</a> / ${lang === 'tr' ? 'Araştırma' : 'Research'} / ${escapeHtml(article.category)}</p>
+        <h1>${escapeHtml(article.title)}</h1>
+        <p>${escapeHtml(article.excerpt)}</p>
+        <h2>${lang === 'tr' ? 'Öne Çıkan Bulgular' : 'Key Takeaways'}</h2>
+        <ul>${article.keyTakeaways.map((k) => `<li>${escapeHtml(k)}</li>`).join('')}</ul>
+        ${article.sections.map((sec) => `<section><h2>${escapeHtml(sec.heading)}</h2>${sec.paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join('')}</section>`).join('')}
+        <p>${lang === 'tr' ? 'Araştırmacı' : 'Author'}: <a href="${escapeHtml(homeUrl)}">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
       </main>`;
 
-            const routeHtml = buildRouteHtml(templateHtml, {
-              origin: resolvedSiteOrigin,
-              routePath,
-              title: articleEn.seoTitle,
-              description: articleEn.seoDescription,
-              ogType: 'article',
-              publishedTime: articleEn.isoDate,
-              routeSchema,
-              noscriptHtml,
-            });
+              const routeHtml = buildRouteHtml(templateHtml, {
+                origin: resolvedSiteOrigin,
+                lang,
+                routePath,
+                enPath,
+                trPath,
+                title: article.seoTitle,
+                description: article.seoDescription,
+                ogType: 'article',
+                publishedTime: article.isoDate,
+                routeSchema,
+                noscriptHtml,
+              });
 
-            const outDir = path.join(distDir, 'yazilar', articleEn.slug);
-            fs.mkdirSync(outDir, {recursive: true});
-            fs.writeFileSync(path.join(outDir, 'index.html'), routeHtml, 'utf-8');
+              const outDir = path.join(distDir, folder, article.slug);
+              fs.mkdirSync(outDir, {recursive: true});
+              fs.writeFileSync(path.join(outDir, 'index.html'), routeHtml, 'utf-8');
+            }
           }
         },
       },

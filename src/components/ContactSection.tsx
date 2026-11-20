@@ -3,6 +3,7 @@ import { AlertCircle, ArrowUpRight, Check, CheckCircle2, Copy, Mail } from 'luci
 import { getProfileContent, SITE_CONFIG } from '../data/profile';
 import { trackEvent } from '../lib/analytics';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getSectionId } from '../lib/routes';
 
 interface FormValues {
   fullName: string;
@@ -177,7 +178,7 @@ export function ContactSection() {
 
   return (
     <section
-      id="iletisim"
+      id={getSectionId('contact', lang)}
       aria-labelledby="contact-heading"
       className="relative overflow-hidden border-t border-[#DCE7F2] bg-white py-20 lg:py-28"
     >

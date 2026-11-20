@@ -13,6 +13,10 @@ export interface SEOConfig {
   publishedTime?: string;
   modifiedTime?: string;
   noIndex?: boolean;
+  alternatePaths?: {
+    en: string;
+    tr: string;
+  };
   jsonLd?: Record<string, unknown>;
 }
 
@@ -63,6 +67,7 @@ export function useDocumentSEO({
   publishedTime,
   modifiedTime,
   noIndex = false,
+  alternatePaths,
   jsonLd,
 }: SEOConfig) {
   useEffect(() => {
@@ -161,25 +166,32 @@ export function useDocumentSEO({
       removeMetaTag('meta[property="article:modified_time"]');
     }
 
-    // Canonical & hreflang links
+    // Canonical & bilingual hreflang links
+    const enHref = alternatePaths?.en
+      ? `${cleanOrigin}${alternatePaths.en.startsWith('/') ? alternatePaths.en : `/${alternatePaths.en}`}`
+      : canonicalUrl;
+    const trHref = alternatePaths?.tr
+      ? `${cleanOrigin}${alternatePaths.tr.startsWith('/') ? alternatePaths.tr : `/${alternatePaths.tr}`}`
+      : canonicalUrl;
+
     setLinkTag('link[rel="canonical"]', {
       rel: 'canonical',
-      href: canonicalUrl,
-    });
-    setLinkTag('link[rel="alternate"][hreflang="tr-TR"]', {
-      rel: 'alternate',
-      hreflang: 'tr-TR',
       href: canonicalUrl,
     });
     setLinkTag('link[rel="alternate"][hreflang="en"]', {
       rel: 'alternate',
       hreflang: 'en',
-      href: canonicalUrl,
+      href: enHref,
+    });
+    setLinkTag('link[rel="alternate"][hreflang="tr-TR"]', {
+      rel: 'alternate',
+      hreflang: 'tr-TR',
+      href: trHref,
     });
     setLinkTag('link[rel="alternate"][hreflang="x-default"]', {
       rel: 'alternate',
       hreflang: 'x-default',
-      href: canonicalUrl,
+      href: enHref,
     });
 
     // Remove any build-time static route schema once SPA takes over route metadata
@@ -202,5 +214,19 @@ export function useDocumentSEO({
     } else if (existingScript) {
       existingScript.remove();
     }
-  }, [title, description, path, type, lang, image, imageAlt, publishedTime, modifiedTime, noIndex, jsonLd]);
+  }, [
+    title,
+    description,
+    path,
+    type,
+    lang,
+    image,
+    imageAlt,
+    publishedTime,
+    modifiedTime,
+    noIndex,
+    alternatePaths?.en,
+    alternatePaths?.tr,
+    jsonLd,
+  ]);
 }

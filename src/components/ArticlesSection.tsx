@@ -6,6 +6,7 @@ import {
   type ArticleCategoryKey,
 } from '../data/articles';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getArticlePath, getSectionId } from '../lib/routes';
 
 interface ArticlesSectionProps {
   onNavigate: (to: string) => void;
@@ -32,7 +33,7 @@ export function ArticlesSection({ onNavigate }: ArticlesSectionProps) {
 
   return (
     <section
-      id="yazilar"
+      id={getSectionId('research', lang)}
       aria-labelledby="articles-heading"
       className="border-t border-[#DCE7F2] bg-white py-20 lg:py-28"
     >
@@ -90,10 +91,10 @@ export function ArticlesSection({ onNavigate }: ArticlesSectionProps) {
                 className="group flex flex-col justify-between rounded-lg border border-[#DCE7F2] bg-[#FAFDFE] p-6 transition-colors duration-150 hover:border-[#94BBE0] hover:bg-white lg:p-7"
               >
                 <a
-                  href={`/yazilar/${item.slug}`}
+                  href={getArticlePath(item.slug, lang)}
                   onClick={(e) => {
                     e.preventDefault();
-                    onNavigate(`/yazilar/${item.slug}`);
+                    onNavigate(getArticlePath(item.slug, lang));
                   }}
                   className="flex h-full flex-col justify-between text-center focus:outline-none sm:text-left"
                 >

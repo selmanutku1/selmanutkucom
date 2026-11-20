@@ -1,4 +1,5 @@
 import type { Language } from '../lib/i18n';
+import { translateArticleSlug } from '../lib/routes';
 
 export type ArticleCategoryKey =
   | 'digital-transformation'
@@ -279,7 +280,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
   ],
   en: [
     {
-      slug: 'kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu',
+      slug: 'strategic-role-of-business-analysis-in-digital-transformation',
       title: 'The Strategic Role of Business Analysis in Enterprise Digital Transformation',
       categoryKey: 'digital-transformation',
       category: 'Digital Transformation',
@@ -322,7 +323,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
         'How structured business analysis drives process simplification, clear requirements, and measurable enterprise value.',
     },
     {
-      slug: 'yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik',
+      slug: 'ai-powered-business-workflows-and-institutional-productivity',
       title: 'AI-Powered Business Workflows and Institutional Productivity',
       categoryKey: 'ai',
       category: 'Artificial Intelligence',
@@ -358,7 +359,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
         'Practical principles for implementing generative AI and automation safely and measurably inside organizations.',
     },
     {
-      slug: 'spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi',
+      slug: 'digital-management-architecture-for-sports-clubs-and-facilities',
       title: 'Digital Management Architecture for Sports Clubs and Facilities',
       categoryKey: 'sports-tech',
       category: 'Sports Technology',
@@ -394,7 +395,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
         'Designing SportTech management platforms and data-driven workflows for sports academies, clubs, and facilities.',
     },
     {
-      slug: 'teknoloji-stratejisi-arac-seciminden-deger-mimarisine',
+      slug: 'technology-strategy-from-tool-selection-to-value-architecture',
       title: 'Technology Strategy: From Tool Selection to Value Architecture',
       categoryKey: 'tech-strategy',
       category: 'Technology Strategy',
@@ -429,7 +430,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
         'Principles for crafting resilient technology roadmaps, prioritization frameworks, and value-driven architectures.',
     },
     {
-      slug: 'sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik',
+      slug: 'product-development-and-entrepreneurship-in-sporttech',
       title: 'Product Development and Entrepreneurship in the SportTech Ecosystem',
       categoryKey: 'entrepreneurship',
       category: 'Entrepreneurship',
@@ -464,7 +465,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
         'Field-tested principles for building products and sustainable ventures across the sports technology ecosystem.',
     },
     {
-      slug: 'kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim',
+      slug: 'building-an-internal-innovation-culture-for-sustainable-change',
       title: 'Building an Internal Innovation Culture for Sustainable Change',
       categoryKey: 'innovation',
       category: 'Innovation',
@@ -510,5 +511,6 @@ export function getArticles(lang: Language): ArticleItem[] {
 }
 
 export function getArticleBySlug(slug: string, lang: Language): ArticleItem | undefined {
-  return ARTICLES_BY_LANG[lang].find((a) => a.slug === slug);
+  const localizedSlug = translateArticleSlug(slug, lang);
+  return ARTICLES_BY_LANG[lang].find((a) => a.slug === localizedSlug || a.slug === slug);
 }

@@ -1,6 +1,7 @@
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { getProjects } from '../data/projects';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { getProjectPath, getSectionId } from '../lib/routes';
 
 interface ProjectsSectionProps {
   onNavigate: (to: string) => void;
@@ -13,7 +14,7 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
 
   return (
     <section
-      id="projeler"
+      id={getSectionId('projects', lang)}
       aria-labelledby="projects-heading"
       className="relative overflow-hidden border-t border-[#DCE7F2] bg-[#F3F8FC] py-20 lg:py-28"
     >
@@ -50,10 +51,10 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
             >
               {/* Clickable Case Study Preview Area */}
               <a
-                href={`/projeler/${project.slug}`}
+                href={getProjectPath(project.slug, lang)}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate(`/projeler/${project.slug}`);
+                  onNavigate(getProjectPath(project.slug, lang));
                 }}
                 className="flex flex-1 flex-col focus:outline-none"
               >
@@ -107,7 +108,7 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
 
                 <button
                   type="button"
-                  onClick={() => onNavigate(`/projeler/${project.slug}`)}
+                  onClick={() => onNavigate(getProjectPath(project.slug, lang))}
                   className="inline-flex w-full items-center justify-center gap-1.5 py-1 text-[13px] font-medium text-[#4B6075] transition-colors hover:text-[#145DA0]"
                 >
                   <span>{copy.viewDetail}</span>

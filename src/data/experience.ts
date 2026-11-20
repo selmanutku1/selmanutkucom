@@ -38,6 +38,30 @@ const EXPERIENCES_BY_LANG: Record<Language, ExperienceItem[]> = {
       ],
     },
     {
+      id: 'bilisim-vadisi-spor-teknolojileri-mentoru',
+      organization: 'Bilişim Vadisi',
+      role: 'Spor Teknolojileri Mentoru',
+      period: 'Güncel',
+      location: 'Kocaeli / İstanbul',
+      summary:
+        'Bilişim Vadisi girişimcilik ekosisteminde spor teknolojileri, spor bilişimi ve dijital spor ürünleri geliştiren girişimlere ürün stratejisi, iş modeli kurgusu, ticarileşme ve spor ekosistemi iş birlikleri konularında mentorluk desteği sunuyorum.',
+      responsibilities: [
+        'Spor teknolojileri ve spor bilişimi girişimlerine ürün-pazar uyumu, değer önerisi ve yol haritası mentorluğu sağlamak',
+        'Spor kulüpleri, federasyonlar ve spor işletmeleriyle saha doğrulaması ve iş birliği stratejileri geliştirmek',
+        'Girişimlerin ölçeklenebilir SaaS, veri analitiği ve iş modeli kurgularını değerlendirmek',
+        'Türkiye SportTech girişimcilik ekosisteminin ulusal ve uluslararası paydaşlarla bağlantısını güçlendirmek',
+      ],
+      highlights: [
+        'Spor teknolojileri dikeyinde erken aşama girişimlere doğrudan saha ve ürün mimarisi rehberliği',
+        'Spor yönetimi, spor bilişimi ve teknoloji girişimciliği disiplinlerini birleştiren stratejik mentorluk yaklaşımı',
+      ],
+      deliverables: [
+        'SportTech Girişimleri İçin Ürün & Büyüme Mentorluğu',
+        'Spor Kulüpleri ve Federasyonlara Yönelik İş Birliği Kurguları',
+        'Ticarileşme ve Dijital Ekosistem Strateji Geri Bildirimleri',
+      ],
+    },
+    {
       id: 'universite-spor-dijital-strateji',
       organization: 'Üniversite',
       role: 'Spor ve Dijital Stratejiler Koordinatörü',
@@ -108,6 +132,30 @@ const EXPERIENCES_BY_LANG: Record<Language, ExperienceItem[]> = {
         'Enterprise Process Architecture & Analysis Playbook',
         'Digital Service & Internal Operations Analysis Specifications',
         'Automation & Decision-Support Reporting Blueprints',
+      ],
+    },
+    {
+      id: 'bilisim-vadisi-spor-teknolojileri-mentoru',
+      organization: 'Bilişim Vadisi',
+      role: 'Sports Technology Mentor',
+      period: 'Current',
+      location: 'Kocaeli / Istanbul',
+      summary:
+        'Mentoring early-stage founders and technology teams within the Bilişim Vadisi innovation ecosystem across sports technology, sports informatics, product strategy, business modeling, commercialization, and sports industry partnerships.',
+      responsibilities: [
+        'Advising SportTech and sports informatics startups on product-market fit, value proposition, and technical roadmaps',
+        'Guiding field validation and institutional partnerships with sports clubs, national federations, and athletic enterprises',
+        'Reviewing scalable SaaS, data analytics, and monetization architectures for emerging sports ventures',
+        'Strengthening bridges between Türkiye’s SportTech founder community and corporate/academic stakeholders',
+      ],
+      highlights: [
+        'Hands-on product strategy and sports domain mentoring for early-stage SportTech startups',
+        'Multidisciplinary guidance uniting sports management, sports informatics, and technology entrepreneurship',
+      ],
+      deliverables: [
+        'Product & Growth Mentoring for SportTech Ventures',
+        'Club & Federation Partnership Strategy Playbooks',
+        'Commercialization & Ecosystem Positioning Reviews',
       ],
     },
     {
