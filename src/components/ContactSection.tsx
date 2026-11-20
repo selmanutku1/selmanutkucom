@@ -33,7 +33,9 @@ export function ContactSection() {
   const location = getProfileContent(lang).location;
 
   const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
+  const [honeypot, setHoneypot] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted'>('idle');
   const [emailCopied, setEmailCopied] = useState(false);
 
@@ -59,9 +61,12 @@ export function ContactSection() {
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
+    if (submitError) {
+      setSubmitError(null);
+    }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const validationErrors = validate(values);
     if (Object.keys(validationErrors).length > 0) {
@@ -69,16 +74,94 @@ export function ContactSection() {
       return;
     }
 
-    setStatus('submitting');
-    window.setTimeout(() => {
+    if (honeypot.trim().length > 0) {
       setStatus('submitted');
-      trackEvent('contact_form_submit', { subject_category: values.subject.slice(0, 40) });
-    }, 450);
+      return;
+    }
+
+    setSubmitError(null);
+    setStatus('submitting');
+
+    const payload = {
+      fullName: values.fullName.trim(),
+      email: values.email.trim(),
+      subject: values.subject.trim(),
+      message: values.message.trim(),
+      _honey: honeypot,
+    };
+
+    try {
+      let delivered = false;
+
+      // 1. Try Vercel Serverless API (/api/contact with Resend) when configured
+      try {
+        const apiRes = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+        if (apiRes.ok) {
+          delivered = true;
+        }
+      } catch {
+        // Ignore and fall back to FormSubmit AJAX endpoint
+      }
+
+      // 2. Fallback to FormSubmit AJAX JSON delivery straight to info@selmanutku.com
+      if (!delivered) {
+        const formSubmitRes = await fetch(
+          `https://formsubmit.co/ajax/${encodeURIComponent(SITE_CONFIG.email)}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify({
+              name: payload.fullName,
+              email: payload.email,
+              _replyto: payload.email,
+              _subject: `[${SITE_CONFIG.domain}] ${payload.subject}`,
+              subject: payload.subject,
+              message: payload.message,
+              _template: 'table',
+              _captcha: 'false',
+              _honey: honeypot,
+            }),
+          },
+        );
+
+        if (!formSubmitRes.ok) {
+          throw new Error('FormSubmit delivery failed');
+        }
+
+        const result = (await formSubmitRes.json().catch(() => ({}))) as {
+          success?: boolean | string;
+        };
+        if (result.success === false || result.success === 'false') {
+          throw new Error('FormSubmit rejected submission');
+        }
+        delivered = true;
+      }
+
+      if (delivered) {
+        setStatus('submitted');
+        trackEvent('contact_form_submit', { subject_category: payload.subject.slice(0, 40) });
+      }
+    } catch {
+      setStatus('idle');
+      setSubmitError(copy.errors.submitError);
+    }
   };
 
   const handleReset = () => {
     setValues(INITIAL_VALUES);
+    setHoneypot('');
     setErrors({});
+    setSubmitError(null);
     setStatus('idle');
   };
 
@@ -214,6 +297,17 @@ export function ContactSection() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                  {/* Anti-spam honeypot field (hidden from human visitors) */}
+                  <input
+                    type="text"
+                    name="_honey"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    aria-hidden="true"
+                    className="hidden"
+                  />
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
                       <label
@@ -353,6 +447,28 @@ export function ContactSection() {
                       </p>
                     )}
                   </div>
+
+                  {submitError && (
+                    <div
+                      role="alert"
+                      className="flex flex-col gap-3 rounded-md border border-red-200 bg-red-50/80 p-4 text-[13.5px] text-red-800 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" aria-hidden="true" />
+                        <span>{submitError}</span>
+                      </div>
+                      <a
+                        href={`mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent(
+                          values.subject || 'Contact',
+                        )}&body=${encodeURIComponent(
+                          `${values.fullName} (${values.email})\n\n${values.message}`,
+                        )}`}
+                        className="whitespace-nowrap shrink-0 font-medium text-[#0C2340] underline underline-offset-2 hover:text-[#145DA0]"
+                      >
+                        {copy.openMailClient}
+                      </a>
+                    </div>
+                  )}
 
                   <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
                     <p className="text-[12.5px] text-[#5B7086]">{copy.privacyNote}</p>

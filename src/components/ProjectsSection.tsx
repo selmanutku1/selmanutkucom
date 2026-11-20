@@ -1,4 +1,4 @@
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { getProjects } from '../data/projects';
 import { UI_COPY, useLanguage } from '../lib/i18n';
 
@@ -48,13 +48,14 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
               key={project.slug}
               className="group flex flex-col overflow-hidden rounded-lg border border-[#DCE7F2] bg-white transition-all duration-200 hover:-translate-y-0.5 hover:border-[#94BBE0]"
             >
+              {/* Clickable Case Study Preview Area */}
               <a
                 href={`/projeler/${project.slug}`}
                 onClick={(e) => {
                   e.preventDefault();
                   onNavigate(`/projeler/${project.slug}`);
                 }}
-                className="flex h-full flex-col focus:outline-none"
+                className="flex flex-1 flex-col focus:outline-none"
               >
                 {/* Clean Monochrome Brand Logo Stage */}
                 <div className="flex h-48 items-center justify-center border-b border-[#EAF1F8] bg-white px-8 py-7 lg:h-52">
@@ -67,40 +68,52 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
                   />
                 </div>
 
-                <div className="flex flex-1 flex-col justify-between p-7 text-center sm:text-left">
-                  <div>
-                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12.5px] text-[#5B7086] sm:justify-between">
-                      <span className="font-mono text-[#145DA0] tabular-nums">
-                        {project.index}
-                      </span>
-                      <span className="font-mono tabular-nums">{project.year}</span>
-                    </div>
-
-                    <h3 className="mt-3 text-[22px] font-semibold tracking-[-0.02em] text-[#0A192F]">
-                      {project.title}
-                    </h3>
-
-                    <p className="mt-1.5 text-[12.5px] font-medium text-[#145DA0]">
-                      {project.category}
-                    </p>
-
-                    <p className="mt-3.5 text-[14.5px] leading-[1.7] text-[#465B71]">
-                      {project.shortDescription}
-                    </p>
-                  </div>
-
-                  <div className="mt-7 flex items-center justify-center gap-2 border-t border-[#EAF1F8] pt-5 sm:justify-between">
-                    <span className="text-[13.5px] font-medium text-[#0C2340] transition-colors group-hover:text-[#145DA0]">
-                      {copy.viewDetail}
+                <div className="flex flex-1 flex-col p-7 pb-5 text-center sm:text-left">
+                  <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12.5px] text-[#5B7086] sm:justify-between">
+                    <span className="font-mono text-[#145DA0] tabular-nums">
+                      {project.index}
                     </span>
-                    <ArrowUpRight
-                      className="h-4 w-4 text-[#4B6075] transition-transform duration-150 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#145DA0]"
-                      strokeWidth={1.75}
-                      aria-hidden="true"
-                    />
+                    <span className="font-mono tabular-nums">{project.year}</span>
                   </div>
+
+                  <h3 className="mt-3 text-[22px] font-semibold tracking-[-0.02em] text-[#0A192F] transition-colors group-hover:text-[#145DA0]">
+                    {project.title}
+                  </h3>
+
+                  <p className="mt-1.5 text-[12.5px] font-medium text-[#145DA0]">
+                    {project.category}
+                  </p>
+
+                  <p className="mt-3.5 text-[14.5px] leading-[1.7] text-[#465B71]">
+                    {project.shortDescription}
+                  </p>
                 </div>
               </a>
+
+              {/* Card Action Footer: Direct Website Button + Case Study Link */}
+              <div className="space-y-3 border-t border-[#EAF1F8] px-7 py-5">
+                {project.projectUrl && (
+                  <a
+                    href={project.projectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${project.title} – ${copy.visitWebsite}`}
+                    className="inline-flex min-h-[42px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-md bg-[#0C2340] px-4 py-2.5 text-[13.5px] font-medium text-white transition-colors duration-150 hover:bg-[#143966]"
+                  >
+                    <span>{copy.visitWebsite}</span>
+                    <ArrowUpRight className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                  </a>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => onNavigate(`/projeler/${project.slug}`)}
+                  className="inline-flex w-full items-center justify-center gap-1.5 py-1 text-[13px] font-medium text-[#4B6075] transition-colors hover:text-[#145DA0]"
+                >
+                  <span>{copy.viewDetail}</span>
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                </button>
+              </div>
             </article>
           ))}
         </div>

@@ -32,7 +32,7 @@ export const SITE_CONFIG = {
   fullName: 'Selman Utku',
   domain: 'selmanutku.com',
   siteUrl: import.meta.env.VITE_SITE_URL || 'https://selmanutku.com',
-  email: 'iletisim@selmanutku.com',
+  email: 'info@selmanutku.com',
   linkedinUrl: 'https://www.linkedin.com/in/selmanutku',
   linkedinHandle: 'linkedin.com/in/selmanutku',
   instagramUrl: 'https://www.instagram.com/selmanutku',
@@ -81,7 +81,8 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
     location: 'İstanbul, Türkiye',
     portraitAlt: 'Selman Utku – Konferans panel konuşması portre fotoğrafı',
     hero: {
-      title: 'Sporun Geleceğine Stratejik Bakış.',
+      title: 'Sporun Geleceğine',
+      titleAccent: 'Stratejik Bakış.',
       subtitle: 'Dijital Dönüşüm | İnovasyon | Spor Teknolojileri',
       intro:
         'Spor yönetimi, teknoloji ve dijital dönüşüm alanlarının kesişiminde çalışan; iş süreçlerini teknolojiyle geliştirmeye, yapay zekâ ve otomasyon çözümleriyle değer üretmeye odaklanan bir profesyonelim.',
@@ -116,8 +117,8 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
       heading: 'Hakkımda',
       lead: 'Teknoloji, iş analizi ve spor yönetimi disiplinlerini tek bir stratejik çerçevede birleştirerek kurumlar ve girişimler için kalıcı dijital değer üretiyorum.',
       professionalProfile: [
-        'Kariyerimi kurumsal iş süreçlerinin analiz edilmesi, dijital stratejilerin kurgulanması ve teknoloji odaklı dönüşüm projelerinin hayata geçirilmesi üzerine inşa ettim. Spor yönetimi kökenimi bilişim teknolojileri ve iş analizi uzmanlığıyla birleştirerek hem kurumsal yapılarda hem de girişimcilik ekosisteminde çok boyutlu bir bakış açısı geliştirdim.',
-        'Bugün; kurumsal iş analizi, yapay zekâ destekli süreç otomasyonu, spor yönetim platformları ve dijital ürün stratejisi alanlarında aktif olarak çalışıyor; analitik düşünceyi uygulanabilir sistemlere dönüştürüyorum.',
+        'Kariyerimi kurumsal iş süreçlerinin analiz edilmesi, dijital stratejilerin kurgulanması ve teknoloji odaklı dönüşüm projelerinin hayata geçirilmesi üzerine inşa ettim. Spor yönetimi kökenimi spor bilişimi, bilişim teknolojileri ve iş analizi uzmanlığıyla birleştirerek hem kurumsal yapılarda hem de spor teknolojileri girişimcilik ekosisteminde çok boyutlu bir bakış açısı geliştirdim.',
+        'Bugün; kurumsal iş analizi, yapay zekâ destekli süreç otomasyonu, spor bilişimi, spor yönetim platformları ve dijital ürün stratejisi alanlarında aktif olarak çalışıyor; analitik düşünceyi uygulanabilir sistemlere dönüştürüyorum.',
       ],
       careerJourney: [
         {
@@ -125,6 +126,12 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
           organization: '',
           summary:
             'Kurumsal yazılım, iş süreçleri analizi, gereksinim yönetimi ve dijital dönüşüm projelerinde stratejik iş birimleri ile teknik ekipler arasında köprü görevi üstlenerek süreçlerin veriye dayalı şekilde modernize edilmesine liderlik ediyorum.',
+        },
+        {
+          role: 'Spor Teknolojileri Mentoru',
+          organization: 'Bilişim Vadisi',
+          summary:
+            'Bilişim Vadisi girişimcilik ekosisteminde spor teknolojileri, spor bilişimi ve dijital spor ürünleri geliştiren girişimlere ürün stratejisi, iş modeli kurgusu, ticarileşme ve spor ekosistemi iş birlikleri konularında mentorluk desteği sunuyorum.',
         },
         {
           role: 'Kurucu',
@@ -249,8 +256,8 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
       heading: 'About',
       lead: 'Uniting technology, business analysis, and sports management within a single strategic framework to deliver lasting digital value for institutions and ventures.',
       professionalProfile: [
-        'I have built my career around analyzing enterprise workflows, designing digital strategies, and delivering technology-driven transformation initiatives. Combining my foundation in sports management with information technologies and technical analysis allows me to bring a multidisciplinary lens to both corporate environments and early-stage ventures.',
-        'Today, I focus on technology analysis, AI-assisted workflow automation, sports management platforms, and digital product strategy — turning analytical clarity into practical, resilient systems.',
+        'I have built my career around analyzing enterprise workflows, designing digital strategies, and delivering technology-driven transformation initiatives. Combining my foundation in sports management with sports informatics, information technologies, and technical analysis allows me to bring a multidisciplinary lens to both corporate environments and sports technology ventures.',
+        'Today, I focus on technology analysis, AI-assisted workflow automation, sports informatics, sports management platforms, and digital product strategy — turning analytical clarity into practical, resilient systems.',
       ],
       careerJourney: [
         {
@@ -258,6 +265,12 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
           organization: '',
           summary:
             'Bridging strategic business units and engineering teams across enterprise software, process analysis, requirements engineering, and data-driven digital transformation initiatives.',
+        },
+        {
+          role: 'Sports Technology Mentor',
+          organization: 'Bilişim Vadisi',
+          summary:
+            'Mentoring early-stage founders and technology teams within the Bilişim Vadisi innovation ecosystem across sports technology, sports informatics, product strategy, business modeling, commercialization, and sports industry partnerships.',
         },
         {
           role: 'Founder',

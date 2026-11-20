@@ -43,7 +43,7 @@ export interface AcademicProfileData {
 const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
   tr: {
     heading: 'Akademik Çalışmalar',
-    lead: 'Profesyonel saha ve teknoloji deneyimimi bilimsel araştırma disipliniyle bütünleştiriyor; spor teknolojileri, dijital dönüşüm ve yönetim bilişim sistemleri ekseninde akademik çalışmalarımı sürdürüyorum.',
+    lead: 'Profesyonel saha ve teknoloji deneyimimi bilimsel araştırma disipliniyle bütünleştiriyor; spor teknolojileri, spor bilişimi, spor yönetimi ve dijital dönüşüm ekseninde akademik çalışmalarımı sürdürüyorum.',
     education: [
       {
         institution: 'Marmara Üniversitesi',
@@ -118,7 +118,9 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
       },
     ],
     academicInterests: [
+      'Spor Bilişimi',
       'Sporda Bilişim Teknolojileri',
+      'Spor Yönetimi',
       'Dijital Olgunluk Modelleri',
       'İnovasyon Yönetimi',
       'Spor Girişimciliği',
@@ -132,7 +134,7 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
   },
   en: {
     heading: 'Academic Profile',
-    lead: 'Integrating real-world industry and technology experience with scientific research across sports technology, digital transformation, and management information systems.',
+    lead: 'Integrating real-world industry and technology experience with scientific research across sports technology, sports informatics, sports management, and digital transformation.',
     education: [
       {
         institution: 'Marmara University',
@@ -207,7 +209,9 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
       },
     ],
     academicInterests: [
+      'Sports Informatics',
       'Information Technologies in Sports',
+      'Sports Management',
       'Digital Maturity Models',
       'Innovation Management',
       'Sports Entrepreneurship',

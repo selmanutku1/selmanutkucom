@@ -9,68 +9,123 @@
     <lastmod>2026-11-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/" />
     <image:image>
+      <image:loc>https://selmanutku.com/og-image.png</image:loc>
+      <image:title>Selman Utku – A Strategic Vision for the Future of Sports</image:title>
+      <image:caption>Selman Utku – Tech Analyst and Founder of SportTech Türkiye, Sporsepeti, and SportsFly</image:caption>
+      <image:geo_location>Istanbul, Türkiye</image:geo_location>
+    </image:image>
+    <image:image>
       <image:loc>https://selmanutku.com/assets/aistudio/selman-utku-com_c1d77ca5.png</image:loc>
-      <image:title>Selman Utku – Dijital Dönüşüm, İnovasyon ve Spor Teknolojileri</image:title>
-      <image:caption>Selman Utku – Tech Analyst ve SportTech Girişimcisi</image:caption>
+      <image:title>Selman Utku Portrait</image:title>
+      <image:caption>Selman Utku – Digital Transformation, Innovation &amp; Sports Technology</image:caption>
       <image:geo_location>Istanbul, Türkiye</image:geo_location>
     </image:image>
   </url>
+
+  <!-- Internal Project Case Study URLs -->
   <url>
     <loc>https://selmanutku.com/projeler/sporttech-turkiye</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/projeler/sporttech-turkiye" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/projeler/sporttech-turkiye" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/projeler/sporttech-turkiye" />
+    <image:image>
+      <image:loc>https://selmanutku.com/assets/aistudio/1705766270488_925cf152.jpg</image:loc>
+      <image:title>SportTech Türkiye Logo</image:title>
+      <image:caption>SportTech Türkiye (sporttech.com.tr) – Sports Technology Ecosystem</image:caption>
+      <image:geo_location>Istanbul, Türkiye</image:geo_location>
+    </image:image>
   </url>
   <url>
     <loc>https://selmanutku.com/projeler/sporsepeti</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/projeler/sporsepeti" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/projeler/sporsepeti" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/projeler/sporsepeti" />
+    <image:image>
+      <image:loc>https://selmanutku.com/assets/aistudio/images__1__e22ba1d6.jpg</image:loc>
+      <image:title>Sporsepeti Logo</image:title>
+      <image:caption>Sporsepeti (sporsepeti.com.tr) – Sports Information Technology Venture</image:caption>
+      <image:geo_location>Istanbul, Türkiye</image:geo_location>
+    </image:image>
   </url>
   <url>
     <loc>https://selmanutku.com/projeler/sportsfly</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/projeler/sportsfly" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/projeler/sportsfly" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/projeler/sportsfly" />
+    <image:image>
+      <image:loc>https://selmanutku.com/assets/aistudio/images__1__e22ba1d6.jpg</image:loc>
+      <image:title>SportsFly Logo</image:title>
+      <image:caption>SportsFly (sportsfly.com.tr) – Digital Management Platform for Sports Clubs and Academies</image:caption>
+      <image:geo_location>Istanbul, Türkiye</image:geo_location>
+    </image:image>
   </url>
+
+  <!-- Internal Research Topic Briefs -->
   <url>
     <loc>https://selmanutku.com/yazilar/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/yazilar/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/yazilar/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/yazilar/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu" />
   </url>
   <url>
     <loc>https://selmanutku.com/yazilar/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/yazilar/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/yazilar/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/yazilar/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik" />
   </url>
   <url>
     <loc>https://selmanutku.com/yazilar/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/yazilar/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/yazilar/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/yazilar/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi" />
   </url>
   <url>
     <loc>https://selmanutku.com/yazilar/teknoloji-stratejisi-arac-seciminden-deger-mimarisine</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/yazilar/teknoloji-stratejisi-arac-seciminden-deger-mimarisine" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/yazilar/teknoloji-stratejisi-arac-seciminden-deger-mimarisine" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/yazilar/teknoloji-stratejisi-arac-seciminden-deger-mimarisine" />
   </url>
   <url>
     <loc>https://selmanutku.com/yazilar/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/yazilar/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/yazilar/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/yazilar/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik" />
   </url>
   <url>
     <loc>https://selmanutku.com/yazilar/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://selmanutku.com/yazilar/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim" />
+    <xhtml:link rel="alternate" hreflang="tr-TR" href="https://selmanutku.com/yazilar/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://selmanutku.com/yazilar/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim" />
   </url>
 </urlset>

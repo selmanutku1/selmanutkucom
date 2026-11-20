@@ -182,6 +182,12 @@ export function useDocumentSEO({
       href: canonicalUrl,
     });
 
+    // Remove any build-time static route schema once SPA takes over route metadata
+    const staticRouteSchema = document.getElementById('schema-route');
+    if (staticRouteSchema) {
+      staticRouteSchema.remove();
+    }
+
     // Dynamic page JSON-LD
     const dynamicSchemaId = 'schema-dynamic-page';
     const existingScript = document.getElementById(dynamicSchemaId);

@@ -1,12 +1,22 @@
 # selmanutku.com – Search Engine & Generative AI Crawler Policy (SEO + GEO)
 User-agent: *
 Allow: /
+Disallow: /api/
 
 # Major Search Engines
 User-agent: Googlebot
 Allow: /
 
+User-agent: Googlebot-Image
+Allow: /
+
 User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: DuckDuckBot
 Allow: /
 
 # Generative AI & Answer Engine Crawlers (GEO)
@@ -25,6 +35,9 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
+User-agent: Claude-Web
+Allow: /
+
 User-agent: anthropic-ai
 Allow: /
 
@@ -34,5 +47,10 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
+User-agent: Meta-ExternalAgent
+Allow: /
+
 Sitemap: https://selmanutku.com/sitemap.xml
-# AI / LLM Context Index: https://selmanutku.com/llms.txt
+# AI / LLM Concise Index: https://selmanutku.com/llms.txt
+# AI / LLM Complete Knowledge Dossier: https://selmanutku.com/llms-full.txt
+# Structured JSON-LD Knowledge Graph: https://selmanutku.com/knowledge-graph.json

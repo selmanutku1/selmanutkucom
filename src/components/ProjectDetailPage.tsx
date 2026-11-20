@@ -17,24 +17,68 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
   const allProjects = getProjects(lang);
   const [lightboxImage, setLightboxImage] = useState<ProjectScreenshot | null>(null);
 
-  const jsonLd = useMemo(
-    () => ({
+  const jsonLd = useMemo(() => {
+    const routeUrl = `${SITE_CONFIG.siteUrl}/projeler/${project.slug}`;
+    const imageUrl = project.coverImage.startsWith('http')
+      ? project.coverImage
+      : `${SITE_CONFIG.siteUrl}${project.coverImage.startsWith('/') ? '' : '/'}${project.coverImage}`;
+    const hasExternalUrl = Boolean(project.projectUrl && project.projectUrl.startsWith('http'));
+    const entityId = `${routeUrl}#entity`;
+
+    const ventureEntity =
+      project.slug === 'sportsfly'
+        ? {
+            '@type': 'SoftwareApplication',
+            '@id': entityId,
+            name: project.title,
+            url: hasExternalUrl ? project.projectUrl : routeUrl,
+            mainEntityOfPage: routeUrl,
+            applicationCategory: 'BusinessApplication',
+            operatingSystem: 'Web',
+            image: imageUrl,
+            description: project.overview,
+            creator: {
+              '@id': `${SITE_CONFIG.siteUrl}/#person`,
+            },
+          }
+        : {
+            '@type': 'Organization',
+            '@id': entityId,
+            name: project.title,
+            url: hasExternalUrl ? project.projectUrl : routeUrl,
+            mainEntityOfPage: routeUrl,
+            logo: imageUrl,
+            description: project.overview,
+            founder: {
+              '@id': `${SITE_CONFIG.siteUrl}/#person`,
+            },
+            areaServed: 'TR',
+          };
+
+    return {
       '@context': 'https://schema.org',
       '@graph': [
+        ventureEntity,
         {
           '@type': 'CreativeWork',
+          '@id': `${routeUrl}#case-study`,
           name: project.title,
           description: project.seoDescription,
           inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
           genre: project.category,
           keywords: project.technologies.join(', '),
-          image: project.coverImage.startsWith('http')
-            ? project.coverImage
-            : `${SITE_CONFIG.siteUrl}${project.coverImage.startsWith('/') ? '' : '/'}${project.coverImage}`,
+          image: imageUrl,
+          about: {
+            '@id': entityId,
+          },
           author: {
             '@id': `${SITE_CONFIG.siteUrl}/#person`,
           },
-          url: `${SITE_CONFIG.siteUrl}/projeler/${project.slug}`,
+          creator: {
+            '@id': `${SITE_CONFIG.siteUrl}/#person`,
+          },
+          url: routeUrl,
+          ...(hasExternalUrl ? { sameAs: [project.projectUrl] } : {}),
         },
         {
           '@type': 'BreadcrumbList',
@@ -55,14 +99,13 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
               '@type': 'ListItem',
               position: 3,
               name: project.title,
-              item: `${SITE_CONFIG.siteUrl}/projeler/${project.slug}`,
+              item: routeUrl,
             },
           ],
         },
       ],
-    }),
-    [project, lang],
-  );
+    };
+  }, [project, lang]);
 
   useDocumentSEO({
     title: project.seoTitle,
@@ -70,8 +113,8 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
     path: `/projeler/${project.slug}`,
     type: 'website',
     lang,
-    image: project.coverImage,
-    imageAlt: project.coverAlt,
+    image: SITE_CONFIG.ogImage,
+    imageAlt: `${project.title} – Selman Utku`,
     jsonLd,
   });
 

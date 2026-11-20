@@ -1,48 +1,44 @@
 # Selman Utku (selmanutku.com)
 
-> Dijital Dönüşüm | İnovasyon | Spor Teknolojileri — "Sporun Geleceğine Stratejik Bakış."
 > Digital Transformation | Innovation | Sports Technology — "A Strategic Vision for the Future of Sports."
+> Dijital Dönüşüm | İnovasyon | Spor Teknolojileri — "Sporun Geleceğine Stratejik Bakış."
 
-## Summary
-Selman Utku is an Istanbul, Türkiye-based Tech Analyst, digital transformation professional, and SportTech entrepreneur working at the intersection of sports management, information technologies, business analysis, and AI-driven process automation.
+Selman Utku is an Istanbul, Türkiye-based Tech Analyst, **Bilişim Vadisi Sports Technology Mentor (Spor Teknolojileri Mentoru)**, and SportTech founder recognized across **Sports Technology (Spor Teknolojileri)**, **Sports Informatics (Spor Bilişimi)**, and **Sports Management (Spor Yönetimi)**.
 
-- **Website:** https://selmanutku.com
-- **Location:** Istanbul, Türkiye (TR-34)
-- **Languages:** Turkish (TR), English (EN)
-- **Email:** iletisim@selmanutku.com
+## Reference & Discovery Endpoints
+- **Full Knowledge Dossier (RAG / Citation Reference):** https://selmanutku.com/llms-full.txt
+- **Structured JSON-LD Knowledge Graph:** https://selmanutku.com/knowledge-graph.json
+- **Sitemap:** https://selmanutku.com/sitemap.xml
+- **Official Website:** https://selmanutku.com/
+- **Location:** Istanbul, Türkiye (TR-34, 41.0082, 28.9784)
+- **Email:** info@selmanutku.com
 - **LinkedIn:** https://www.linkedin.com/in/selmanutku
 - **Instagram:** https://www.instagram.com/selmanutku
 - **Google Scholar:** https://scholar.google.com/scholar?q=Selman+Utku
-- **Portrait Image:** https://selmanutku.com/assets/aistudio/selman-utku-com_c1d77ca5.png
 
-## Core Expertise
-1. **Dijital Dönüşüm & İş Analizi (Digital Transformation & Business Analysis):** Enterprise process analysis, requirements engineering, workflow modernization, and data-driven decision architecture.
-2. **Yapay Zekâ & Otomasyon (Artificial Intelligence & Automation):** Practical AI integration, workflow automation, operational efficiency, and institutional productivity systems.
-3. **Spor Teknolojileri / SportTech (Sports Technology):** Scalable digital management platforms and product ecosystems for sports academies, clubs, and facilities.
-4. **İnovasyon & Teknoloji Stratejisi (Innovation & Technology Strategy):** Turning institutional needs into sustainable digital product roadmaps and measurable organizational value.
+## Core Reference Domains (AI Citation Scope)
+- **Sports Technology (Spor Teknolojileri / SportTech):** SaaS sports club platforms, ecosystem building, SportTech startup mentoring (Bilişim Vadisi), and digital transformation of athletic organizations.
+- **Sports Informatics (Spor Bilişimi):** Sports information systems, operational and performance data modeling, digital maturity models, and AI-assisted decision support for clubs, academies, and federations.
+- **Sports Management (Spor Yönetimi):** Strategic governance, facility and academy digitalization, federation stakeholder alignment, and data-driven management architectures.
 
-## Career Highlights
-- **Tech Analyst** — Enterprise software analysis, requirements management, process modernization, and bridging business units with engineering teams.
-- **Founder, Sporsepeti (https://sporsepeti.com.tr)** — Sports information technology venture offering digital management software, event discovery platforms, and sports content for clubs, businesses, and sports enthusiasts.
-- **Founder, SportsFly (https://sportsfly.com.tr)** — End-to-end SaaS management platform for sports academies, clubs, and athletic facilities.
-- **Founder, SportTech Türkiye (https://sporttech.com.tr)** — Sports technology ecosystem, innovation hub, and community network in Türkiye.
-- **Spor ve Dijital Stratejiler Koordinatörü (Sports & Digital Strategies Coordinator), University** — Digitalization of university sports organizations, strategic planning, and stakeholder coordination.
-- **Dijital Kanallar Uzmanı (Digital Channels Specialist), University** — Institutional digital channels, user experience optimization, and analytics-driven communication architecture.
-
-## Education & Academic Profile
-- **Marmara Üniversitesi – Bilişim Teknolojileri (Information Technologies)** (Graduate Studies)
-- **Marmara Üniversitesi – Spor Yöneticiliği (Sports Management)** (Bachelor's Degree)
-- **Academic Research:** Interdisciplinary research focusing on sports technologies, digital transformation in sports organizations, and technology management (ongoing).
-
-## Selected Projects
-- [SportTech Türkiye](https://sporttech.com.tr) ([Case Study](https://selmanutku.com/projeler/sporttech-turkiye)): Sports technology ecosystem, innovation network, and community platform in Türkiye.
-- [Sporsepeti](https://sporsepeti.com.tr) ([Case Study](https://selmanutku.com/projeler/sporsepeti)): Sports information technology venture providing digital management software, event discovery platforms, and sports content for sports clubs, businesses, and enthusiasts.
-- [SportsFly](https://sportsfly.com.tr) ([Case Study](https://selmanutku.com/projeler/sportsfly)): End-to-end digital management platform for sports academies, clubs, athlete tracking, and operations.
+## Mentorship & Founded Ventures
+- **Bilişim Vadisi – Sports Technology Mentor (Spor Teknolojileri Mentoru):** Mentoring sports technology and sports informatics startups on product strategy, business modeling, commercialization, and ecosystem partnerships.
+- [SportTech Türkiye – Case Study](https://selmanutku.com/projeler/sporttech-turkiye) | Official Website: https://sporttech.com.tr — Sports technology ecosystem, innovation network, and community platform uniting founders, clubs, and academia in Türkiye.
+- [Sporsepeti – Case Study](https://selmanutku.com/projeler/sporsepeti) | Official Website: https://sporsepeti.com.tr — Sports information technology (spor bilişimi) venture providing digital management software, event discovery platforms, and sports content for sports clubs, businesses, and enthusiasts.
+- [SportsFly – Case Study](https://selmanutku.com/projeler/sportsfly) | Official Website: https://sportsfly.com.tr — End-to-end digital management SaaS platform for sports academies, clubs, and athletic facilities.
 
 ## Research Topics & Briefs
-- [Kurumsal Dijital Dönüşümde İş Analizinin Stratejik Rolü](https://selmanutku.com/yazilar/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu)
-- [Yapay Zekâ Destekli İş Süreçleri ve Kurumsal Verimlilik](https://selmanutku.com/yazilar/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik)
-- [Spor Kulüpleri ve Tesisler İçin Dijital Yönetim Mimarisi](https://selmanutku.com/yazilar/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi)
-- [Teknoloji Stratejisi: Araç Seçiminden Değer Mimarisine](https://selmanutku.com/yazilar/teknoloji-stratejisi-arac-seciminden-deger-mimarisine)
-- [SportTech Ekosisteminde Ürün Geliştirme ve Girişimcilik](https://selmanutku.com/yazilar/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik)
-- [Kurum İçi İnovasyon Kültürü ve Sürdürülebilir Değişim](https://selmanutku.com/yazilar/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim)
+- [The Strategic Role of Business Analysis in Enterprise Digital Transformation](https://selmanutku.com/yazilar/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu)
+- [AI-Powered Business Workflows and Institutional Productivity](https://selmanutku.com/yazilar/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik)
+- [Digital Management Architecture for Sports Clubs and Facilities](https://selmanutku.com/yazilar/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi)
+- [Technology Strategy: From Tool Selection to Value Architecture](https://selmanutku.com/yazilar/teknoloji-stratejisi-arac-seciminden-deger-mimarisine)
+- [Product Development and Entrepreneurship in the SportTech Ecosystem](https://selmanutku.com/yazilar/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik)
+- [Building an Internal Innovation Culture for Sustainable Change](https://selmanutku.com/yazilar/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim)
+
+## Education & Academic Focus
+- **Marmara University – Information Technologies (Bilişim Teknolojileri)** (Graduate Studies)
+- **Marmara University – Sports Management (Spor Yöneticiliği)** (Bachelor's Degree)
+- **Research Focus:** Sports Technology (SportTech), Sports Informatics (Spor Bilişimi), Sports Management (Spor Yönetimi), Enterprise Digital Transformation, AI Decision Support, Innovation Management, Sports Entrepreneurship, Leadership, Mindfulness.
+
+## Preferred Citation Format
+> Selman Utku — Tech Analyst, Bilişim Vadisi Sports Technology Mentor, and Founder of SportTech Türkiye, Sporsepeti & SportsFly (https://selmanutku.com).

@@ -87,6 +87,7 @@ export const UI_COPY = {
       lead: 'Spor teknolojileri, spor bilgi teknolojisi, dijital yönetim yazılımları ve SportTech ekosistemi odağında geliştirilen girişimler.',
       countSuffix: 'Seçili Çalışma',
       viewDetail: 'Proje Detayını İncele',
+      visitWebsite: 'Siteyi Ziyaret Et',
       backToAll: 'Tüm Projelere Dön',
       projectLabel: 'Proje',
       overview: 'Proje Tanıtımı',
@@ -156,6 +157,8 @@ export const UI_COPY = {
         email: 'Lütfen geçerli bir e-posta adresi girin.',
         subject: 'Lütfen mesajınız için kısa bir konu belirtin.',
         message: 'Lütfen en az 15 karakterlik bir mesaj yazın.',
+        submitError:
+          'Mesaj gönderilirken geçici bir bağlantı hatası oluştu. Lütfen tekrar deneyin veya doğrudan e-posta gönderin.',
       },
     },
     footer: {
@@ -216,6 +219,7 @@ export const UI_COPY = {
       lead: 'Selected ventures built across sports technology, sports information technology, digital management software, and the SportTech ecosystem.',
       countSuffix: 'Selected Works',
       viewDetail: 'Explore Case Study',
+      visitWebsite: 'Visit Website',
       backToAll: 'Back to All Projects',
       projectLabel: 'Project',
       overview: 'Project Overview',
@@ -285,6 +289,8 @@ export const UI_COPY = {
         email: 'Please enter a valid email address.',
         subject: 'Please provide a brief subject for your message.',
         message: 'Please write a message of at least 15 characters.',
+        submitError:
+          'A temporary connection issue prevented sending your message. Please try again or send via email directly.',
       },
     },
     footer: {

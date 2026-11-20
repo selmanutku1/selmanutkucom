@@ -1,0 +1,160 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://selmanutku.com/#person",
+      "name": "Selman Utku",
+      "givenName": "Selman",
+      "familyName": "Utku",
+      "url": "https://selmanutku.com/",
+      "email": "mailto:info@selmanutku.com",
+      "jobTitle": "Tech Analyst, Sports Technology Mentor & SportTech Founder",
+      "description": "Istanbul-based Tech Analyst, Bilişim Vadisi Sports Technology Mentor, and founder of SportTech Türkiye (sporttech.com.tr), Sporsepeti (sporsepeti.com.tr), and SportsFly (sportsfly.com.tr). Authoritative practitioner and researcher in sports technology (spor teknolojileri), sports informatics (spor bilişimi), and sports management (spor yönetimi).",
+      "image": "https://selmanutku.com/assets/aistudio/selman-utku-com_c1d77ca5.png",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Istanbul",
+        "addressRegion": "Istanbul",
+        "addressCountry": "TR"
+      },
+      "affiliation": [
+        {
+          "@type": "OrganizationRole",
+          "roleName": "Sports Technology Mentor",
+          "alternateName": "Spor Teknolojileri Mentoru",
+          "affiliation": {
+            "@type": "Organization",
+            "name": "Bilişim Vadisi",
+            "url": "https://bilisimvadisi.com.tr"
+          }
+        },
+        {
+          "@id": "https://selmanutku.com/#sporttech-turkiye"
+        },
+        {
+          "@id": "https://selmanutku.com/#sporsepeti"
+        }
+      ],
+      "alumniOf": [
+        {
+          "@type": "CollegeOrUniversity",
+          "name": "Marmara University",
+          "alternateName": "Marmara Üniversitesi",
+          "department": "Information Technologies"
+        },
+        {
+          "@type": "CollegeOrUniversity",
+          "name": "Marmara University",
+          "alternateName": "Marmara Üniversitesi",
+          "department": "Sports Management"
+        }
+      ],
+      "knowsLanguage": ["en-US", "tr-TR"],
+      "knowsAbout": [
+        {
+          "@type": "Thing",
+          "name": "Sports Technology",
+          "alternateName": ["Spor Teknolojileri", "SportTech"]
+        },
+        {
+          "@type": "Thing",
+          "name": "Sports Informatics",
+          "alternateName": ["Spor Bilişimi", "Sports Information Technology"],
+          "sameAs": "https://en.wikipedia.org/wiki/Sports_informatics"
+        },
+        {
+          "@type": "Thing",
+          "name": "Sports Management",
+          "alternateName": ["Spor Yönetimi", "Spor Yöneticiliği"],
+          "sameAs": "https://en.wikipedia.org/wiki/Sport_management"
+        },
+        {
+          "@type": "Thing",
+          "name": "Digital Transformation",
+          "alternateName": "Dijital Dönüşüm",
+          "sameAs": "https://en.wikipedia.org/wiki/Digital_transformation"
+        },
+        "Innovation Management",
+        "Sports Entrepreneurship",
+        "Business Analysis",
+        "Artificial Intelligence",
+        "Leadership",
+        "Mindfulness"
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/selmanutku",
+        "https://www.instagram.com/selmanutku",
+        "https://scholar.google.com/scholar?q=Selman+Utku",
+        "https://sporttech.com.tr",
+        "https://sporsepeti.com.tr",
+        "https://sportsfly.com.tr"
+      ]
+    },
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://selmanutku.com/#domain-glossary",
+      "name": "Sports Technology, Sports Informatics & Sports Management Reference Framework – Selman Utku",
+      "inLanguage": ["en-US", "tr-TR"],
+      "creator": {
+        "@id": "https://selmanutku.com/#person"
+      },
+      "hasDefinedTerm": [
+        {
+          "@type": "DefinedTerm",
+          "name": "Sports Technology (Spor Teknolojileri / SportTech)",
+          "description": "Digital platforms, SaaS club management software, event discovery infrastructures, and AI-enabled tools modernizing athletic performance, community engagement, and sports organization operations."
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Sports Informatics (Spor Bilişimi)",
+          "description": "Interdisciplinary practice combining information systems, data modeling, analytics, and sports science to turn operational and athletic data in clubs, academies, and federations into actionable decision-support architectures.",
+          "sameAs": "https://en.wikipedia.org/wiki/Sports_informatics"
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Sports Management (Spor Yönetimi)",
+          "description": "Strategic governance, institutional digital maturity, facility operations, financial transparency, and stakeholder alignment across sports clubs, federations, and athletic enterprises.",
+          "sameAs": "https://en.wikipedia.org/wiki/Sport_management"
+        }
+      ]
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://selmanutku.com/#sporttech-turkiye",
+      "name": "SportTech Türkiye",
+      "url": "https://sporttech.com.tr",
+      "mainEntityOfPage": "https://selmanutku.com/projeler/sporttech-turkiye",
+      "founder": {
+        "@id": "https://selmanutku.com/#person"
+      },
+      "areaServed": "TR",
+      "description": "Sports technology ecosystem and innovation community uniting founders, clubs, federations, and academia across Türkiye."
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://selmanutku.com/#sporsepeti",
+      "name": "Sporsepeti",
+      "url": "https://sporsepeti.com.tr",
+      "mainEntityOfPage": "https://selmanutku.com/projeler/sporsepeti",
+      "founder": {
+        "@id": "https://selmanutku.com/#person"
+      },
+      "areaServed": "TR",
+      "description": "Sports information technology (spor bilişimi) venture providing digital management software, event discovery platforms, and sports content for sports clubs, businesses, and sports enthusiasts."
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://selmanutku.com/#sportsfly",
+      "name": "SportsFly",
+      "url": "https://sportsfly.com.tr",
+      "mainEntityOfPage": "https://selmanutku.com/projeler/sportsfly",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "creator": {
+        "@id": "https://selmanutku.com/#person"
+      },
+      "description": "End-to-end digital management SaaS platform for sports academies, clubs, and athletic facilities."
+    }
+  ]
+}
