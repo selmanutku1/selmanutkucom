@@ -1,0 +1,375 @@
+import { useState, type FormEvent } from 'react';
+import { AlertCircle, ArrowUpRight, Check, CheckCircle2, Copy, Mail } from 'lucide-react';
+import { getProfileContent, SITE_CONFIG } from '../data/profile';
+import { trackEvent } from '../lib/analytics';
+import { UI_COPY, useLanguage } from '../lib/i18n';
+
+interface FormValues {
+  fullName: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+interface FormErrors {
+  fullName?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
+}
+
+const INITIAL_VALUES: FormValues = {
+  fullName: '',
+  email: '',
+  subject: '',
+  message: '',
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function ContactSection() {
+  const { lang } = useLanguage();
+  const copy = UI_COPY[lang].contact;
+  const location = getProfileContent(lang).location;
+
+  const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted'>('idle');
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  const validate = (data: FormValues): FormErrors => {
+    const nextErrors: FormErrors = {};
+    if (!data.fullName.trim() || data.fullName.trim().length < 2) {
+      nextErrors.fullName = copy.errors.fullName;
+    }
+    if (!data.email.trim() || !EMAIL_PATTERN.test(data.email.trim())) {
+      nextErrors.email = copy.errors.email;
+    }
+    if (!data.subject.trim() || data.subject.trim().length < 3) {
+      nextErrors.subject = copy.errors.subject;
+    }
+    if (!data.message.trim() || data.message.trim().length < 15) {
+      nextErrors.message = copy.errors.message;
+    }
+    return nextErrors;
+  };
+
+  const handleChange = (field: keyof FormValues, value: string) => {
+    setValues((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const validationErrors = validate(values);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setStatus('submitting');
+    window.setTimeout(() => {
+      setStatus('submitted');
+      trackEvent('contact_form_submit', { subject_category: values.subject.slice(0, 40) });
+    }, 450);
+  };
+
+  const handleReset = () => {
+    setValues(INITIAL_VALUES);
+    setErrors({});
+    setStatus('idle');
+  };
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(SITE_CONFIG.email);
+      setEmailCopied(true);
+      window.setTimeout(() => setEmailCopied(false), 2000);
+    } catch {
+      setEmailCopied(false);
+    }
+  };
+
+  return (
+    <section
+      id="iletisim"
+      aria-labelledby="contact-heading"
+      className="relative overflow-hidden border-t border-[#DCE7F2] bg-white py-20 lg:py-28"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-24 right-0 h-[360px] w-[420px] rounded-full bg-[#38BDF8]/[0.09] blur-3xl"
+      />
+
+      <div className="relative mx-auto max-w-[1200px] px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-16">
+          {/* Left Column: Heading & Direct Contact Channels */}
+          <div className="flex flex-col justify-between text-center lg:col-span-5 lg:text-left">
+            <div>
+              <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">07</p>
+              <h2
+                id="contact-heading"
+                className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[40px]"
+              >
+                {copy.heading}
+              </h2>
+              <p className="mx-auto mt-5 max-w-[52ch] text-[16px] leading-[1.7] text-[#465B71] lg:mx-0">
+                {copy.lead}
+              </p>
+
+              {/* Direct Channels */}
+              <div className="mt-10 divide-y divide-[#DCE7F2] border-y border-[#DCE7F2] text-left">
+                <div className="flex items-center justify-between gap-4 py-5">
+                  <div>
+                    <p className="text-[12.5px] text-[#5B7086]">{copy.emailLabel}</p>
+                    <a
+                      href={`mailto:${SITE_CONFIG.email}`}
+                      className="mt-1 inline-flex items-center gap-2 text-[15px] font-medium text-[#0A192F] transition-colors hover:text-[#145DA0]"
+                    >
+                      <Mail className="h-4 w-4 text-[#145DA0]" strokeWidth={1.75} aria-hidden="true" />
+                      <span>{SITE_CONFIG.email}</span>
+                    </a>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyEmail}
+                    aria-label={copy.copyEmailAria}
+                    className="inline-flex h-10 items-center gap-1.5 whitespace-nowrap shrink-0 rounded-md border border-[#D4E2F0] px-3 text-[12.5px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
+                  >
+                    {emailCopied ? (
+                      <>
+                        <Check className="h-3.5 w-3.5 text-[#145DA0]" strokeWidth={2} />
+                        <span>{copy.copied}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
+                        <span>{copy.copy}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between gap-4 py-5">
+                  <div>
+                    <p className="text-[12.5px] text-[#5B7086]">{copy.linkedinLabel}</p>
+                    <a
+                      href={SITE_CONFIG.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 inline-flex items-center gap-1.5 text-[15px] font-medium text-[#0A192F] transition-colors hover:text-[#145DA0]"
+                    >
+                      <span>{SITE_CONFIG.linkedinHandle}</span>
+                      <ArrowUpRight className="h-4 w-4 text-[#145DA0]" strokeWidth={1.75} aria-hidden="true" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className="mt-8 text-[13.5px] text-[#5B7086]">
+              {copy.locationLabel}: {location}
+            </p>
+          </div>
+
+          {/* Right Column: Validated Contact Form */}
+          <div className="lg:col-span-7">
+            <div className="rounded-lg border border-[#DCE7F2] bg-[#F3F8FC]/90 p-7 backdrop-blur-sm lg:p-10">
+              {status === 'submitted' ? (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="space-y-5 py-6"
+                >
+                  <div className="inline-flex h-11 w-11 items-center justify-center rounded-md bg-[#0C2340] text-white">
+                    <CheckCircle2 className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-[22px] font-semibold tracking-[-0.015em] text-[#0A192F]">
+                      {copy.successTitle}
+                    </h3>
+                    <p className="max-w-[52ch] text-[15px] leading-[1.7] text-[#465B71]">
+                      {copy.successTextStart} {values.fullName}. {copy.successTextMiddle}{' '}
+                      <span className="font-medium text-[#0A192F]">{values.email}</span>{' '}
+                      {copy.successTextEnd}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="whitespace-nowrap shrink-0 rounded-md bg-[#0C2340] px-5 py-2.5 text-[13.5px] font-medium text-white transition-colors hover:bg-[#143966]"
+                    >
+                      {copy.sendAnother}
+                    </button>
+                    <a
+                      href={`mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent(values.subject)}`}
+                      className="whitespace-nowrap shrink-0 rounded-md border border-[#C6D8EA] bg-white px-5 py-2.5 text-[13.5px] font-medium text-[#0A192F] transition-colors hover:border-[#145DA0]"
+                    >
+                      {copy.openMailClient}
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                      <label
+                        htmlFor="contact-fullName"
+                        className="block text-[13.5px] font-medium text-[#0A192F]"
+                      >
+                        {copy.fullNameLabel}
+                      </label>
+                      <input
+                        id="contact-fullName"
+                        name="fullName"
+                        type="text"
+                        autoComplete="name"
+                        required
+                        value={values.fullName}
+                        onChange={(e) => handleChange('fullName', e.target.value)}
+                        aria-invalid={Boolean(errors.fullName)}
+                        aria-describedby={errors.fullName ? 'error-fullName' : undefined}
+                        placeholder={copy.fullNamePlaceholder}
+                        className={`mt-2 block w-full rounded-md border bg-white px-4 py-3 text-[14.5px] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:outline-none ${
+                          errors.fullName
+                            ? 'border-red-600 focus:border-red-600'
+                            : 'border-[#CEDEEA] focus:border-[#145DA0]'
+                        }`}
+                      />
+                      {errors.fullName && (
+                        <p
+                          id="error-fullName"
+                          className="mt-1.5 flex items-center gap-1.5 text-[12.5px] text-red-700"
+                        >
+                          <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                          <span>{errors.fullName}</span>
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="contact-email"
+                        className="block text-[13.5px] font-medium text-[#0A192F]"
+                      >
+                        {copy.emailFieldLabel}
+                      </label>
+                      <input
+                        id="contact-email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        required
+                        value={values.email}
+                        onChange={(e) => handleChange('email', e.target.value)}
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={errors.email ? 'error-email' : undefined}
+                        placeholder={copy.emailPlaceholder}
+                        className={`mt-2 block w-full rounded-md border bg-white px-4 py-3 text-[14.5px] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:outline-none ${
+                          errors.email
+                            ? 'border-red-600 focus:border-red-600'
+                            : 'border-[#CEDEEA] focus:border-[#145DA0]'
+                        }`}
+                      />
+                      {errors.email && (
+                        <p
+                          id="error-email"
+                          className="mt-1.5 flex items-center gap-1.5 text-[12.5px] text-red-700"
+                        >
+                          <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                          <span>{errors.email}</span>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contact-subject"
+                      className="block text-[13.5px] font-medium text-[#0A192F]"
+                    >
+                      {copy.subjectLabel}
+                    </label>
+                    <input
+                      id="contact-subject"
+                      name="subject"
+                      type="text"
+                      required
+                      value={values.subject}
+                      onChange={(e) => handleChange('subject', e.target.value)}
+                      aria-invalid={Boolean(errors.subject)}
+                      aria-describedby={errors.subject ? 'error-subject' : undefined}
+                      placeholder={copy.subjectPlaceholder}
+                      className={`mt-2 block w-full rounded-md border bg-white px-4 py-3 text-[14.5px] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:outline-none ${
+                        errors.subject
+                          ? 'border-red-600 focus:border-red-600'
+                          : 'border-[#CEDEEA] focus:border-[#145DA0]'
+                      }`}
+                    />
+                    {errors.subject && (
+                      <p
+                        id="error-subject"
+                        className="mt-1.5 flex items-center gap-1.5 text-[12.5px] text-red-700"
+                      >
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                        <span>{errors.subject}</span>
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="contact-message"
+                      className="block text-[13.5px] font-medium text-[#0A192F]"
+                    >
+                      {copy.messageLabel}
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      name="message"
+                      rows={5}
+                      required
+                      value={values.message}
+                      onChange={(e) => handleChange('message', e.target.value)}
+                      aria-invalid={Boolean(errors.message)}
+                      aria-describedby={errors.message ? 'error-message' : undefined}
+                      placeholder={copy.messagePlaceholder}
+                      className={`mt-2 block w-full resize-y rounded-md border bg-white px-4 py-3 text-[14.5px] leading-[1.6] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:outline-none ${
+                        errors.message
+                          ? 'border-red-600 focus:border-red-600'
+                          : 'border-[#CEDEEA] focus:border-[#145DA0]'
+                      }`}
+                    />
+                    {errors.message && (
+                      <p
+                        id="error-message"
+                        className="mt-1.5 flex items-center gap-1.5 text-[12.5px] text-red-700"
+                      >
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                        <span>{errors.message}</span>
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="text-[12.5px] text-[#5B7086]">{copy.privacyNote}</p>
+                    <button
+                      type="submit"
+                      disabled={status === 'submitting'}
+                      className="inline-flex min-h-[46px] items-center justify-center whitespace-nowrap shrink-0 rounded-md bg-[#0C2340] px-7 py-3 text-[14px] font-medium text-white transition-colors duration-150 hover:bg-[#143966] disabled:opacity-60"
+                    >
+                      {status === 'submitting' ? copy.submitting : copy.submit}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
