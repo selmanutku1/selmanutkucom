@@ -93,8 +93,10 @@ export function ContactSection() {
 
     try {
       let delivered = false;
+      let needsActivation = false;
+      let apiHandled = false;
 
-      // 1. Try Vercel Serverless API (/api/contact with Resend) when configured
+      // 1. Try Vercel Serverless API (/api/contact — Resend or server-side FormSubmit relay)
       try {
         const apiRes = await fetch('/api/contact', {
           method: 'POST',
@@ -104,17 +106,31 @@ export function ContactSection() {
           },
           body: JSON.stringify(payload),
         });
-        if (apiRes.ok) {
-          delivered = true;
+
+        const contentType = apiRes.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const apiData = (await apiRes.json().catch(() => ({}))) as {
+            ok?: boolean;
+            needsActivation?: boolean;
+            message?: string;
+          };
+
+          if (apiRes.ok && apiData.ok) {
+            delivered = true;
+            apiHandled = true;
+          } else if (apiData.needsActivation || /activat/i.test(String(apiData.message || ''))) {
+            needsActivation = true;
+            apiHandled = true;
+          }
         }
       } catch {
-        // Ignore and fall back to FormSubmit AJAX endpoint
+        // Ignore network/404 errors when running outside Vercel (e.g. local preview)
       }
 
-      // 2. Fallback to FormSubmit AJAX JSON delivery straight to info@selmanutku.com
-      if (!delivered) {
+      // 2. Fallback to direct FormSubmit AJAX endpoint when /api/contact is not available
+      if (!delivered && !apiHandled) {
         const formSubmitRes = await fetch(
-          `https://formsubmit.co/ajax/${encodeURIComponent(SITE_CONFIG.email)}`,
+          `https://formsubmit.co/ajax/${SITE_CONFIG.email}`,
           {
             method: 'POST',
             headers: {
@@ -135,22 +151,28 @@ export function ContactSection() {
           },
         );
 
-        if (!formSubmitRes.ok) {
-          throw new Error('FormSubmit delivery failed');
-        }
-
         const result = (await formSubmitRes.json().catch(() => ({}))) as {
           success?: boolean | string;
+          message?: string;
         };
-        if (result.success === false || result.success === 'false') {
-          throw new Error('FormSubmit rejected submission');
+
+        if (result.success === true || result.success === 'true') {
+          delivered = true;
+        } else if (/activat/i.test(String(result.message || ''))) {
+          needsActivation = true;
+        } else {
+          throw new Error(result.message || 'FormSubmit delivery failed');
         }
-        delivered = true;
       }
 
       if (delivered) {
         setStatus('submitted');
         trackEvent('contact_form_submit', { subject_category: payload.subject.slice(0, 40) });
+      } else if (needsActivation) {
+        setStatus('idle');
+        setSubmitError(copy.errors.activationError);
+      } else {
+        throw new Error('Delivery failed');
       }
     } catch {
       setStatus('idle');

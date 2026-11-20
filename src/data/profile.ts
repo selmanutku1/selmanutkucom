@@ -40,8 +40,8 @@ export const SITE_CONFIG = {
   // Portre fotoğrafını değiştirmek için yalnızca aşağıdaki görsel yolunu güncelleyin.
   portraitImage: '/assets/aistudio/selman-utku-com_c1d77ca5.png',
   ogImage: '/og-image.png',
-  ogImageWidth: 1216,
-  ogImageHeight: 560,
+  ogImageWidth: 1200,
+  ogImageHeight: 549,
   geo: {
     region: 'TR-34',
     placename: 'Istanbul, Türkiye',

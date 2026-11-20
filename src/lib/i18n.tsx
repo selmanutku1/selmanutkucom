@@ -180,6 +180,8 @@ export const UI_COPY = {
         message: 'Lütfen en az 15 karakterlik bir mesaj yazın.',
         submitError:
           'Mesaj gönderilirken geçici bir bağlantı hatası oluştu. Lütfen tekrar deneyin veya doğrudan e-posta gönderin.',
+        activationError:
+          'Form servisi ilk kullanım için tek seferlik aktivasyon bekliyor. info@selmanutku.com gelen kutusuna (veya spam klasörüne) gönderilen "Activate Form" bağlantısına bir kez tıkladıktan sonra tüm mesajlar anında düşecektir.',
       },
     },
     footer: {
@@ -312,6 +314,8 @@ export const UI_COPY = {
         message: 'Please write a message of at least 15 characters.',
         submitError:
           'A temporary connection issue prevented sending your message. Please try again or send via email directly.',
+        activationError:
+          'The form service requires a one-time activation. Please click the "Activate Form" link sent to info@selmanutku.com (check Spam/Junk if needed), and all submissions will deliver immediately afterward.',
       },
     },
     footer: {

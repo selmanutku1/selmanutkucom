@@ -20,7 +20,12 @@ export interface SEOConfig {
   jsonLd?: Record<string, unknown>;
 }
 
-function setMetaTag(selector: string, attribute: 'name' | 'property', key: string, content: string) {
+function setMetaTag(
+  selector: string,
+  attribute: 'name' | 'property' | 'itemprop',
+  key: string,
+  content: string,
+) {
   let element = document.querySelector<HTMLMetaElement>(selector);
   if (!element) {
     element = document.createElement('meta');
@@ -56,6 +61,15 @@ function resolveAbsoluteUrl(origin: string, assetPath: string): string {
   return `${origin}${normalized}`;
 }
 
+function isDefaultOgImage(resolvedUrl: string): boolean {
+  try {
+    const parsed = new URL(resolvedUrl);
+    return parsed.pathname === SITE_CONFIG.ogImage;
+  } catch {
+    return resolvedUrl.endsWith(SITE_CONFIG.ogImage);
+  }
+}
+
 export function useDocumentSEO({
   title,
   description,
@@ -74,18 +88,19 @@ export function useDocumentSEO({
     document.title = title;
     document.documentElement.lang = lang;
 
-    const cleanOrigin =
+    const cleanOrigin = (
       typeof window !== 'undefined' && window.location.origin
         ? window.location.origin
-        : SITE_CONFIG.siteUrl;
+        : SITE_CONFIG.siteUrl
+    ).replace(/\/+$/, '');
     const normalizedPath = path.startsWith('/') ? path : `/${path}`;
     const canonicalUrl = `${cleanOrigin}${normalizedPath}`;
     const resolvedImage = resolveAbsoluteUrl(cleanOrigin, image || SITE_CONFIG.ogImage);
     const resolvedImageAlt =
       imageAlt ||
       (lang === 'tr'
-        ? 'Selman Utku – Dijital Dönüşüm, İnovasyon ve Spor Teknolojileri'
-        : 'Selman Utku – Digital Transformation, Innovation & Sports Technology');
+        ? 'Selman Utku – Sporun Geleceğine Stratejik Bakış | Dijital Dönüşüm, İnovasyon ve Spor Teknolojileri'
+        : 'Selman Utku – A Strategic Vision for the Future of Sports | Digital Transformation, Innovation & Sports Tech');
 
     const robotsContent = noIndex
       ? 'noindex, follow'
@@ -94,7 +109,7 @@ export function useDocumentSEO({
     setMetaTag('meta[name="description"]', 'name', 'description', description);
     setMetaTag('meta[name="robots"]', 'name', 'robots', robotsContent);
 
-    // Open Graph
+    // Open Graph (LinkedIn, WhatsApp, Facebook, Slack, iMessage)
     setMetaTag('meta[property="og:type"]', 'property', 'og:type', type);
     setMetaTag(
       'meta[property="og:locale"]',
@@ -113,10 +128,12 @@ export function useDocumentSEO({
     setMetaTag('meta[property="og:description"]', 'property', 'og:description', description);
     setMetaTag('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
     setMetaTag('meta[property="og:image"]', 'property', 'og:image', resolvedImage);
+    setMetaTag('meta[property="og:image:url"]', 'property', 'og:image:url', resolvedImage);
     setMetaTag('meta[property="og:image:secure_url"]', 'property', 'og:image:secure_url', resolvedImage);
     setMetaTag('meta[property="og:image:alt"]', 'property', 'og:image:alt', resolvedImageAlt);
+    setMetaTag('meta[itemprop="image"]', 'itemprop', 'image', resolvedImage);
 
-    if (image === SITE_CONFIG.ogImage) {
+    if (isDefaultOgImage(resolvedImage)) {
       setMetaTag('meta[property="og:image:type"]', 'property', 'og:image:type', 'image/png');
       setMetaTag(
         'meta[property="og:image:width"]',
@@ -138,9 +155,11 @@ export function useDocumentSEO({
 
     // Twitter / X Card
     setMetaTag('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image');
+    setMetaTag('meta[name="twitter:url"]', 'name', 'twitter:url', canonicalUrl);
     setMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', title);
     setMetaTag('meta[name="twitter:description"]', 'name', 'twitter:description', description);
     setMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', resolvedImage);
+    setMetaTag('meta[name="twitter:image:src"]', 'name', 'twitter:image:src', resolvedImage);
     setMetaTag('meta[name="twitter:image:alt"]', 'name', 'twitter:image:alt', resolvedImageAlt);
 
     // Article timestamps

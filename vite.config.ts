@@ -64,11 +64,24 @@ function buildRouteHtml(
     'og:locale:alternate',
     options.lang === 'tr' ? 'en_US' : 'tr_TR',
   );
+  const ogImageUrl = `${options.origin}/og-image.png`;
+  const ogImageAlt = options.title.includes('Selman Utku')
+    ? options.title
+    : `${options.title} – Selman Utku`;
+
   html = replaceMetaByProperty(html, 'og:title', options.title);
   html = replaceMetaByProperty(html, 'og:description', options.description);
   html = replaceMetaByProperty(html, 'og:url', canonicalUrl);
+  html = replaceMetaByProperty(html, 'og:image', ogImageUrl);
+  html = replaceMetaByProperty(html, 'og:image:url', ogImageUrl);
+  html = replaceMetaByProperty(html, 'og:image:secure_url', ogImageUrl);
+  html = replaceMetaByProperty(html, 'og:image:alt', ogImageAlt);
+  html = replaceMetaByName(html, 'twitter:url', canonicalUrl);
   html = replaceMetaByName(html, 'twitter:title', options.title);
   html = replaceMetaByName(html, 'twitter:description', options.description);
+  html = replaceMetaByName(html, 'twitter:image', ogImageUrl);
+  html = replaceMetaByName(html, 'twitter:image:src', ogImageUrl);
+  html = replaceMetaByName(html, 'twitter:image:alt', ogImageAlt);
 
   // Update canonical and bilingual hreflang links
   html = html.replace(
