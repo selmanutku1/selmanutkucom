@@ -101,7 +101,7 @@ function NotFoundView({ onNavigate }: { onNavigate: (to: string) => void }) {
 
   return (
     <section className="mx-auto max-w-[720px] px-6 py-28 text-center lg:px-8">
-      <p className="font-mono text-[13px] text-[#145DA0] tabular-nums">404</p>
+      <p className="text-[13px] font-semibold tracking-wider text-[#145DA0] tabular-nums">404</p>
       <h1 className="mt-3 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F]">
         {copy.heading}
       </h1>

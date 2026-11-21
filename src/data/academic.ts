@@ -12,7 +12,7 @@ export interface AcademicPublication {
   title: string;
   venue: string;
   year: string;
-  status: string;
+  status?: string;
   summary: string;
 }
 
@@ -20,7 +20,7 @@ export interface ConferenceItem {
   title: string;
   event: string;
   year: string;
-  status: string;
+  status?: string;
   topic: string;
 }
 
@@ -88,7 +88,6 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
         title: 'Spor Organizasyonlarında Dijital Dönüşüm ve Yönetim Bilişim Sistemlerinin Rolü',
         venue: 'Spor Bilimleri ve Teknoloji Araştırmaları',
         year: '2025',
-        status: 'Hazırlık / Değerlendirme Sürecinde',
         summary:
           'Spor kulüpleri ve tesis yönetiminde dijital platformların operasyonel verimlilik ve karar alma süreçlerine katkısını inceleyen kavramsal ve uygulamalı araştırma çalışması.',
       },
@@ -96,7 +95,6 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
         title: 'Yapay Zekâ Tabanlı İş Süreçleri Otomasyonunun Kurumsal Verimlilik Üzerindeki Etkileri',
         venue: 'Dijital Dönüşüm ve Yönetim Bilişimi Çalışmaları',
         year: '2026',
-        status: 'Taslak / Araştırma Aşamasında',
         summary:
           'Kurumsal iş analizi perspektifiyle üretken yapay zekâ uygulamalarının süreç kalitesi ve iş yükü optimizasyonu açısından değerlendirilmesi.',
       },
@@ -106,14 +104,12 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
         title: 'Spor Teknolojileri ve Dijital Ekosistemler Üzerine Sektörel-Akademik Perspektifler',
         event: 'Ulusal Spor Bilimleri ve Teknoloji Buluşmaları',
         year: '2025',
-        status: 'Bildiri & Panel Katılımı',
         topic: 'SportTech uygulamaları, tesis dijitalleşmesi ve üniversite-girişim etkileşimi.',
       },
       {
         title: 'Kurumsal Dijital Dönüşümde Süreç Analizi ve Yapay Zekâ Entegrasyonu',
         event: 'Bilişim, Strateji ve İnovasyon Sempozyumu',
         year: '2026',
-        status: 'Hazırlık Aşamasında',
         topic: 'İş analizi metodolojileri ile yapay zekâ destekli otomasyon mimarilerinin bütünleştirilmesi.',
       },
     ],
@@ -179,7 +175,6 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
         title: 'The Role of Digital Transformation and Management Information Systems in Sports Organizations',
         venue: 'Sports Sciences & Technology Research',
         year: '2025',
-        status: 'In Preparation / Under Review',
         summary:
           'Conceptual and applied study examining how digital platforms enhance operational efficiency and decision quality across sports clubs and facilities.',
       },
@@ -187,7 +182,6 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
         title: 'Effects of AI-Driven Workflow Automation on Enterprise Productivity',
         venue: 'Digital Transformation & Management Informatics Studies',
         year: '2026',
-        status: 'Draft / Research Stage',
         summary:
           'Evaluating generative AI integration in terms of process quality and workload optimization from an enterprise business analysis lens.',
       },
@@ -197,14 +191,12 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
         title: 'Industry-Academic Perspectives on Sports Technology and Digital Ecosystems',
         event: 'National Sports Sciences & Technology Forums',
         year: '2025',
-        status: 'Paper & Panel Participation',
         topic: 'SportTech implementations, facility digitalization, and university-venture collaboration.',
       },
       {
         title: 'Process Analysis and Artificial Intelligence Integration in Enterprise Transformation',
         event: 'Informatics, Strategy & Innovation Symposium',
         year: '2026',
-        status: 'In Preparation',
         topic: 'Bridging business analysis methodologies with AI-supported automation architectures.',
       },
     ],

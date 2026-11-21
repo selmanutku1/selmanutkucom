@@ -20,7 +20,7 @@ export function AcademicSection() {
 
       <div className="relative mx-auto max-w-[1200px] px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center md:mx-0 md:text-left">
-          <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">06</p>
+          <p className="text-[12px] font-semibold tracking-wider text-[#145DA0] tabular-nums">06</p>
           <h2
             id="academic-heading"
             className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[38px]"
@@ -105,11 +105,15 @@ export function AcademicSection() {
                 {academic.publications.map((pub, idx) => (
                   <div key={idx} className="py-5 first:pt-0 last:pb-0">
                     <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[12.5px] text-[#5B7086] sm:justify-start">
-                      <span className="font-mono tabular-nums">{pub.year}</span>
+                      <span className="font-semibold text-[#0A192F] tabular-nums">{pub.year}</span>
                       <span aria-hidden="true">·</span>
                       <span>{pub.venue}</span>
-                      <span aria-hidden="true">·</span>
-                      <span className="font-medium text-[#145DA0]">{pub.status}</span>
+                      {pub.status && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span className="font-medium text-[#145DA0]">{pub.status}</span>
+                        </>
+                      )}
                     </div>
                     <h4 className="mt-2 text-[16px] font-semibold leading-[1.4] text-[#0A192F]">
                       {pub.title}
@@ -131,11 +135,15 @@ export function AcademicSection() {
                 {academic.conferences.map((conf, idx) => (
                   <div key={idx} className="py-5 first:pt-0 last:pb-0">
                     <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[12.5px] text-[#5B7086] sm:justify-start">
-                      <span className="font-mono tabular-nums">{conf.year}</span>
+                      <span className="font-semibold text-[#0A192F] tabular-nums">{conf.year}</span>
                       <span aria-hidden="true">·</span>
                       <span>{conf.event}</span>
-                      <span aria-hidden="true">·</span>
-                      <span className="font-medium text-[#145DA0]">{conf.status}</span>
+                      {conf.status && (
+                        <>
+                          <span aria-hidden="true">·</span>
+                          <span className="font-medium text-[#145DA0]">{conf.status}</span>
+                        </>
+                      )}
                     </div>
                     <h4 className="mt-2 text-[16px] font-semibold leading-[1.4] text-[#0A192F]">
                       {conf.title}

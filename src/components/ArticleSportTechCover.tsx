@@ -306,7 +306,7 @@ export function ArticleSportTechCover({
         {/* Top Metadata Row */}
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 border-b border-[#193A61] pb-4 text-[12.5px]">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono font-medium text-[#38BDF8] tabular-nums">
+            <span className="font-semibold text-[#38BDF8] tabular-nums">
               {trackNum}
             </span>
             <span aria-hidden="true" className="text-[#4B6E91]">
@@ -314,7 +314,7 @@ export function ArticleSportTechCover({
             </span>
             <span className="font-medium text-[#DCEAF8]">{article.category}</span>
           </div>
-          <span className="font-mono text-[11.5px] text-[#7CB8EB]">
+          <span className="text-[11.5px] font-medium text-[#7CB8EB]">
             {disciplineLabel}
           </span>
         </div>

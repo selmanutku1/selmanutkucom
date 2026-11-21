@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { getProfileContent } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
 import { getSectionId } from '../lib/routes';
+import { AboutGallerySlider } from './AboutGallerySlider';
 
 export function AboutSection() {
   const { lang } = useLanguage();
@@ -19,7 +20,7 @@ export function AboutSection() {
           {/* Left Sticky Header Column */}
           <div className="text-center lg:col-span-4 lg:text-left">
             <div className="lg:sticky lg:top-28">
-              <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">01</p>
+              <p className="text-[12px] font-semibold tracking-wider text-[#145DA0] tabular-nums">01</p>
               <h2
                 id="about-heading"
                 className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[38px]"
@@ -156,6 +157,9 @@ export function AboutSection() {
             </div>
           </div>
         </div>
+
+        {/* Bottom Monochrome Editorial Slider */}
+        <AboutGallerySlider photos={about.gallery} lang={lang} />
       </div>
     </section>
   );

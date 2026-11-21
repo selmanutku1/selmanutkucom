@@ -140,7 +140,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
           <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3 md:gap-10 md:text-left">
             {profile.brandPillars.map((pillar) => (
               <div key={pillar.index} className="space-y-2.5">
-                <span className="font-mono text-[12px] font-medium text-[#145DA0] tabular-nums">
+                <span className="text-[12px] font-semibold text-[#145DA0] tabular-nums">
                   {pillar.index}.
                 </span>
                 <h2 className="text-[16px] font-semibold tracking-[-0.01em] text-[#0A192F]">

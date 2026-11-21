@@ -36,7 +36,7 @@ export function ExpertiseSection() {
       <div className="relative mx-auto max-w-[1200px] px-6 lg:px-8">
         {/* Section Header */}
         <div className="mx-auto max-w-2xl text-center md:mx-0 md:text-left">
-          <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">02</p>
+          <p className="text-[12px] font-semibold tracking-wider text-[#145DA0] tabular-nums">02</p>
           <h2
             id="expertise-heading"
             className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[38px]"
@@ -60,7 +60,7 @@ export function ExpertiseSection() {
                   <div className="flex h-11 w-11 items-center justify-center rounded-md border border-[#D8E6F3] bg-[#F3F8FC] transition-colors duration-200 group-hover:border-[#0C2340] group-hover:bg-[#0C2340] group-hover:[&_svg]:text-white">
                     <ExpertiseIcon icon={area.icon} />
                   </div>
-                  <span className="font-mono text-[12px] text-[#7D95AE] tabular-nums">
+                  <span className="text-[12px] font-semibold text-[#7D95AE] tabular-nums">
                     {area.index}
                   </span>
                 </div>

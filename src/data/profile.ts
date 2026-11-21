@@ -27,6 +27,13 @@ export interface CareerJourneyItem {
   websiteLabel?: string;
 }
 
+export interface AboutGalleryItem {
+  src: string;
+  alt: string;
+  location?: string;
+  objectPosition?: string;
+}
+
 const RUNTIME_SITE_URL = (
   import.meta.env.VITE_SITE_URL ||
   (typeof window !== 'undefined' && window.location.origin
@@ -80,6 +87,7 @@ export interface LocalizedProfile {
     education: EducationSummary[];
     affiliations: AffiliationItem[];
     visionAndApproach: string;
+    gallery: AboutGalleryItem[];
   };
 }
 
@@ -221,6 +229,49 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
       ],
       visionAndApproach:
         'Teknoloji tek başına bir amaç değil; doğru kurgulanmış bir stratejinin ve net tanımlanmış bir ihtiyacın kaldıraç gücüdür. Çalışma yaklaşımımız; spor yönetimi perspektifiyle spor kulüpleri, spor federasyonları, spor işletmeleri ve kurumsal yapılar için karmaşık problemleri yalınlaştırmak, veriye dayalı karar mekanizmaları kurmak ve sahanın gerçek operasyonlarına doğrudan temas eden sürdürülebilir dijital mimariler üretmek üzerine kuruludur.',
+      gallery: [
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54_53294a2e.jpeg',
+          alt: 'Selman Utku – Canggu, Bali sörf karesi',
+          location: 'Canggu · Bali',
+          objectPosition: 'object-[50%_32%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__1__be6adf9a.jpeg',
+          alt: 'Selman Utku – Bilişim Fuarı panel konuşması, İstanbul',
+          location: 'Bilişim Fuarı · İstanbul',
+          objectPosition: 'object-[50%_18%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__2__fdd22c30.jpeg',
+          alt: 'Selman Utku – Profesyonel Futbol Yönetimi Sertifika Programı, İstanbul',
+          location: 'İstanbul',
+          objectPosition: 'object-[42%_22%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__3__500ff0be.jpeg',
+          alt: 'Selman Utku – San Siro Stadyumu, Milano',
+          location: 'San Siro Stadium · Milano',
+          objectPosition: 'object-[55%_42%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.55_1ec50767.jpeg',
+          alt: 'Selman Utku – Stadio Olimpico, Roma',
+          location: 'Stadio Olimpico · Roma',
+          objectPosition: 'object-[28%_35%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.55__1__2be22726.jpeg',
+          alt: 'Selman Utku – Spor organizasyonu etkinlik karesi',
+          objectPosition: 'object-[50%_20%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.55__2__5e8d5c1d.jpeg',
+          alt: 'Selman Utku – AC Milan soyunma odası, Milano',
+          location: 'AC Milan Dressing Room · Italy',
+          objectPosition: 'object-[52%_35%]',
+        },
+      ],
     },
   },
   en: {
@@ -360,6 +411,49 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
       ],
       visionAndApproach:
         'Technology is not an end in itself — it is a lever powered by clear strategy and accurately defined needs. Guided by a sports management perspective, my approach centers on simplifying complex challenges for sports clubs, sports federations, athletic enterprises, and institutions — establishing data-informed decision mechanisms and crafting sustainable digital architectures grounded in real on-the-ground operations.',
+      gallery: [
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54_53294a2e.jpeg',
+          alt: 'Selman Utku – Surfing in Canggu, Bali',
+          location: 'Canggu · Bali',
+          objectPosition: 'object-[50%_32%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__1__be6adf9a.jpeg',
+          alt: 'Selman Utku – Speaking at Bilişim Fuarı panel, Istanbul',
+          location: 'Bilişim Fuarı · Istanbul',
+          objectPosition: 'object-[50%_18%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__2__fdd22c30.jpeg',
+          alt: 'Selman Utku – Professional Football Management Certificate Program, Istanbul',
+          location: 'Istanbul',
+          objectPosition: 'object-[42%_22%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__3__500ff0be.jpeg',
+          alt: 'Selman Utku – San Siro Stadium, Milano',
+          location: 'San Siro Stadium · Milano',
+          objectPosition: 'object-[55%_42%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.55_1ec50767.jpeg',
+          alt: 'Selman Utku – Stadio Olimpico, Roma',
+          location: 'Stadio Olimpico · Roma',
+          objectPosition: 'object-[28%_35%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.55__1__2be22726.jpeg',
+          alt: 'Selman Utku – Sports event portrait',
+          objectPosition: 'object-[50%_20%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.55__2__5e8d5c1d.jpeg',
+          alt: 'Selman Utku – AC Milan Dressing Room, Italy',
+          location: 'AC Milan Dressing Room · Italy',
+          objectPosition: 'object-[52%_35%]',
+        },
+      ],
     },
   },
 };

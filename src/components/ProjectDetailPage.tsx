@@ -6,6 +6,7 @@ import { UI_COPY, useLanguage } from '../lib/i18n';
 import { getHomePath, getProjectPath, getSectionHref } from '../lib/routes';
 import { useDocumentSEO } from '../lib/seo';
 import { MediaFrame } from './MediaFrame';
+import { SocialShareWidget } from './SocialShareWidget';
 
 interface ProjectDetailPageProps {
   project: ProjectItem;
@@ -19,6 +20,7 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
   const [lightboxImage, setLightboxImage] = useState<ProjectScreenshot | null>(null);
 
   const routePath = getProjectPath(project.slug, lang);
+  const shareUrl = `${SITE_CONFIG.siteUrl}${routePath}`;
   const enProjectPath = getProjectPath(project.slug, 'en');
   const trProjectPath = getProjectPath(project.slug, 'tr');
 
@@ -161,13 +163,11 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
         {/* Header */}
         <header className="mt-8 border-b border-[#DCE7F2] pb-10">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[#5B7086]">
-            <span className="font-mono text-[#145DA0] tabular-nums">
+            <span className="font-semibold text-[#145DA0] tabular-nums">
               {copy.projectLabel} {project.index}
             </span>
             <span aria-hidden="true">·</span>
             <span>{project.category}</span>
-            <span aria-hidden="true">·</span>
-            <span className="font-mono tabular-nums">{project.year}</span>
           </div>
 
           <h1 className="mt-4 text-[clamp(2rem,4.5vw,3.4rem)] font-bold leading-[1.1] tracking-[-0.03em] text-[#0A192F]">
@@ -177,6 +177,20 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
           <p className="mt-5 max-w-[68ch] text-[18px] leading-[1.7] text-[#465B71]">
             {project.shortDescription}
           </p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pt-2">
+            <p className="text-[13.5px] text-[#4B6075]">
+              {lang === 'tr' ? 'Kurucu' : 'Founder'}:{' '}
+              <span className="font-semibold text-[#0A192F]">{SITE_CONFIG.fullName}</span>
+            </p>
+
+            <SocialShareWidget
+              url={shareUrl}
+              title={`${project.title} – ${project.category}`}
+              description={project.shortDescription}
+              hashtags={[project.category, 'SportTech']}
+            />
+          </div>
         </header>
 
         {/* Monochrome Brand Logo Stage */}
@@ -236,7 +250,7 @@ export function ProjectDetailPage({ project, onNavigate }: ProjectDetailPageProp
                     key={idx}
                     className="flex items-start gap-3 text-[15.5px] leading-[1.7] text-[#33485E]"
                   >
-                    <span className="mt-1 font-mono text-[12px] text-[#145DA0] tabular-nums">
+                    <span className="mt-1 text-[12px] font-semibold text-[#145DA0] tabular-nums">
                       0{idx + 1}
                     </span>
                     <span>{step}</span>

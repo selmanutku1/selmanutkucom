@@ -214,7 +214,7 @@ export function ContactSection() {
           {/* Left Column: Heading & Direct Contact Channels */}
           <div className="flex flex-col justify-between text-center lg:col-span-5 lg:text-left">
             <div>
-              <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">07</p>
+              <p className="text-[12px] font-semibold tracking-wider text-[#145DA0] tabular-nums">07</p>
               <h2
                 id="contact-heading"
                 className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[40px]"

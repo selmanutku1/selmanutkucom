@@ -39,7 +39,7 @@ export function ArticlesSection({ onNavigate }: ArticlesSectionProps) {
     >
       <div className="mx-auto max-w-[1200px] px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center md:mx-0 md:text-left">
-          <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">05</p>
+          <p className="text-[12px] font-semibold tracking-wider text-[#145DA0] tabular-nums">05</p>
           <h2
             id="articles-heading"
             className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[38px]"
@@ -100,7 +100,7 @@ export function ArticlesSection({ onNavigate }: ArticlesSectionProps) {
                 >
                   <div>
                     <div className="flex flex-wrap items-center justify-center gap-2 text-[12.5px] sm:justify-start">
-                      <span className="font-mono font-medium text-[#145DA0] tabular-nums">
+                      <span className="font-semibold text-[#145DA0] tabular-nums">
                         {orderNum}
                       </span>
                       <span aria-hidden="true" className="text-[#9AB4CD]">

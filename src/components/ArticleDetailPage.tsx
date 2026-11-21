@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, Link2 } from 'lucide-react';
+import { useMemo } from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { getArticles, type ArticleItem } from '../data/articles';
 import { SITE_CONFIG } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
 import { getArticlePath, getHomePath, getSectionHref } from '../lib/routes';
 import { useDocumentSEO } from '../lib/seo';
 import { ArticleSportTechCover } from './ArticleSportTechCover';
+import { SocialShareWidget } from './SocialShareWidget';
 
 interface ArticleDetailPageProps {
   article: ArticleItem;
@@ -20,9 +21,9 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
     0,
     allArticles.findIndex((a) => a.slug === article.slug),
   );
-  const [copied, setCopied] = useState(false);
 
   const routePath = getArticlePath(article.slug, lang);
+  const shareUrl = `${SITE_CONFIG.siteUrl}${routePath}`;
   const enArticlePath = getArticlePath(article.slug, 'en');
   const trArticlePath = getArticlePath(article.slug, 'tr');
 
@@ -100,16 +101,6 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
     jsonLd,
   });
 
-  const handleCopyUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  };
-
   const relatedArticles = allArticles.filter((a) => a.slug !== article.slug).slice(0, 2);
 
   return (
@@ -152,23 +143,12 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
               <span className="font-semibold text-[#0A192F]">{SITE_CONFIG.fullName}</span>
             </p>
 
-            <button
-              type="button"
-              onClick={handleCopyUrl}
-              className="inline-flex items-center gap-2 whitespace-nowrap shrink-0 rounded-md border border-[#D4E2F0] px-3.5 py-2 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
-            >
-              {copied ? (
-                <>
-                  <Check className="h-3.5 w-3.5 text-[#145DA0]" strokeWidth={2} />
-                  <span>{copy.linkCopied}</span>
-                </>
-              ) : (
-                <>
-                  <Link2 className="h-3.5 w-3.5" strokeWidth={1.75} />
-                  <span>{copy.copyLink}</span>
-                </>
-              )}
-            </button>
+            <SocialShareWidget
+              url={shareUrl}
+              title={article.title}
+              description={article.excerpt}
+              hashtags={[article.category, 'SportTech']}
+            />
           </div>
         </header>
 
@@ -188,7 +168,7 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
                 key={idx}
                 className="flex items-start gap-3 text-[15px] leading-[1.65] text-[#2C4157]"
               >
-                <span className="mt-0.5 font-mono text-[12px] text-[#145DA0] tabular-nums">
+                <span className="mt-0.5 text-[12px] font-semibold text-[#145DA0] tabular-nums">
                   0{idx + 1}
                 </span>
                 <span>{point}</span>

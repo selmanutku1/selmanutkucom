@@ -26,7 +26,7 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
       <div className="relative mx-auto max-w-[1200px] px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:items-end md:text-left">
           <div className="max-w-2xl">
-            <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">04</p>
+            <p className="text-[12px] font-semibold tracking-wider text-[#145DA0] tabular-nums">04</p>
             <h2
               id="projects-heading"
               className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[38px]"
@@ -37,7 +37,7 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
               {copy.lead}
             </p>
           </div>
-          <p className="font-mono text-[12.5px] text-[#5B7086] tabular-nums">
+          <p className="text-[12.5px] font-medium text-[#5B7086] tabular-nums">
             {projects.length} {copy.countSuffix}
           </p>
         </div>
@@ -70,11 +70,10 @@ export function ProjectsSection({ onNavigate }: ProjectsSectionProps) {
                 </div>
 
                 <div className="flex flex-1 flex-col p-7 pb-5 text-center sm:text-left">
-                  <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12.5px] text-[#5B7086] sm:justify-between">
-                    <span className="font-mono text-[#145DA0] tabular-nums">
+                  <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12.5px] text-[#5B7086] sm:justify-start">
+                    <span className="font-semibold text-[#145DA0] tabular-nums">
                       {project.index}
                     </span>
-                    <span className="font-mono tabular-nums">{project.year}</span>
                   </div>
 
                   <h3 className="mt-3 text-[22px] font-semibold tracking-[-0.02em] text-[#0A192F] transition-colors group-hover:text-[#145DA0]">

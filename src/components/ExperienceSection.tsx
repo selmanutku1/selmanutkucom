@@ -15,7 +15,7 @@ export function ExperienceSection() {
     >
       <div className="mx-auto max-w-[1200px] px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center md:mx-0 md:text-left">
-          <p className="font-mono text-[12px] text-[#145DA0] tabular-nums">03</p>
+          <p className="text-[12px] font-semibold tracking-wider text-[#145DA0] tabular-nums">03</p>
           <h2
             id="experience-heading"
             className="mt-2 text-[32px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[38px]"
@@ -53,7 +53,7 @@ export function ExperienceSection() {
 
                 {/* Left Date & Location Column */}
                 <div className="md:pr-4 md:text-right">
-                  <p className="font-mono text-[13px] font-medium text-[#0A192F] tabular-nums">
+                  <p className="text-[13px] font-semibold text-[#0A192F] tabular-nums">
                     {exp.period}
                   </p>
                   <p className="mt-1 text-[13px] text-[#5B7086]">{exp.location}</p>

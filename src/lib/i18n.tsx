@@ -201,6 +201,18 @@ export const UI_COPY = {
       homeDesc:
         "Spor yönetimi, teknoloji ve dijital dönüşüm alanlarının kesişiminde çalışan Selman Utku'nun profesyonel portfolyosu, projeleri, yazıları ve akademik çalışmaları.",
     },
+    share: {
+      label: 'Paylaş',
+      linkedin: 'LinkedIn',
+      twitter: 'Twitter',
+      whatsapp: 'WhatsApp',
+      copyLink: 'Bağlantıyı Kopyala',
+      linkCopied: 'Bağlantı Kopyalandı',
+      linkedinAria: 'LinkedIn üzerinden paylaş',
+      twitterAria: 'Twitter (X) üzerinden paylaş',
+      whatsappAria: 'WhatsApp üzerinden paylaş',
+      groupAria: 'Sosyal medya paylaşım seçenekleri',
+    },
   },
   en: {
     skipToContent: 'Skip to content',
@@ -334,6 +346,18 @@ export const UI_COPY = {
       homeTitle: 'Selman Utku – Digital Transformation, Innovation & Sports Technology',
       homeDesc:
         'Personal brand and professional portfolio of Selman Utku — Tech Analyst working at the intersection of sports management, digital transformation, AI, and SportTech.',
+    },
+    share: {
+      label: 'Share',
+      linkedin: 'LinkedIn',
+      twitter: 'Twitter',
+      whatsapp: 'WhatsApp',
+      copyLink: 'Copy Link',
+      linkCopied: 'Link Copied',
+      linkedinAria: 'Share on LinkedIn',
+      twitterAria: 'Share on Twitter (X)',
+      whatsappAria: 'Share on WhatsApp',
+      groupAria: 'Social media sharing options',
     },
   },
 } as const;
