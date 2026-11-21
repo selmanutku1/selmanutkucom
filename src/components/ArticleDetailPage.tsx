@@ -86,8 +86,11 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
     path: routePath,
     type: 'article',
     lang,
-    image: SITE_CONFIG.ogImage,
+    image: article.coverImage,
     imageAlt: article.coverAlt,
+    imageWidth: 1200,
+    imageHeight: 630,
+    imageType: 'image/png',
     publishedTime: article.isoDate,
     modifiedTime: article.isoDate,
     alternatePaths: {

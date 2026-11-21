@@ -10,6 +10,9 @@ export interface SEOConfig {
   lang?: Language;
   image?: string;
   imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  imageType?: string;
   publishedTime?: string;
   modifiedTime?: string;
   noIndex?: boolean;
@@ -78,6 +81,9 @@ export function useDocumentSEO({
   lang = 'en',
   image = SITE_CONFIG.ogImage,
   imageAlt,
+  imageWidth,
+  imageHeight,
+  imageType,
   publishedTime,
   modifiedTime,
   noIndex = false,
@@ -133,24 +139,35 @@ export function useDocumentSEO({
     setMetaTag('meta[property="og:image:alt"]', 'property', 'og:image:alt', resolvedImageAlt);
     setMetaTag('meta[itemprop="image"]', 'itemprop', 'image', resolvedImage);
 
-    if (isDefaultOgImage(resolvedImage)) {
-      setMetaTag('meta[property="og:image:type"]', 'property', 'og:image:type', 'image/png');
+    const resolvedWidth =
+      imageWidth ?? (isDefaultOgImage(resolvedImage) ? SITE_CONFIG.ogImageWidth : undefined);
+    const resolvedHeight =
+      imageHeight ?? (isDefaultOgImage(resolvedImage) ? SITE_CONFIG.ogImageHeight : undefined);
+    const resolvedType =
+      imageType ?? (isDefaultOgImage(resolvedImage) || resolvedImage.endsWith('.png') ? 'image/png' : undefined);
+
+    if (resolvedType) {
+      setMetaTag('meta[property="og:image:type"]', 'property', 'og:image:type', resolvedType);
+    } else {
+      removeMetaTag('meta[property="og:image:type"]');
+    }
+
+    if (resolvedWidth && resolvedHeight) {
       setMetaTag(
         'meta[property="og:image:width"]',
         'property',
         'og:image:width',
-        String(SITE_CONFIG.ogImageWidth),
+        String(resolvedWidth),
       );
       setMetaTag(
         'meta[property="og:image:height"]',
         'property',
         'og:image:height',
-        String(SITE_CONFIG.ogImageHeight),
+        String(resolvedHeight),
       );
     } else {
       removeMetaTag('meta[property="og:image:width"]');
       removeMetaTag('meta[property="og:image:height"]');
-      removeMetaTag('meta[property="og:image:type"]');
     }
 
     // Twitter / X Card
@@ -241,6 +258,9 @@ export function useDocumentSEO({
     lang,
     image,
     imageAlt,
+    imageWidth,
+    imageHeight,
+    imageType,
     publishedTime,
     modifiedTime,
     noIndex,

@@ -52,6 +52,9 @@ function buildRouteHtml(
     title: string;
     description: string;
     ogType: 'profile' | 'website' | 'article';
+    ogImagePath?: string;
+    ogImageWidth?: number;
+    ogImageHeight?: number;
     publishedTime?: string;
     routeSchema?: Record<string, unknown>;
     prerenderHtml: string;
@@ -72,7 +75,11 @@ function buildRouteHtml(
     'og:locale:alternate',
     options.lang === 'tr' ? 'en_US' : 'tr_TR',
   );
-  const ogImageUrl = `${options.origin}/og-image.png`;
+  const imagePath = options.ogImagePath || '/og-image.png';
+  const normalizedImagePath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  const ogImageUrl = `${options.origin}${normalizedImagePath}`;
+  const ogImageWidth = String(options.ogImageWidth ?? 1200);
+  const ogImageHeight = String(options.ogImageHeight ?? 549);
   const ogImageAlt = options.title.includes('Selman Utku')
     ? options.title
     : `${options.title} – Selman Utku`;
@@ -83,7 +90,13 @@ function buildRouteHtml(
   html = replaceMetaByProperty(html, 'og:image', ogImageUrl);
   html = replaceMetaByProperty(html, 'og:image:url', ogImageUrl);
   html = replaceMetaByProperty(html, 'og:image:secure_url', ogImageUrl);
+  html = replaceMetaByProperty(html, 'og:image:width', ogImageWidth);
+  html = replaceMetaByProperty(html, 'og:image:height', ogImageHeight);
   html = replaceMetaByProperty(html, 'og:image:alt', ogImageAlt);
+  html = html.replace(
+    /<meta\s+itemprop=["']image["'][^>]*>/i,
+    `<meta itemprop="image" content="${escapeHtml(ogImageUrl)}" />`,
+  );
   html = replaceMetaByName(html, 'twitter:url', canonicalUrl);
   html = replaceMetaByName(html, 'twitter:title', options.title);
   html = replaceMetaByName(html, 'twitter:description', options.description);
@@ -407,7 +420,10 @@ export default defineConfig(() => {
               const routeUrl = `${resolvedSiteOrigin}${routePath}`;
               const homeUrl = `${resolvedSiteOrigin}${getHomePath(lang)}`;
               const researchSectionUrl = `${resolvedSiteOrigin}${getSectionHref('research', lang)}`;
-              const imageUrl = `${resolvedSiteOrigin}/og-image.png`;
+              const normalizedCover = article.coverImage.startsWith('/')
+                ? article.coverImage
+                : `/${article.coverImage}`;
+              const imageUrl = `${resolvedSiteOrigin}${normalizedCover}`;
 
               const routeSchema = {
                 '@context': 'https://schema.org',
@@ -474,6 +490,9 @@ export default defineConfig(() => {
                 title: article.seoTitle,
                 description: article.seoDescription,
                 ogType: 'article',
+                ogImagePath: normalizedCover,
+                ogImageWidth: 1200,
+                ogImageHeight: 630,
                 publishedTime: article.isoDate,
                 routeSchema,
                 prerenderHtml,

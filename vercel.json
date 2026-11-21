@@ -3,7 +3,7 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/((?!api/|assets/|src/assets/|og-image\\.png|favicon\\.ico|favicon-48x48\\.png|apple-touch-icon\\.png|icon-192\\.png|site\\.webmanifest|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|knowledge-graph\\.json|7c9e6679742540de944b0e07fc1f90ae\\.txt).*)",
+      "source": "/((?!api/|assets/|src/assets/|og/|og-image\\.png|favicon\\.ico|favicon-48x48\\.png|apple-touch-icon\\.png|icon-192\\.png|site\\.webmanifest|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|knowledge-graph\\.json|7c9e6679742540de944b0e07fc1f90ae\\.txt).*)",
       "destination": "/index.html"
     }
   ],
@@ -32,6 +32,15 @@
     },
     {
       "source": "/og-image.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/og/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

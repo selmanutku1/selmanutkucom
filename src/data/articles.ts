@@ -67,7 +67,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '5 dk okuma',
       excerpt:
         'Dijital dönüşüm yalnızca yeni yazılımlar devreye almak değildir. Doğru kurgulanmış iş analizi disiplini, teknoloji yatırımının gerçek kurumsal değere dönüşmesini belirler.',
-      coverImage: '/src/assets/images/project_digital_transformation_1795161846316.jpg',
+      coverImage: '/og/research/kurumsal-dijital-donusumde-is-analizinin-stratejik-rolu.png',
       coverAlt: 'Kurumsal dijital dönüşümde mimari düzen ve stratejik iş analizi',
       keyTakeaways: [
         'Kötü tasarlanmış bir süreci dijitalleştirmek yalnızca verimsizliği hızlandırır.',
@@ -110,7 +110,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '6 dk okuma',
       excerpt:
         'Üretken yapay zekâyı bireysel denemelerin ötesine taşıyıp kurumsal iş akışlarına güvenli, izlenebilir ve ölçülebilir biçimde entegre etmenin temel ilkeleri.',
-      coverImage: '/src/assets/images/project_ai_automation_1795161842262.jpg',
+      coverImage: '/og/research/yapay-zeka-destekli-is-surecleri-ve-kurumsal-verimlilik.png',
       coverAlt: 'Yapay zekâ destekli kurumsal süreç mimarisi ve ışık geometrisi',
       keyTakeaways: [
         'Yapay zekâ entegrasyonu önce dar kapsamlı ve yüksek getirili süreçlerde doğrulanmalıdır.',
@@ -146,7 +146,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '5 dk okuma',
       excerpt:
         'Spor okullarından profesyonel kulüplere kadar tüm spor organizasyonlarında veri odaklı yönetim, operasyonel şeffaflık ve SportTech dönüşümü nasıl kurgulanmalı?',
-      coverImage: '/src/assets/images/project_sportsfly_platform_1795161841713.jpg',
+      coverImage: '/og/research/spor-kulubleri-ve-tesisler-icin-dijital-yonetim-mimarisi.png',
       coverAlt: 'Modern spor tesisi ve dijital kulüp yönetim platformu',
       keyTakeaways: [
         'Spor organizasyonlarında operasyonel veri, sportif performans verisi kadar kritiktir.',
@@ -182,7 +182,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '4 dk okuma',
       excerpt:
         'Teknoloji kararlarını dönemsel trendlerden kurtarıp uzun vadeli iş hedefleriyle hizalayan bütüncül bir stratejik planlama yaklaşımı.',
-      coverImage: '/src/assets/images/editorial_strategy_architecture_1795161845108.jpg',
+      coverImage: '/og/research/teknoloji-stratejisi-arac-seciminden-deger-mimarisine.png',
       coverAlt: 'Minimalist mimari yapı ve teknoloji stratejisi perspektifi',
       keyTakeaways: [
         'Teknoloji stratejisi bir yazılım listesi değil, kurumsal önceliklendirme çerçevesidir.',
@@ -217,7 +217,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '5 dk okuma',
       excerpt:
         'Spor sektörünün kendine özgü dinamiklerini anlamadan geliştirilen teknoloji ürünleri sahada tutunamaz. Saha içgörüsüyle beslenen ürün geliştirme prensipleri.',
-      coverImage: '/src/assets/images/project_sporsepeti_ecosystem_1795161843771.jpg',
+      coverImage: '/og/research/sporttech-ekosisteminde-urun-gelistirme-ve-girisimcilik.png',
       coverAlt: 'SportTech ürün geliştirme ve dijital spor girişimciliği',
       keyTakeaways: [
         'Spor sektöründe güven ve saha referansı, dijital pazarlama kadar etkilidir.',
@@ -252,7 +252,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '4 dk okuma',
       excerpt:
         'İnovasyonu tek seferlik projelerden çıkarıp kurumun günlük refleksi haline getiren liderlik, süreç tasarımı ve ölçümleme alışkanlıkları.',
-      coverImage: '/src/assets/images/editorial_strategy_architecture_1795161845108.jpg',
+      coverImage: '/og/research/kurum-ici-inovasyon-kulturu-ve-surdurulebilir-degisim.png',
       coverAlt: 'Kurum içi inovasyon kültürü ve çağdaş mimari çizgiler',
       keyTakeaways: [
         'İnovasyon yalnızca büyük sıçramalar değil, disiplinli ve sürekli iyileştirmeler bütünüdür.',
@@ -289,7 +289,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '5 min read',
       excerpt:
         'Digital transformation is never just about deploying new software. Disciplined business analysis determines whether technology investments translate into real institutional value.',
-      coverImage: '/src/assets/images/project_digital_transformation_1795161846316.jpg',
+      coverImage: '/og/research/strategic-role-of-business-analysis-in-digital-transformation.png',
       coverAlt: 'Architectural order and strategic analysis in digital transformation',
       keyTakeaways: [
         'Digitizing a poorly designed workflow only accelerates inefficiency.',
@@ -332,7 +332,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '6 min read',
       excerpt:
         'Core principles for moving generative AI beyond individual experimentation into secure, auditable, and measurable organizational workflows.',
-      coverImage: '/src/assets/images/project_ai_automation_1795161842262.jpg',
+      coverImage: '/og/research/ai-powered-business-workflows-and-institutional-productivity.png',
       coverAlt: 'AI-assisted enterprise workflow architecture',
       keyTakeaways: [
         'Validate AI integration first in narrow, high-leverage operational workflows.',
@@ -368,7 +368,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '5 min read',
       excerpt:
         'How sports academies, clubs, and facilities can design data-informed operations, transparent communication, and modern SportTech platforms.',
-      coverImage: '/src/assets/images/project_sportsfly_platform_1795161841713.jpg',
+      coverImage: '/og/research/digital-management-architecture-for-sports-clubs-and-facilities.png',
       coverAlt: 'Modern athletic facility and digital club management platform',
       keyTakeaways: [
         'Operational data in sports organizations is just as vital as on-field performance data.',
@@ -404,7 +404,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '4 min read',
       excerpt:
         'A holistic strategic planning approach that separates technology decisions from short-lived hype and anchors them to long-term business goals.',
-      coverImage: '/src/assets/images/editorial_strategy_architecture_1795161845108.jpg',
+      coverImage: '/og/research/technology-strategy-from-tool-selection-to-value-architecture.png',
       coverAlt: 'Minimalist architecture symbolizing technology strategy',
       keyTakeaways: [
         'Technology strategy is a prioritization framework, not a shopping list of tools.',
@@ -439,7 +439,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '5 min read',
       excerpt:
         'Technology products built without deep empathy for the realities of sports rarely survive on the field. Field-driven principles for SportTech builders.',
-      coverImage: '/src/assets/images/project_sporsepeti_ecosystem_1795161843771.jpg',
+      coverImage: '/og/research/product-development-and-entrepreneurship-in-sporttech.png',
       coverAlt: 'SportTech product development and digital sports entrepreneurship',
       keyTakeaways: [
         'Trust and peer referrals carry as much weight in sports as digital acquisition.',
@@ -474,7 +474,7 @@ const ARTICLES_BY_LANG: Record<Language, ArticleItem[]> = {
       readTime: '4 min read',
       excerpt:
         'Leadership habits, workflow design, and evaluation routines that turn innovation from isolated events into an everyday institutional reflex.',
-      coverImage: '/src/assets/images/editorial_strategy_architecture_1795161845108.jpg',
+      coverImage: '/og/research/building-an-internal-innovation-culture-for-sustainable-change.png',
       coverAlt: 'Contemporary architectural lines representing innovation culture',
       keyTakeaways: [
         'Innovation thrives on disciplined continuous improvement as much as major leaps.',
