@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react';
-import { AlertCircle, ArrowUpRight, Check, CheckCircle2, Copy, Mail } from 'lucide-react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { AlertCircle, ArrowUpRight, Check, CheckCircle2, ChevronDown, Copy, Mail } from 'lucide-react';
 import { getProfileContent, SITE_CONFIG } from '../data/profile';
 import { trackEvent } from '../lib/analytics';
 import { UI_COPY, useLanguage } from '../lib/i18n';
@@ -39,6 +39,28 @@ export function ContactSection() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted'>('idle');
   const [emailCopied, setEmailCopied] = useState(false);
+  const [isTopicMenuOpen, setIsTopicMenuOpen] = useState(false);
+  const [isCustomTopic, setIsCustomTopic] = useState(false);
+  const topicMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (topicMenuRef.current && !topicMenuRef.current.contains(event.target as Node)) {
+        setIsTopicMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsTopicMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   const validate = (data: FormValues): FormErrors => {
     const nextErrors: FormErrors = {};
@@ -186,6 +208,8 @@ export function ContactSection() {
     setErrors({});
     setSubmitError(null);
     setStatus('idle');
+    setIsCustomTopic(false);
+    setIsTopicMenuOpen(false);
   };
 
   const handleCopyEmail = async () => {
@@ -297,9 +321,7 @@ export function ContactSection() {
                       {copy.successTitle}
                     </h3>
                     <p className="max-w-[52ch] text-[15px] leading-[1.7] text-[#465B71]">
-                      {copy.successTextStart} {values.fullName}. {copy.successTextMiddle}{' '}
-                      <span className="font-medium text-[#0A192F]">{values.email}</span>{' '}
-                      {copy.successTextEnd}
+                      {copy.successText}
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -403,29 +425,128 @@ export function ContactSection() {
                     </div>
                   </div>
 
-                  <div>
+                  <div ref={topicMenuRef} className="relative">
                     <label
-                      htmlFor="contact-subject"
+                      htmlFor="contact-subject-trigger"
                       className="block text-[13.5px] font-medium text-[#0A192F]"
                     >
                       {copy.subjectLabel}
                     </label>
-                    <input
-                      id="contact-subject"
-                      name="subject"
-                      type="text"
-                      required
-                      value={values.subject}
-                      onChange={(e) => handleChange('subject', e.target.value)}
+                    <button
+                      id="contact-subject-trigger"
+                      type="button"
+                      aria-haspopup="listbox"
+                      aria-expanded={isTopicMenuOpen}
                       aria-invalid={Boolean(errors.subject)}
                       aria-describedby={errors.subject ? 'error-subject' : undefined}
-                      placeholder={copy.subjectPlaceholder}
-                      className={`mt-2 block w-full rounded-md border bg-white px-4 py-3 text-[14.5px] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:outline-none ${
+                      onClick={() => setIsTopicMenuOpen((prev) => !prev)}
+                      className={`mt-2 flex w-full items-center justify-between gap-3 rounded-md border bg-white px-4 py-3 text-left text-[14.5px] transition-colors focus:outline-none ${
                         errors.subject
                           ? 'border-red-600 focus:border-red-600'
-                          : 'border-[#CEDEEA] focus:border-[#145DA0]'
+                          : isTopicMenuOpen
+                            ? 'border-[#145DA0]'
+                            : 'border-[#CEDEEA] hover:border-[#94BBE0] focus:border-[#145DA0]'
                       }`}
-                    />
+                    >
+                      <span
+                        className={
+                          isCustomTopic || values.subject
+                            ? 'font-medium text-[#0A192F]'
+                            : 'text-[#8FA4BA]'
+                        }
+                      >
+                        {isCustomTopic
+                          ? copy.otherTopicLabel
+                          : values.subject || copy.selectTopicPlaceholder}
+                      </span>
+                      <ChevronDown
+                        className={`h-4 w-4 shrink-0 text-[#5B7086] transition-transform duration-150 ${
+                          isTopicMenuOpen ? 'rotate-180 text-[#145DA0]' : ''
+                        }`}
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                      />
+                    </button>
+
+                    {isTopicMenuOpen && (
+                      <div
+                        role="listbox"
+                        aria-label={copy.quickTopicsLabel}
+                        className="absolute left-0 right-0 z-20 mt-1.5 overflow-hidden rounded-md border border-[#CEDEEA] bg-white py-1 shadow-[0_12px_32px_-8px_rgba(12,35,64,0.16)]"
+                      >
+                        {copy.quickTopics.map((topic) => {
+                          const isSelected = !isCustomTopic && values.subject === topic;
+                          return (
+                            <button
+                              key={topic}
+                              type="button"
+                              role="option"
+                              aria-selected={isSelected}
+                              onClick={() => {
+                                setIsCustomTopic(false);
+                                handleChange('subject', topic);
+                                setIsTopicMenuOpen(false);
+                              }}
+                              className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-[14px] transition-colors ${
+                                isSelected
+                                  ? 'bg-[#F3F8FC] font-medium text-[#145DA0]'
+                                  : 'text-[#33485E] hover:bg-[#F3F8FC] hover:text-[#0A192F]'
+                              }`}
+                            >
+                              <span>{topic}</span>
+                              {isSelected && (
+                                <Check className="h-4 w-4 shrink-0 text-[#145DA0]" strokeWidth={2} aria-hidden="true" />
+                              )}
+                            </button>
+                          );
+                        })}
+                        <div className="my-1 border-t border-[#EAF1F8]" />
+                        <button
+                          type="button"
+                          role="option"
+                          aria-selected={isCustomTopic}
+                          onClick={() => {
+                            const presetTopics: readonly string[] = copy.quickTopics;
+                            if (presetTopics.includes(values.subject)) {
+                              handleChange('subject', '');
+                            }
+                            setIsCustomTopic(true);
+                            setIsTopicMenuOpen(false);
+                          }}
+                          className={`flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-[14px] transition-colors ${
+                            isCustomTopic
+                              ? 'bg-[#F3F8FC] font-medium text-[#145DA0]'
+                              : 'text-[#33485E] hover:bg-[#F3F8FC] hover:text-[#0A192F]'
+                          }`}
+                        >
+                          <span>{copy.otherTopicLabel}</span>
+                          {isCustomTopic && (
+                            <Check className="h-4 w-4 shrink-0 text-[#145DA0]" strokeWidth={2} aria-hidden="true" />
+                          )}
+                        </button>
+                      </div>
+                    )}
+
+                    {isCustomTopic && (
+                      <input
+                        id="contact-subject"
+                        name="subject"
+                        type="text"
+                        required
+                        autoFocus
+                        value={values.subject}
+                        onChange={(e) => handleChange('subject', e.target.value)}
+                        aria-invalid={Boolean(errors.subject)}
+                        aria-describedby={errors.subject ? 'error-subject' : undefined}
+                        placeholder={copy.subjectPlaceholder}
+                        className={`mt-2.5 block w-full rounded-md border bg-white px-4 py-3 text-[14.5px] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:outline-none ${
+                          errors.subject
+                            ? 'border-red-600 focus:border-red-600'
+                            : 'border-[#CEDEEA] focus:border-[#145DA0]'
+                        }`}
+                      />
+                    )}
+
                     {errors.subject && (
                       <p
                         id="error-subject"
