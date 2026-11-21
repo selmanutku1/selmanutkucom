@@ -20,7 +20,7 @@ const EXPERIENCES_BY_LANG: Record<Language, ExperienceItem[]> = {
       period: 'Güncel',
       location: 'İstanbul',
       summary:
-        'Kurumsal dijital dönüşüm, iş süreçleri modelleme, yazılım gereksinim analizi ve veri odaklı teknoloji projelerinin planlanmasından canlıya alınmasına kadar uçtan uca analiz süreçlerini yönetiyorum.',
+        'Kurumsal dijital dönüşüm, iş süreçleri modelleme, yazılım gereksinim analizi ve veri odaklı teknoloji projelerinin planlanmasından canlıya alınmasına kadar uçtan uca analiz süreçlerine katkı sağlıyoruz.',
       responsibilities: [
         'İş birimlerinin operasyonel ihtiyaçlarını analiz ederek kapsamlı fonksiyonel ve teknik gereksinim dokümanları oluşturmak',
         'Mevcut (As-Is) ve hedeflenen (To-Be) iş süreçlerini modelleyerek darboğazları ortadan kaldıran iyileştirme önerileri geliştirmek',
@@ -44,7 +44,7 @@ const EXPERIENCES_BY_LANG: Record<Language, ExperienceItem[]> = {
       period: 'Güncel',
       location: 'Kocaeli / İstanbul',
       summary:
-        'Bilişim Vadisi girişimcilik ekosisteminde spor teknolojileri, spor bilişimi ve dijital spor ürünleri geliştiren girişimlere ürün stratejisi, iş modeli kurgusu, ticarileşme ve spor ekosistemi iş birlikleri konularında mentorluk desteği sunuyorum.',
+        'Bilişim Vadisi girişimcilik ekosisteminde spor teknolojileri, spor bilişimi ve dijital spor ürünleri geliştiren girişimlere ürün stratejisi, iş modeli kurgusu, ticarileşme ve spor ekosistemi iş birlikleri konularında mentorluk desteğiyle katkı sunuyoruz.',
       responsibilities: [
         'Spor teknolojileri ve spor bilişimi girişimlerine ürün-pazar uyumu, değer önerisi ve yol haritası mentorluğu sağlamak',
         'Spor kulüpleri, federasyonlar ve spor işletmeleriyle saha doğrulaması ve iş birliği stratejileri geliştirmek',
@@ -68,7 +68,7 @@ const EXPERIENCES_BY_LANG: Record<Language, ExperienceItem[]> = {
       period: 'Önceki Görev',
       location: 'İstanbul',
       summary:
-        'Üniversite ekosisteminde spor yönetimi süreçlerinin dijitalleştirilmesi, kurumsal dijital strateji planlaması ve öğrenci-paydaş deneyimini geliştiren teknoloji girişimlerinin koordinasyonunu üstlendim.',
+        'Üniversite ekosisteminde spor yönetimi süreçlerinin dijitalleştirilmesi, kurumsal dijital strateji planlaması ve öğrenci-paydaş deneyimini geliştiren teknoloji girişimlerinin koordinasyonuna katkı sağladım.',
       responsibilities: [
         'Spor birimleri ve tesis operasyonları için dijital dönüşüm yol haritasının oluşturulması ve uygulanması',
         'Üniversite içi ve dışı spor organizasyonlarında dijital kayıt, takip ve iletişim süreçlerinin kurgulanması',
@@ -92,7 +92,7 @@ const EXPERIENCES_BY_LANG: Record<Language, ExperienceItem[]> = {
       period: 'Önceki Görev',
       location: 'İstanbul',
       summary:
-        'Kurumsal dijital temas noktalarının yönetimi, kullanıcı yolculuklarının iyileştirilmesi ve veri temelli dijital kanal performansının geliştirilmesi süreçlerinde görev aldım.',
+        'Kurumsal dijital temas noktalarının iyileştirilmesi, kullanıcı yolculuklarının sadeleştirilmesi ve veri temelli dijital kanal performansının geliştirilmesi süreçlerine katkı sağladım.',
       responsibilities: [
         'Web platformları ve dijital iletişim kanallarının içerik, yapı ve kullanıcı deneyimi süreçlerini yönetmek',
         'Dijital kanal verilerini analiz ederek etkileşim, erişilebilirlik ve dönüşüm iyileştirmeleri tasarlamak',

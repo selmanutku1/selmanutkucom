@@ -19,7 +19,7 @@ const EXPERTISE_BY_LANG: Record<Language, ExpertiseArea[]> = {
       title: 'Dijital Dönüşüm',
       icon: 'workflow',
       description:
-        'Kurumların mevcut operasyonlarını derinlemesine analiz ederek manuel yükleri azaltan, ölçülebilir ve ölçeklenebilir dijital iş modelleri kurguluyorum.',
+        'Kurumların mevcut operasyonlarını derinlemesine analiz ederek manuel yükleri azaltan, ölçülebilir ve ölçeklenebilir dijital iş modelleri kurguluyoruz.',
       capabilities: [
         'İş süreçleri analizi',
         'Süreç geliştirme',
@@ -33,7 +33,7 @@ const EXPERTISE_BY_LANG: Record<Language, ExpertiseArea[]> = {
       title: 'Yapay Zekâ ve Teknoloji',
       icon: 'cpu',
       description:
-        'Üretken yapay zekâ ve veri analitiğini gerçek iş akışlarına entegre ederek karar alma hızını ve kurumsal verimliliği üst seviyeye taşıyorum.',
+        'Üretken yapay zekâ ve veri analitiğini gerçek iş akışlarına entegre ederek karar alma hızını ve kurumsal verimliliği güçlendirmeye katkı sağlıyoruz.',
       capabilities: [
         'Yapay zekâ çözümleri',
         'AI destekli iş süreçleri',
@@ -47,7 +47,7 @@ const EXPERTISE_BY_LANG: Record<Language, ExpertiseArea[]> = {
       title: 'Spor Teknolojileri',
       icon: 'activity',
       description:
-        'Spor okulları, kulüpler ve tesisler için yönetimden sporcu verisine kadar uçtan uca dijital platformlar ve SportTech ürünleri tasarlıyorum.',
+        'Spor okulları, kulüpler ve tesisler için yönetimden sporcu verisine kadar uçtan uca dijital platformlar ve SportTech ürünleri tasarlıyoruz.',
       capabilities: [
         'SportTech',
         'Spor yönetim sistemleri',
@@ -61,7 +61,7 @@ const EXPERTISE_BY_LANG: Record<Language, ExpertiseArea[]> = {
       title: 'Teknoloji Stratejisi',
       icon: 'compass',
       description:
-        'Kurumsal hedeflerle uyumlu ürün yol haritaları, inovasyon portföyleri ve teknoloji odaklı büyüme stratejileri oluşturuyorum.',
+        'Kurumsal hedeflerle uyumlu ürün yol haritaları, inovasyon portföyleri ve teknoloji odaklı büyüme stratejileri oluşturuyoruz.',
       capabilities: [
         'Dijital strateji',
         'İnovasyon yönetimi',

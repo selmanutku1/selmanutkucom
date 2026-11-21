@@ -43,7 +43,7 @@ export interface AcademicProfileData {
 const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
   tr: {
     heading: 'Akademik Çalışmalar',
-    lead: 'Profesyonel saha ve teknoloji deneyimimi bilimsel araştırma disipliniyle bütünleştiriyor; spor teknolojileri, spor bilişimi, spor yönetimi ve dijital dönüşüm ekseninde akademik çalışmalarımı sürdürüyorum.',
+    lead: 'Profesyonel saha ve teknoloji deneyimimizi bilimsel araştırma disipliniyle bütünleştiriyor; spor teknolojileri, spor bilişimi, spor yönetimi ve dijital dönüşüm ekseninde akademik çalışmalarımızı sürdürüyoruz.',
     education: [
       {
         institution: 'Marmara Üniversitesi',
@@ -66,7 +66,7 @@ const ACADEMIC_BY_LANG: Record<Language, AcademicProfileData> = {
       title: 'Akademik Araştırmalar',
       status: 'Devam Ediyor · Araştırma ve Hazırlık Sürecinde',
       summary:
-        'Spor yönetimi, kurumsal dijital dönüşüm, yapay zekâ destekli karar destek mekanizmaları ve SportTech ekosistemlerinin kurumsal olgunluk modelleri üzerine akademik literatür taraması, araştırma tasarımı ve saha odaklı çalışmalar yürütüyorum.',
+        'Spor yönetimi, kurumsal dijital dönüşüm, yapay zekâ destekli karar destek mekanizmaları ve SportTech ekosistemlerinin kurumsal olgunluk modelleri üzerine akademik literatür taraması, araştırma tasarımı ve saha odaklı çalışmalar yürütüyoruz.',
       focusPoints: [
         'Spor organizasyonlarında dijital olgunluk ve süreç dönüşüm çerçeveleri',
         'Yapay zekâ ve veri analitiğinin spor yönetiminde karar alma süreçlerine etkisi',

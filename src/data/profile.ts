@@ -85,53 +85,53 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
       titleAccent: 'Stratejik Bakış.',
       subtitle: 'Dijital Dönüşüm | İnovasyon | Spor Teknolojileri',
       intro:
-        'Spor yönetimi, teknoloji ve dijital dönüşüm alanlarının kesişiminde çalışan; iş süreçlerini teknolojiyle geliştirmeye, yapay zekâ ve otomasyon çözümleriyle değer üretmeye odaklanan bir profesyonelim.',
+        'Spor yönetimi, teknoloji ve dijital dönüşüm alanlarının kesişiminde çalışmalarımızı sürdürüyor; iş süreçlerini teknolojiyle iyileştirmeye, yapay zekâ ve otomasyon çözümleriyle kalıcı değer üretmeye odaklanıyoruz.',
       slogan: 'Değişim kaçınılmazdır. Büyüme isteğe bağlıdır.',
       sloganAuthor: 'John C. Maxwell',
       primaryCta: 'Hakkımda',
       secondaryCta: 'Projelerimi Keşfet',
     },
     footerSummary:
-      'Dijital dönüşüm, inovasyon, yapay zekâ ve spor teknolojileri odağında kurumsal değer ve sürdürülebilir ürün ekosistemleri geliştiriyorum.',
+      'Dijital dönüşüm, inovasyon, yapay zekâ ve spor teknolojileri odağında kurumsal değer ve sürdürülebilir ürün ekosistemleri geliştiriyoruz.',
     brandPillars: [
       {
         index: '01',
         title: 'Dijital Dönüşüm ve İş Analizi',
         description:
-          'Kurumsal süreçleri uçtan uca analiz ederek ölçülebilir verimlilik, yalın operasyon ve otomasyon mimarileri tasarlıyorum.',
+          'Kurumsal süreçleri uçtan uca analiz ederek ölçülebilir verimlilik, yalın operasyon ve otomasyon mimarileri tasarlıyoruz.',
       },
       {
         index: '02',
         title: 'Spor Teknolojileri ve Girişimcilik',
         description:
-          'Spor okulları, kulüpler ve spor ekosistemi için ölçeklenebilir dijital platformlar ve ürün modelleri geliştiriyorum.',
+          'Spor okulları, kulüpler ve spor ekosistemi için ölçeklenebilir dijital platformlar ve ürün modelleri geliştiriyoruz.',
       },
       {
         index: '03',
         title: 'Teknoloji Stratejisi ve Akademik Derinlik',
         description:
-          'Saha deneyimini bilimsel araştırma disipliniyle birleştirerek uzun vadeli stratejik bakış açısı oluşturuyorum.',
+          'Saha deneyimini bilimsel araştırma disipliniyle birleştirerek uzun vadeli stratejik bakış açısı oluşturuyoruz.',
       },
     ],
     about: {
       heading: 'Hakkımda',
-      lead: 'Teknoloji, iş analizi ve spor yönetimi disiplinlerini tek bir stratejik çerçevede birleştirerek kurumlar ve girişimler için kalıcı dijital değer üretiyorum.',
+      lead: 'Teknoloji, iş analizi ve spor yönetimi disiplinlerini tek bir stratejik çerçevede birleştirerek kurumlar ve girişimler için kalıcı dijital değer üretiyoruz.',
       professionalProfile: [
-        'Kariyerimi kurumsal iş süreçlerinin analiz edilmesi, dijital stratejilerin kurgulanması ve teknoloji odaklı dönüşüm projelerinin hayata geçirilmesi üzerine inşa ettim. Spor yönetimi kökenimi spor bilişimi, bilişim teknolojileri ve iş analizi uzmanlığıyla birleştirerek hem kurumsal yapılarda hem de spor teknolojileri girişimcilik ekosisteminde çok boyutlu bir bakış açısı geliştirdim.',
-        'Bugün; kurumsal iş analizi, yapay zekâ destekli süreç otomasyonu, spor bilişimi, spor yönetim platformları ve dijital ürün stratejisi alanlarında aktif olarak çalışıyor; analitik düşünceyi uygulanabilir sistemlere dönüştürüyorum.',
+        'Kurumsal iş süreçlerinin analiz edilmesi, dijital stratejilerin kurgulanması ve teknoloji odaklı dönüşüm projelerinin hayata geçirilmesi süreçlerinde aktif katkı sağladım. Spor yönetimi birikimini spor bilişimi, bilişim teknolojileri ve iş analizi deneyimiyle birleştirerek hem kurumsal yapılarda hem de spor teknolojileri ekosisteminde çok boyutlu bir bakış açısı kazandık.',
+        'Bugün; kurumsal iş analizi, yapay zekâ destekli süreç otomasyonu, spor bilişimi, spor yönetim platformları ve dijital ürün stratejisi alanlarında aktif olarak çalışıyor; analitik düşünceyi uygulanabilir sistemlere dönüştürüyoruz.',
       ],
       careerJourney: [
         {
           role: 'Tech Analyst',
           organization: '',
           summary:
-            'Kurumsal yazılım, iş süreçleri analizi, gereksinim yönetimi ve dijital dönüşüm projelerinde stratejik iş birimleri ile teknik ekipler arasında köprü görevi üstlenerek süreçlerin veriye dayalı şekilde modernize edilmesine liderlik ediyorum.',
+            'Kurumsal yazılım, iş süreçleri analizi, gereksinim yönetimi ve dijital dönüşüm projelerinde iş birimleri ile teknik ekipler arasında köprü görevi üstlenerek süreçlerin veriye dayalı şekilde modernize edilmesine katkı sağlıyoruz.',
         },
         {
           role: 'Spor Teknolojileri Mentoru',
           organization: 'Bilişim Vadisi',
           summary:
-            'Bilişim Vadisi girişimcilik ekosisteminde spor teknolojileri, spor bilişimi ve dijital spor ürünleri geliştiren girişimlere ürün stratejisi, iş modeli kurgusu, ticarileşme ve spor ekosistemi iş birlikleri konularında mentorluk desteği sunuyorum.',
+            'Bilişim Vadisi girişimcilik ekosisteminde spor teknolojileri, spor bilişimi ve dijital spor ürünleri geliştiren girişimlere ürün stratejisi, iş modeli kurgusu, ticarileşme ve spor ekosistemi iş birlikleri konularında mentorluk desteğiyle katkı sunuyoruz.',
         },
         {
           role: 'Kurucu',
@@ -139,7 +139,7 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
           websiteUrl: 'https://sporsepeti.com.tr',
           websiteLabel: 'sporsepeti.com.tr',
           summary:
-            'Spor kulüpleri, işletmeler ve spor meraklıları için dijital yönetim yazılımları, etkinlik keşif platformları ve spor içerikleri sunan spor teknolojileri girişiminin ürün ve büyüme stratejisine liderlik ediyorum.',
+            'Spor kulüpleri, işletmeler ve spor meraklıları için dijital yönetim yazılımları, etkinlik keşif platformları ve spor içerikleri sunan spor teknolojileri girişiminin ürün ve büyüme süreçlerini ekibimizle birlikte geliştiriyoruz.',
         },
         {
           role: 'Kurucu',
@@ -147,7 +147,7 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
           websiteUrl: 'https://sportsfly.com.tr',
           websiteLabel: 'sportsfly.com.tr',
           summary:
-            'Spor okulları, kulüpler ve tesisler için sporcu kayıt, yoklama, aidat, antrenman ve veli iletişimi süreçlerini tek çatı altında toplayan SaaS yönetim platformunu geliştiriyorum.',
+            'Spor okulları, kulüpler ve tesisler için sporcu kayıt, yoklama, aidat, antrenman ve veli iletişimi süreçlerini tek çatı altında toplayan SaaS yönetim platformunu ekibimizle birlikte geliştiriyoruz.',
         },
         {
           role: 'Kurucu',
@@ -155,19 +155,19 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
           websiteUrl: 'https://sporttech.com.tr',
           websiteLabel: 'sporttech.com.tr',
           summary:
-            'Türkiye’de spor teknolojileri ekosistemini, girişimcileri, kulüpleri ve akademiyi bir araya getiren inovasyon ve bilgi paylaşım topluluğuna liderlik ediyorum.',
+            'Türkiye’de spor teknolojileri ekosistemini, girişimcileri, kulüpleri ve akademiyi bir araya getiren inovasyon ve bilgi paylaşım topluluğunun gelişimine katkı sağlıyoruz.',
         },
         {
           role: 'Spor ve Dijital Stratejiler Koordinatörü',
           organization: 'Üniversite',
           summary:
-            'Üniversite bünyesindeki spor organizasyonlarının dijitalleşmesi, stratejik planlama, paydaş koordinasyonu ve yenilikçi dijital kanal modellerinin geliştirilmesi süreçlerini yönettim.',
+            'Üniversite bünyesindeki spor organizasyonlarının dijitalleşmesi, stratejik planlama, paydaş koordinasyonu ve yenilikçi dijital kanal modellerinin geliştirilmesi süreçlerine katkı sağladım.',
         },
         {
           role: 'Dijital Kanallar Uzmanı',
           organization: 'Üniversite',
           summary:
-            'Kurumsal dijital kanalların yapılandırılması, kullanıcı deneyimi optimizasyonu, dijital iletişim mimarisi ve performans analizleri üzerine çalıştım.',
+            'Kurumsal dijital kanalların yapılandırılması, kullanıcı deneyimi optimizasyonu, dijital iletişim mimarisi ve performans analizleri süreçlerinde ekiplerle birlikte katkı sağladım.',
         },
       ],
       education: [
@@ -213,7 +213,7 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
         },
       ],
       visionAndApproach:
-        'Teknoloji tek başına bir amaç değil; doğru kurgulanmış bir stratejinin ve net tanımlanmış bir ihtiyacın kaldıraç gücüdür. Çalışma yaklaşımım; spor yönetimi perspektifiyle spor kulüpleri, spor federasyonları, spor işletmeleri ve kurumsal yapılar için karmaşık problemleri yalınlaştırmak, veriye dayalı karar mekanizmaları kurmak ve sahanın gerçek operasyonlarına doğrudan temas eden sürdürülebilir dijital mimariler üretmek üzerine kuruludur.',
+        'Teknoloji tek başına bir amaç değil; doğru kurgulanmış bir stratejinin ve net tanımlanmış bir ihtiyacın kaldıraç gücüdür. Çalışma yaklaşımımız; spor yönetimi perspektifiyle spor kulüpleri, spor federasyonları, spor işletmeleri ve kurumsal yapılar için karmaşık problemleri yalınlaştırmak, veriye dayalı karar mekanizmaları kurmak ve sahanın gerçek operasyonlarına doğrudan temas eden sürdürülebilir dijital mimariler üretmek üzerine kuruludur.',
     },
   },
   en: {
