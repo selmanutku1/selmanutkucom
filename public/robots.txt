@@ -32,6 +32,9 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: Perplexity-User
+Allow: /
+
 User-agent: ClaudeBot
 Allow: /
 
@@ -50,7 +53,13 @@ Allow: /
 User-agent: Meta-ExternalAgent
 Allow: /
 
-Sitemap: https://selmanutku.com/sitemap.xml
-# AI / LLM Concise Index: https://selmanutku.com/llms.txt
-# AI / LLM Complete Knowledge Dossier: https://selmanutku.com/llms-full.txt
-# Structured JSON-LD Knowledge Graph: https://selmanutku.com/knowledge-graph.json
+User-agent: cohere-ai
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+Sitemap: https://www.selmanutku.com/sitemap.xml
+# AI / LLM Concise Index: https://www.selmanutku.com/llms.txt
+# AI / LLM Complete Knowledge Dossier: https://www.selmanutku.com/llms-full.txt
+# Structured JSON-LD Knowledge Graph: https://www.selmanutku.com/knowledge-graph.json

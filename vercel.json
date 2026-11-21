@@ -3,11 +3,33 @@
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/((?!api/|assets/|src/assets/|og-image\\.png|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|knowledge-graph\\.json|favicon\\.ico).*)",
+      "source": "/((?!api/|assets/|src/assets/|og-image\\.png|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|knowledge-graph\\.json|7c9e6679742540de944b0e07fc1f90ae\\.txt|favicon\\.ico).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        },
+        {
+          "key": "Link",
+          "value": "</llms.txt>; rel=\"alternate\"; type=\"text/plain\", </knowledge-graph.json>; rel=\"alternate\"; type=\"application/ld+json\""
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
     {
       "source": "/og-image.png",
       "headers": [
@@ -40,6 +62,15 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/7c9e6679742540de944b0e07fc1f90ae.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
         }
       ]
     },

@@ -27,11 +27,18 @@ export interface CareerJourneyItem {
   websiteLabel?: string;
 }
 
+const RUNTIME_SITE_URL = (
+  import.meta.env.VITE_SITE_URL ||
+  (typeof window !== 'undefined' && window.location.origin
+    ? window.location.origin
+    : 'https://www.selmanutku.com')
+).replace(/\/+$/, '');
+
 export const SITE_CONFIG = {
   brandName: 'SELMAN UTKU',
   fullName: 'Selman Utku',
   domain: 'selmanutku.com',
-  siteUrl: import.meta.env.VITE_SITE_URL || 'https://selmanutku.com',
+  siteUrl: RUNTIME_SITE_URL,
   email: 'info@selmanutku.com',
   linkedinUrl: 'https://www.linkedin.com/in/selmanutku',
   linkedinHandle: 'linkedin.com/in/selmanutku',

@@ -33,6 +33,14 @@ function replaceMetaByProperty(html: string, property: string, content: string):
   return html.replace(regex, `<meta property="${property}" content="${escaped}" />`);
 }
 
+function rewriteOriginUrls(content: string, targetOrigin: string): string {
+  const cleanOrigin = targetOrigin.replace(/\/+$/, '');
+  return content.replace(
+    /https:\/\/(?:www\.)?selmanutku\.com(?=[/"'< \r\n\t,;)]|$)/g,
+    cleanOrigin,
+  );
+}
+
 function buildRouteHtml(
   templateHtml: string,
   options: {
@@ -46,7 +54,7 @@ function buildRouteHtml(
     ogType: 'profile' | 'website' | 'article';
     publishedTime?: string;
     routeSchema?: Record<string, unknown>;
-    noscriptHtml: string;
+    prerenderHtml: string;
   },
 ): string {
   const canonicalUrl = `${options.origin}${options.routePath}`;
@@ -124,8 +132,8 @@ function buildRouteHtml(
   }
 
   html = html.replace(
-    /<noscript>[\s\S]*?<\/noscript>/i,
-    `<noscript>\n      ${options.noscriptHtml}\n    </noscript>`,
+    /<!--PRERENDER_ROOT_START-->[\s\S]*?<!--PRERENDER_ROOT_END-->/,
+    () => `<!--PRERENDER_ROOT_START-->\n      ${options.prerenderHtml}\n      <!--PRERENDER_ROOT_END-->`,
   );
 
   return html;
@@ -138,29 +146,31 @@ export default defineConfig(() => {
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : '') ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
-    'https://selmanutku.com'
+    'https://www.selmanutku.com'
   ).replace(/\/+$/, '');
+
+  const googleVerificationToken = (process.env.VITE_GOOGLE_SITE_VERIFICATION || '').trim();
 
   return {
     plugins: [
       react(),
       tailwindcss(),
       {
-        name: 'resolve-og-image-origin',
+        name: 'resolve-canonical-origin-and-verification',
         transformIndexHtml(html: string): string {
-          if (resolvedSiteOrigin === 'https://selmanutku.com') {
-            return html;
-          }
-          return html
-            .replaceAll('https://selmanutku.com/og-image.png', `${resolvedSiteOrigin}/og-image.png`)
-            .replaceAll(
-              'content="https://selmanutku.com/"',
-              `content="${resolvedSiteOrigin}/"`,
+          let updated = rewriteOriginUrls(html, resolvedSiteOrigin);
+          if (googleVerificationToken) {
+            updated = updated.replace(
+              '<meta name="viewport"',
+              `<meta name="google-site-verification" content="${escapeHtml(googleVerificationToken)}" />\n    <meta name="viewport"`,
             );
+          }
+          return updated;
         },
       },
-      // Generates dedicated static HTML files for ALL bilingual routes (EN + TR):
-      // /tr, /projects/*, /projeler/*, /research/*, and /arastirma/*
+      // Generates dedicated static HTML files with visible Wave-1 semantic HTML inside #root
+      // for ALL bilingual routes (EN + TR): /tr, /projects/*, /projeler/*, /research/*, /arastirma/*
+      // and keeps sitemap.xml, robots.txt, llms.txt, llms-full.txt, and knowledge-graph.json origin-synced.
       {
         name: 'generate-static-seo-routes',
         apply: 'build',
@@ -174,6 +184,21 @@ export default defineConfig(() => {
             return;
           }
 
+          // Sync all static discovery endpoints in dist/ to resolvedSiteOrigin
+          for (const assetName of [
+            'sitemap.xml',
+            'robots.txt',
+            'llms.txt',
+            'llms-full.txt',
+            'knowledge-graph.json',
+          ]) {
+            const filePath = path.join(distDir, assetName);
+            if (fs.existsSync(filePath)) {
+              const raw = fs.readFileSync(filePath, 'utf-8');
+              fs.writeFileSync(filePath, rewriteOriginUrls(raw, resolvedSiteOrigin), 'utf-8');
+            }
+          }
+
           const templateHtml = fs.readFileSync(indexHtmlPath, 'utf-8');
           const projectsByLang = {
             en: getProjects('en'),
@@ -185,28 +210,44 @@ export default defineConfig(() => {
           };
 
           // 1. Pre-generate Turkish homepage (/tr)
-          const trHomeNoscript = `<main lang="tr" style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
-        <h1>Selman Utku – Spor Teknolojileri, Spor Bilişimi ve Spor Yönetimi</h1>
-        <p>İstanbul merkezli Tech Analyst, Bilişim Vadisi Spor Teknolojileri Mentoru ve SportTech kurucusu. Spor yönetimi, spor bilişimi, spor teknolojileri, dijital dönüşüm, inovasyon yönetimi ve yapay zekâ otomasyonu alanlarının kesişiminde çalışmaktadır.</p>
-        <h2>Kurulan Girişimler ve Projeler</h2>
-        <ul>
-          ${projectsByLang.tr
-            .map(
-              (p) =>
-                `<li><a href="${escapeHtml(resolvedSiteOrigin)}${escapeHtml(getProjectPath(p.slug, 'tr'))}">${escapeHtml(p.title)}</a>${p.projectUrl ? ` (<a href="${escapeHtml(p.projectUrl)}">${escapeHtml(p.projectUrlLabel || p.projectUrl)}</a>)` : ''} – ${escapeHtml(p.shortDescription)}</li>`,
-            )
-            .join('\n          ')}
-        </ul>
-        <h2>Araştırma Başlıkları</h2>
-        <ul>
-          ${articlesByLang.tr
-            .map(
-              (a) =>
-                `<li><a href="${escapeHtml(resolvedSiteOrigin)}${escapeHtml(getArticlePath(a.slug, 'tr'))}">${escapeHtml(a.title)}</a></li>`,
-            )
-            .join('\n          ')}
-        </ul>
-        <p><a href="${escapeHtml(resolvedSiteOrigin)}/">English Version</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+          const trHomePrerender = `<main lang="tr" class="mx-auto max-w-[960px] px-6 py-20 text-[#0A192F]">
+        <p class="text-[13px] font-medium text-[#145DA0]">Dijital Dönüşüm | İnovasyon | Spor Teknolojileri</p>
+        <h1 class="mt-3 text-[36px] font-bold tracking-[-0.03em] text-[#0A192F]">Selman Utku – Spor Teknolojileri, Spor Bilişimi ve Spor Yönetimi</h1>
+        <p class="mt-4 text-[17px] leading-[1.7] text-[#334155]">İstanbul merkezli Tech Analyst, <strong>Bilişim Vadisi Spor Teknolojileri Mentoru</strong> ve SportTech girişimcisi. Spor yönetimi, spor bilişimi, spor teknolojileri, dijital dönüşüm, inovasyon yönetimi ve yapay zekâ otomasyonu alanlarının kesişiminde çalışmalarımızı sürdürüyoruz.</p>
+        <section class="mt-10 border-t border-[#E2E8F0] pt-8">
+          <h2 class="text-[20px] font-semibold text-[#0C2340]">Temel Referans Alanları</h2>
+          <ul class="mt-4 space-y-3 text-[15px] leading-[1.65] text-[#475569]">
+            <li><strong>Spor Teknolojileri (SportTech):</strong> Spor kulüpleri, federasyonlar ve akademiler için SaaS yönetim platformları, ekosistem inşası ve yapay zekâ destekli dijital çözümler.</li>
+            <li><strong>Spor Bilişimi (Sports Informatics):</strong> Bilgi sistemleri, veri modelleme ve spor bilimlerini birleştiren kurumsal karar destek mimarileri.</li>
+            <li><strong>Spor Yönetimi (Sports Management):</strong> Spor kulüpleri, federasyonlar ve tesisler için veriye dayalı, sürdürülebilir dijital dönüşüm stratejileri.</li>
+          </ul>
+        </section>
+        <section class="mt-10 border-t border-[#E2E8F0] pt-8">
+          <h2 class="text-[20px] font-semibold text-[#0C2340]">Mentorluk ve Kurulan Girişimler</h2>
+          <ul class="mt-4 space-y-3 text-[15px] leading-[1.65] text-[#475569]">
+            <li><strong>Bilişim Vadisi – Spor Teknolojileri Mentoru:</strong> Spor teknolojileri ve spor bilişimi girişimlerine ürün stratejisi, iş modeli ve ticarileşme mentorluğu.</li>
+            ${projectsByLang.tr
+              .map(
+                (p) =>
+                  `<li><a href="${escapeHtml(resolvedSiteOrigin)}${escapeHtml(getProjectPath(p.slug, 'tr'))}" class="font-semibold text-[#145DA0] underline">${escapeHtml(p.title)}</a>${p.projectUrl ? ` (<a href="${escapeHtml(p.projectUrl)}">${escapeHtml(p.projectUrlLabel || p.projectUrl)}</a>)` : ''} – ${escapeHtml(p.shortDescription)}</li>`,
+              )
+              .join('\n            ')}
+          </ul>
+        </section>
+        <section class="mt-10 border-t border-[#E2E8F0] pt-8">
+          <h2 class="text-[20px] font-semibold text-[#0C2340]">Araştırma ve Yayınlar</h2>
+          <ul class="mt-4 space-y-2 text-[15px] leading-[1.65] text-[#145DA0]">
+            ${articlesByLang.tr
+              .map(
+                (a) =>
+                  `<li><a href="${escapeHtml(resolvedSiteOrigin)}${escapeHtml(getArticlePath(a.slug, 'tr'))}">${escapeHtml(a.title)}</a></li>`,
+              )
+              .join('\n            ')}
+          </ul>
+        </section>
+        <footer class="mt-10 border-t border-[#E2E8F0] pt-6 text-[14px] text-[#475569]">
+          <p><a href="${escapeHtml(resolvedSiteOrigin)}/" class="font-medium text-[#145DA0] underline">English Version (/)</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+        </footer>
       </main>`;
 
           const trHomeHtml = buildRouteHtml(templateHtml, {
@@ -227,7 +268,7 @@ export default defineConfig(() => {
               inLanguage: 'tr-TR',
               mainEntity: {'@id': `${resolvedSiteOrigin}/#person`},
             },
-            noscriptHtml: trHomeNoscript,
+            prerenderHtml: trHomePrerender,
           });
           const trDir = path.join(distDir, 'tr');
           fs.mkdirSync(trDir, {recursive: true});
@@ -320,21 +361,21 @@ export default defineConfig(() => {
               };
 
               const externalLinkHtml = project.projectUrl
-                ? `<p><strong>${lang === 'tr' ? 'Resmi Web Sitesi' : 'Official Website'}:</strong> <a href="${escapeHtml(project.projectUrl)}">${escapeHtml(project.projectUrl)}</a></p>`
+                ? `<p class="mt-4"><strong>${lang === 'tr' ? 'Resmi Web Sitesi' : 'Official Website'}:</strong> <a href="${escapeHtml(project.projectUrl)}" class="text-[#145DA0] underline">${escapeHtml(project.projectUrl)}</a></p>`
                 : '';
 
-              const noscriptHtml = `<main lang="${lang}" style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
-        <p><a href="${escapeHtml(homeUrl)}">Selman Utku</a> / ${lang === 'tr' ? 'Projeler' : 'Projects'} / ${escapeHtml(project.title)}</p>
-        <h1>${escapeHtml(project.title)} – ${escapeHtml(project.category)}</h1>
-        <p>${escapeHtml(project.overview)}</p>
+              const prerenderHtml = `<main lang="${lang}" class="mx-auto max-w-[960px] px-6 py-20 text-[#0A192F]">
+        <p class="text-[13px] text-[#475569]"><a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> / ${lang === 'tr' ? 'Projeler' : 'Projects'} / ${escapeHtml(project.title)}</p>
+        <h1 class="mt-3 text-[34px] font-bold tracking-[-0.03em] text-[#0A192F]">${escapeHtml(project.title)} – ${escapeHtml(project.category)}</h1>
+        <p class="mt-4 text-[17px] leading-[1.7] text-[#334155]">${escapeHtml(project.overview)}</p>
         ${externalLinkHtml}
-        <h2>${lang === 'tr' ? 'Problem ve İhtiyaç' : 'Problem &amp; Need'}</h2>
-        ${project.problemAndNeed.map((p) => `<p>${escapeHtml(p)}</p>`).join('')}
-        <h2>${lang === 'tr' ? 'Geliştirilen Çözüm' : 'Solution Architecture'}</h2>
-        <ul>${project.solutionDeveloped.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
-        <h2>${lang === 'tr' ? 'Proje Çıktıları' : 'Key Outcomes'}</h2>
-        <ul>${project.outcomes.map((o) => `<li>${escapeHtml(o)}</li>`).join('')}</ul>
-        <p>${lang === 'tr' ? 'Kurucu' : 'Founded by'}: <a href="${escapeHtml(homeUrl)}">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+        <h2 class="mt-8 text-[20px] font-semibold text-[#0C2340]">${lang === 'tr' ? 'Problem ve İhtiyaç' : 'Problem &amp; Need'}</h2>
+        ${project.problemAndNeed.map((p) => `<p class="mt-3 text-[15px] leading-[1.65] text-[#475569]">${escapeHtml(p)}</p>`).join('')}
+        <h2 class="mt-8 text-[20px] font-semibold text-[#0C2340]">${lang === 'tr' ? 'Geliştirilen Çözüm' : 'Solution Architecture'}</h2>
+        <ul class="mt-3 list-disc pl-5 space-y-2 text-[15px] text-[#475569]">${project.solutionDeveloped.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+        <h2 class="mt-8 text-[20px] font-semibold text-[#0C2340]">${lang === 'tr' ? 'Proje Çıktıları' : 'Key Outcomes'}</h2>
+        <ul class="mt-3 list-disc pl-5 space-y-2 text-[15px] text-[#475569]">${project.outcomes.map((o) => `<li>${escapeHtml(o)}</li>`).join('')}</ul>
+        <p class="mt-8 text-[14px] text-[#475569]">${lang === 'tr' ? 'Kurucu' : 'Founded by'}: <a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
       </main>`;
 
               const routeHtml = buildRouteHtml(templateHtml, {
@@ -347,7 +388,7 @@ export default defineConfig(() => {
                 description: project.seoDescription,
                 ogType: 'website',
                 routeSchema,
-                noscriptHtml,
+                prerenderHtml,
               });
 
               const outDir = path.join(distDir, folder, project.slug);
@@ -414,14 +455,14 @@ export default defineConfig(() => {
                 ],
               };
 
-              const noscriptHtml = `<main lang="${lang}" style="max-width:860px;margin:40px auto;padding:0 24px;font-family:sans-serif;line-height:1.6;color:#0A192F;">
-        <p><a href="${escapeHtml(homeUrl)}">Selman Utku</a> / ${lang === 'tr' ? 'Araştırma' : 'Research'} / ${escapeHtml(article.category)}</p>
-        <h1>${escapeHtml(article.title)}</h1>
-        <p>${escapeHtml(article.excerpt)}</p>
-        <h2>${lang === 'tr' ? 'Öne Çıkan Bulgular' : 'Key Takeaways'}</h2>
-        <ul>${article.keyTakeaways.map((k) => `<li>${escapeHtml(k)}</li>`).join('')}</ul>
-        ${article.sections.map((sec) => `<section><h2>${escapeHtml(sec.heading)}</h2>${sec.paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join('')}</section>`).join('')}
-        <p>${lang === 'tr' ? 'Araştırmacı' : 'Author'}: <a href="${escapeHtml(homeUrl)}">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+              const prerenderHtml = `<main lang="${lang}" class="mx-auto max-w-[820px] px-6 py-20 text-[#0A192F]">
+        <p class="text-[13px] text-[#475569]"><a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> / ${lang === 'tr' ? 'Araştırma' : 'Research'} / ${escapeHtml(article.category)}</p>
+        <h1 class="mt-3 text-[34px] font-bold tracking-[-0.03em] text-[#0A192F]">${escapeHtml(article.title)}</h1>
+        <p class="mt-4 text-[17px] leading-[1.7] text-[#334155]">${escapeHtml(article.excerpt)}</p>
+        <h2 class="mt-8 text-[20px] font-semibold text-[#0C2340]">${lang === 'tr' ? 'Öne Çıkan Bulgular' : 'Key Takeaways'}</h2>
+        <ul class="mt-3 list-disc pl-5 space-y-2 text-[15px] text-[#475569]">${article.keyTakeaways.map((k) => `<li>${escapeHtml(k)}</li>`).join('')}</ul>
+        ${article.sections.map((sec) => `<section class="mt-8"><h2 class="text-[20px] font-semibold text-[#0C2340]">${escapeHtml(sec.heading)}</h2>${sec.paragraphs.map((p) => `<p class="mt-3 text-[15px] leading-[1.65] text-[#475569]">${escapeHtml(p)}</p>`).join('')}</section>`).join('')}
+        <p class="mt-8 text-[14px] text-[#475569]">${lang === 'tr' ? 'Araştırmacı' : 'Author'}: <a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
       </main>`;
 
               const routeHtml = buildRouteHtml(templateHtml, {
@@ -435,7 +476,7 @@ export default defineConfig(() => {
                 ogType: 'article',
                 publishedTime: article.isoDate,
                 routeSchema,
-                noscriptHtml,
+                prerenderHtml,
               });
 
               const outDir = path.join(distDir, folder, article.slug);
