@@ -5,7 +5,7 @@ import { SITE_CONFIG } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
 import { getArticlePath, getHomePath, getSectionHref } from '../lib/routes';
 import { useDocumentSEO } from '../lib/seo';
-import { MediaFrame } from './MediaFrame';
+import { ArticleSportTechCover } from './ArticleSportTechCover';
 
 interface ArticleDetailPageProps {
   article: ArticleItem;
@@ -16,6 +16,10 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
   const { lang } = useLanguage();
   const copy = UI_COPY[lang].articles;
   const allArticles = getArticles(lang);
+  const articleIndex = Math.max(
+    0,
+    allArticles.findIndex((a) => a.slug === article.slug),
+  );
   const [copied, setCopied] = useState(false);
 
   const routePath = getArticlePath(article.slug, lang);
@@ -165,15 +169,9 @@ export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProp
           </div>
         </header>
 
-        {/* Cover Image */}
-        <div className="mt-10 overflow-hidden rounded-lg border border-[#DCE7F2]">
-          <MediaFrame
-            src={article.coverImage}
-            alt={article.coverAlt}
-            aspectClass="aspect-[16/10]"
-            fallbackTitle={article.title}
-            priority
-          />
+        {/* Fixed SportTech Editorial Cover */}
+        <div className="mt-10">
+          <ArticleSportTechCover article={article} index={articleIndex} lang={lang} />
         </div>
 
         {/* Key Takeaways Box */}

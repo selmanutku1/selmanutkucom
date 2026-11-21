@@ -12,6 +12,7 @@ import { ArticleDetailPage } from './components/ArticleDetailPage';
 import { AcademicSection } from './components/AcademicSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { getProjectBySlug } from './data/projects';
 import { getArticleBySlug } from './data/articles';
 import { SITE_CONFIG } from './data/profile';
@@ -193,7 +194,7 @@ function AppShell() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-[#0A192F]">
+    <div className="flex min-h-screen flex-col bg-white pb-[calc(3.5rem+env(safe-area-inset-bottom))] text-[#0A192F] lg:pb-0">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-[#0C2340] focus:px-4 focus:py-2 focus:text-sm focus:text-white"
@@ -208,6 +209,7 @@ function AppShell() {
       </main>
 
       <Footer onNavigate={navigate} />
+      <MobileBottomNav onNavigate={navigate} activeSection={activeSection} />
     </div>
   );
 }
