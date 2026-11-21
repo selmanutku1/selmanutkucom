@@ -159,7 +159,7 @@ export default defineConfig(() => {
         name: 'resolve-canonical-origin-and-verification',
         transformIndexHtml(html: string): string {
           let updated = rewriteOriginUrls(html, resolvedSiteOrigin);
-          if (googleVerificationToken) {
+          if (googleVerificationToken && !/name=["']google-site-verification["']/i.test(updated)) {
             updated = updated.replace(
               '<meta name="viewport"',
               `<meta name="google-site-verification" content="${escapeHtml(googleVerificationToken)}" />\n    <meta name="viewport"`,
