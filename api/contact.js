@@ -40,7 +40,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: 'Invalid form fields' });
     }
 
-    const toEmail = process.env.CONTACT_TO_EMAIL || 'info@selmanutku.com';
+    const toEmail = process.env.CONTACT_TO_EMAIL || 'iletisim@selmanutku.com';
     const resendApiKey = process.env.RESEND_API_KEY;
 
     // 1. Preferred: Resend API when RESEND_API_KEY is configured in Vercel Environment Variables

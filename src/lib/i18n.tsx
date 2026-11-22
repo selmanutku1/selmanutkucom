@@ -188,7 +188,7 @@ export const UI_COPY = {
         submitError:
           'Mesaj gönderilirken geçici bir bağlantı hatası oluştu. Lütfen tekrar deneyin veya doğrudan e-posta gönderin.',
         activationError:
-          'Form servisi ilk kullanım için tek seferlik aktivasyon bekliyor. info@selmanutku.com gelen kutusuna (veya spam klasörüne) gönderilen "Activate Form" bağlantısına bir kez tıkladıktan sonra tüm mesajlar anında düşecektir.',
+          'Form servisi ilk kullanım için tek seferlik aktivasyon bekliyor. iletisim@selmanutku.com gelen kutusuna (veya spam klasörüne) gönderilen "Activate Form" bağlantısına bir kez tıkladıktan sonra tüm mesajlar anında düşecektir.',
       },
     },
     footer: {
@@ -341,7 +341,7 @@ export const UI_COPY = {
         submitError:
           'A temporary connection issue prevented sending your message. Please try again or send via email directly.',
         activationError:
-          'The form service requires a one-time activation. Please click the "Activate Form" link sent to info@selmanutku.com (check Spam/Junk if needed), and all submissions will deliver immediately afterward.',
+          'The form service requires a one-time activation. Please click the "Activate Form" link sent to iletisim@selmanutku.com (check Spam/Junk if needed), and all submissions will deliver immediately afterward.',
       },
     },
     footer: {

@@ -46,7 +46,7 @@ export const SITE_CONFIG = {
   fullName: 'Selman Utku',
   domain: 'selmanutku.com',
   siteUrl: RUNTIME_SITE_URL,
-  email: 'info@selmanutku.com',
+  email: 'iletisim@selmanutku.com',
   linkedinUrl: 'https://www.linkedin.com/in/selmanutku',
   linkedinHandle: 'linkedin.com/in/selmanutku',
   instagramUrl: 'https://www.instagram.com/selmanutku',
@@ -231,12 +231,6 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
         'Teknoloji tek başına bir amaç değil; doğru kurgulanmış bir stratejinin ve net tanımlanmış bir ihtiyacın kaldıraç gücüdür. Çalışma yaklaşımımız; spor yönetimi perspektifiyle spor kulüpleri, spor federasyonları, spor işletmeleri ve kurumsal yapılar için karmaşık problemleri yalınlaştırmak, veriye dayalı karar mekanizmaları kurmak ve sahanın gerçek operasyonlarına doğrudan temas eden sürdürülebilir dijital mimariler üretmek üzerine kuruludur.',
       gallery: [
         {
-          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54_53294a2e.jpeg',
-          alt: 'Selman Utku – Canggu, Bali sörf karesi',
-          location: 'Canggu · Bali',
-          objectPosition: 'object-[50%_32%]',
-        },
-        {
           src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__1__be6adf9a.jpeg',
           alt: 'Selman Utku – Bilişim Fuarı panel konuşması, İstanbul',
           location: 'Bilişim Fuarı · İstanbul',
@@ -247,6 +241,12 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
           alt: 'Selman Utku – Profesyonel Futbol Yönetimi Sertifika Programı, İstanbul',
           location: 'İstanbul',
           objectPosition: 'object-[42%_22%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54_53294a2e.jpeg',
+          alt: 'Selman Utku – Canggu, Bali sörf karesi',
+          location: 'Canggu · Bali',
+          objectPosition: 'object-[50%_32%]',
         },
         {
           src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__3__500ff0be.jpeg',
@@ -413,12 +413,6 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
         'Technology is not an end in itself — it is a lever powered by clear strategy and accurately defined needs. Guided by a sports management perspective, my approach centers on simplifying complex challenges for sports clubs, sports federations, athletic enterprises, and institutions — establishing data-informed decision mechanisms and crafting sustainable digital architectures grounded in real on-the-ground operations.',
       gallery: [
         {
-          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54_53294a2e.jpeg',
-          alt: 'Selman Utku – Surfing in Canggu, Bali',
-          location: 'Canggu · Bali',
-          objectPosition: 'object-[50%_32%]',
-        },
-        {
           src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__1__be6adf9a.jpeg',
           alt: 'Selman Utku – Speaking at Bilişim Fuarı panel, Istanbul',
           location: 'Bilişim Fuarı · Istanbul',
@@ -429,6 +423,12 @@ const PROFILE_BY_LANG: Record<Language, LocalizedProfile> = {
           alt: 'Selman Utku – Professional Football Management Certificate Program, Istanbul',
           location: 'Istanbul',
           objectPosition: 'object-[42%_22%]',
+        },
+        {
+          src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54_53294a2e.jpeg',
+          alt: 'Selman Utku – Surfing in Canggu, Bali',
+          location: 'Canggu · Bali',
+          objectPosition: 'object-[50%_32%]',
         },
         {
           src: '/assets/aistudio/WhatsApp_Image_2026-11-22_at_00.42.54__3__500ff0be.jpeg',

@@ -259,7 +259,7 @@ export default defineConfig(() => {
           </ul>
         </section>
         <footer class="mt-10 border-t border-[#E2E8F0] pt-6 text-[14px] text-[#475569]">
-          <p><a href="${escapeHtml(resolvedSiteOrigin)}/" class="font-medium text-[#145DA0] underline">English Version (/)</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+          <p><a href="${escapeHtml(resolvedSiteOrigin)}/" class="font-medium text-[#145DA0] underline">English Version (/)</a> · <a href="mailto:iletisim@selmanutku.com">iletisim@selmanutku.com</a></p>
         </footer>
       </main>`;
 
@@ -388,7 +388,7 @@ export default defineConfig(() => {
         <ul class="mt-3 list-disc pl-5 space-y-2 text-[15px] text-[#475569]">${project.solutionDeveloped.map((s) => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
         <h2 class="mt-8 text-[20px] font-semibold text-[#0C2340]">${lang === 'tr' ? 'Proje Çıktıları' : 'Key Outcomes'}</h2>
         <ul class="mt-3 list-disc pl-5 space-y-2 text-[15px] text-[#475569]">${project.outcomes.map((o) => `<li>${escapeHtml(o)}</li>`).join('')}</ul>
-        <p class="mt-8 text-[14px] text-[#475569]">${lang === 'tr' ? 'Kurucu' : 'Founded by'}: <a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+        <p class="mt-8 text-[14px] text-[#475569]">${lang === 'tr' ? 'Kurucu' : 'Founded by'}: <a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> · <a href="mailto:iletisim@selmanutku.com">iletisim@selmanutku.com</a></p>
       </main>`;
 
               const routeHtml = buildRouteHtml(templateHtml, {
@@ -478,7 +478,7 @@ export default defineConfig(() => {
         <h2 class="mt-8 text-[20px] font-semibold text-[#0C2340]">${lang === 'tr' ? 'Öne Çıkan Bulgular' : 'Key Takeaways'}</h2>
         <ul class="mt-3 list-disc pl-5 space-y-2 text-[15px] text-[#475569]">${article.keyTakeaways.map((k) => `<li>${escapeHtml(k)}</li>`).join('')}</ul>
         ${article.sections.map((sec) => `<section class="mt-8"><h2 class="text-[20px] font-semibold text-[#0C2340]">${escapeHtml(sec.heading)}</h2>${sec.paragraphs.map((p) => `<p class="mt-3 text-[15px] leading-[1.65] text-[#475569]">${escapeHtml(p)}</p>`).join('')}</section>`).join('')}
-        <p class="mt-8 text-[14px] text-[#475569]">${lang === 'tr' ? 'Araştırmacı' : 'Author'}: <a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> · <a href="mailto:info@selmanutku.com">info@selmanutku.com</a></p>
+        <p class="mt-8 text-[14px] text-[#475569]">${lang === 'tr' ? 'Araştırmacı' : 'Author'}: <a href="${escapeHtml(homeUrl)}" class="text-[#145DA0] underline">Selman Utku</a> · <a href="mailto:iletisim@selmanutku.com">iletisim@selmanutku.com</a></p>
       </main>`;
 
               const routeHtml = buildRouteHtml(templateHtml, {
