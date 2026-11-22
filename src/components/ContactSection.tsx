@@ -299,9 +299,20 @@ export function ContactSection() {
               </div>
             </div>
 
-            <p className="mt-8 text-[13.5px] text-[#5B7086]">
-              {copy.locationLabel}: {location}
-            </p>
+            <div className="mt-8 space-y-5">
+              <figure className="mx-auto max-w-[46ch] lg:mx-0">
+                <blockquote className="text-[16.5px] font-medium leading-[1.55] tracking-[-0.01em] text-[#0A192F]">
+                  “{copy.proverbQuote}”
+                </blockquote>
+                <figcaption className="mt-2 text-[13px] font-medium text-[#5B7086]">
+                  — {copy.proverbAuthor}
+                </figcaption>
+              </figure>
+
+              <p className="border-t border-[#EAF1F8] pt-4 text-[13.5px] text-[#5B7086]">
+                {copy.locationLabel}: {location}
+              </p>
+            </div>
           </div>
 
           {/* Right Column: Validated Contact Form */}

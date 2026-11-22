@@ -30,6 +30,15 @@ export function AboutSection() {
               <p className="mx-auto mt-5 max-w-[52ch] text-[15.5px] leading-[1.7] text-[#465B71] lg:mx-0">
                 {about.lead}
               </p>
+
+              <figure className="mx-auto mt-8 max-w-[36ch] border-t border-[#DCE7F2] pt-6 lg:mx-0">
+                <blockquote className="text-[17px] font-medium leading-[1.5] tracking-[-0.015em] text-[#0A192F]">
+                  “{copy.quote}”
+                </blockquote>
+                <figcaption className="mt-2 text-[13px] font-medium text-[#5B7086]">
+                  — {copy.quoteAuthor}
+                </figcaption>
+              </figure>
             </div>
           </div>
 

@@ -91,6 +91,8 @@ export const UI_COPY = {
       educationTitle: 'Eğitim Geçmişim',
       affiliationsTitle: 'Üyelikler ve Profesyonel Ağlar',
       visionTitle: 'Vizyon ve Yaklaşım',
+      quote: 'Gitmeye değer yerlerin kestirme yolu yoktur.',
+      quoteAuthor: 'Paulo Coelho',
     },
     expertise: {
       heading: 'Uzmanlık Alanları',
@@ -156,6 +158,9 @@ export const UI_COPY = {
       copyEmailAria: 'E-posta adresini kopyala',
       linkedinLabel: 'LinkedIn',
       locationLabel: 'Konum',
+      proverbQuote:
+        'Eğer hızlı gitmek istiyorsan yalnız, ama uzaklara gitmek, yeni ufuklara açılmak istiyorsan birlikte yola çık…',
+      proverbAuthor: 'Afrika Atasözü',
       successTitle: 'Mesajınız alındı — teşekkürler.',
       successText: 'Selman 48 saat içinde dönüş yapacaktır.',
       sendAnother: 'Yeni Mesaj Gönder',
@@ -244,6 +249,8 @@ export const UI_COPY = {
       educationTitle: 'Education',
       affiliationsTitle: 'Memberships & Professional Networks',
       visionTitle: 'Vision & Approach',
+      quote: 'There are no shortcuts to any place worth going.',
+      quoteAuthor: 'Paulo Coelho',
     },
     expertise: {
       heading: 'Areas of Expertise',
@@ -309,6 +316,9 @@ export const UI_COPY = {
       copyEmailAria: 'Copy email address',
       linkedinLabel: 'LinkedIn',
       locationLabel: 'Location',
+      proverbQuote:
+        'If you want to go fast, go alone; if you want to go far and open new horizons, go together…',
+      proverbAuthor: 'African Proverb',
       successTitle: 'Message received — thank you.',
       successText: 'Selman will respond within 48 hours.',
       sendAnother: 'Send Another Message',
