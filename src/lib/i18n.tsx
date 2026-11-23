@@ -158,8 +158,7 @@ export const UI_COPY = {
       copyEmailAria: 'E-posta adresini kopyala',
       linkedinLabel: 'LinkedIn',
       locationLabel: 'Konum',
-      proverbQuote:
-        'Eğer hızlı gitmek istiyorsan yalnız, ama uzaklara gitmek, yeni ufuklara açılmak istiyorsan birlikte yola çık…',
+      proverbQuote: 'Hızlı gitmek istiyorsan yalnız, uzağa gitmek istiyorsan birlikte yürü...',
       proverbAuthor: 'Afrika Atasözü',
       successTitle: 'Mesajınız alındı — teşekkürler.',
       successText: 'Selman 48 saat içinde dönüş yapacaktır.',
@@ -316,8 +315,7 @@ export const UI_COPY = {
       copyEmailAria: 'Copy email address',
       linkedinLabel: 'LinkedIn',
       locationLabel: 'Location',
-      proverbQuote:
-        'If you want to go fast, go alone; if you want to go far and open new horizons, go together…',
+      proverbQuote: 'If you want to go fast, go alone. If you want to go far, go together...',
       proverbAuthor: 'African Proverb',
       successTitle: 'Message received — thank you.',
       successText: 'Selman will respond within 48 hours.',

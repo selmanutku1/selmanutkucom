@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { AlertCircle, ArrowUpRight, Check, CheckCircle2, ChevronDown, Copy, Mail } from 'lucide-react';
-import { getProfileContent, SITE_CONFIG } from '../data/profile';
+import { SITE_CONFIG } from '../data/profile';
 import { trackEvent } from '../lib/analytics';
 import { UI_COPY, useLanguage } from '../lib/i18n';
 import { getSectionId } from '../lib/routes';
@@ -31,7 +31,6 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function ContactSection() {
   const { lang } = useLanguage();
   const copy = UI_COPY[lang].contact;
-  const location = getProfileContent(lang).location;
 
   const [values, setValues] = useState<FormValues>(INITIAL_VALUES);
   const [honeypot, setHoneypot] = useState('');
@@ -299,20 +298,14 @@ export function ContactSection() {
               </div>
             </div>
 
-            <div className="mt-8 space-y-5">
-              <figure className="mx-auto max-w-[46ch] lg:mx-0">
-                <blockquote className="text-[16.5px] font-medium leading-[1.55] tracking-[-0.01em] text-[#0A192F]">
-                  “{copy.proverbQuote}”
-                </blockquote>
-                <figcaption className="mt-2 text-[13px] font-medium text-[#5B7086]">
-                  — {copy.proverbAuthor}
-                </figcaption>
-              </figure>
-
-              <p className="border-t border-[#EAF1F8] pt-4 text-[13.5px] text-[#5B7086]">
-                {copy.locationLabel}: {location}
-              </p>
-            </div>
+            <figure className="mx-auto mt-8 max-w-[46ch] lg:mx-0">
+              <blockquote className="text-[16.5px] font-medium leading-[1.55] tracking-[-0.01em] text-[#0A192F]">
+                “{copy.proverbQuote}”
+              </blockquote>
+              <figcaption className="mt-2 text-[13px] font-medium text-[#5B7086]">
+                — {copy.proverbAuthor}
+              </figcaption>
+            </figure>
           </div>
 
           {/* Right Column: Validated Contact Form */}
