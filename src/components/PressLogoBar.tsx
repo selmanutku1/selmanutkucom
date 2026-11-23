@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Language } from '../lib/i18n';
 
 interface PressOutlet {
-  id: 'haberturk' | 'webrazzi' | 'tv41' | 'medyacark';
+  id: 'haberturk' | 'webrazzi' | 'sporttech-turkiye';
   name: string;
   logoSrc: string;
   sizeClass: string;
@@ -34,25 +34,14 @@ const PRESS_OUTLETS: PressOutlet[] = [
     },
   },
   {
-    id: 'tv41',
-    name: 'TV41',
-    logoSrc: '/assets/press/tv41.png',
-    sizeClass: 'h-[30px] sm:h-[34px]',
-    url: 'https://tv41.com.tr/yerel-haberler/dijitallesme-sporu-daha-adil-bir-zemine-tasiyor/',
+    id: 'sporttech-turkiye',
+    name: 'SportTech Türkiye',
+    logoSrc: '/assets/press/sporttech-turkiye.png',
+    sizeClass: 'h-[40px] sm:h-[46px]',
+    url: 'https://sporttech.com.tr',
     articleTitle: {
-      tr: 'TV41 — Dijitalleşme sporu daha adil bir zemine taşıyor',
-      en: 'TV41 — Digitalization moves sports to a fairer ground',
-    },
-  },
-  {
-    id: 'medyacark',
-    name: 'Medya Çark',
-    logoSrc: '/assets/press/medyacark.png',
-    sizeClass: 'h-[30px] sm:h-[34px]',
-    url: 'https://www.medyacark.com/haber/sporun-dijital-donusumu-konusuldu-11825.html',
-    articleTitle: {
-      tr: 'Medya Çark — Sporun dijital dönüşümü konuşuldu',
-      en: 'Medya Çark — Digital transformation of sports discussed',
+      tr: 'SportTech Türkiye — Spor Teknolojileri Ekosistemi',
+      en: 'SportTech Türkiye — Sports Technology Ecosystem',
     },
   },
 ];
