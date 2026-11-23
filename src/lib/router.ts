@@ -14,10 +14,18 @@ export type AppRoute =
   | { type: 'article'; slug: string }
   | { type: 'messages' };
 
-function parsePathname(pathname: string): AppRoute {
+function parseLocation(pathname: string, hash = ''): AppRoute {
   const clean = pathname.replace(/\/+$/, '') || '/';
+  const lower = clean.toLowerCase();
+  const cleanHash = hash.replace(/^#/, '').trim().toLowerCase();
 
-  if (clean === '/mesajlar' || clean === '/tr/mesajlar' || clean === '/inbox') {
+  if (
+    lower === '/mesajlar' ||
+    lower === '/tr/mesajlar' ||
+    lower === '/inbox' ||
+    cleanHash === 'mesajlar' ||
+    cleanHash === 'inbox'
+  ) {
     return { type: 'messages' };
   }
 
@@ -53,19 +61,23 @@ function parsePathname(pathname: string): AppRoute {
 export function useRouter() {
   const { lang } = useLanguage();
   const [route, setRoute] = useState<AppRoute>(() =>
-    typeof window !== 'undefined' ? parsePathname(window.location.pathname) : { type: 'home' },
+    typeof window !== 'undefined'
+      ? parseLocation(window.location.pathname, window.location.hash)
+      : { type: 'home' },
   );
 
   useEffect(() => {
     const syncRoute = () => {
-      setRoute(parsePathname(window.location.pathname));
+      setRoute(parseLocation(window.location.pathname, window.location.hash));
       trackPageView(`${window.location.pathname}${window.location.hash}`);
     };
 
     window.addEventListener('popstate', syncRoute);
+    window.addEventListener('hashchange', syncRoute);
     window.addEventListener('app:urlchange', syncRoute);
     return () => {
       window.removeEventListener('popstate', syncRoute);
+      window.removeEventListener('hashchange', syncRoute);
       window.removeEventListener('app:urlchange', syncRoute);
     };
   }, []);
@@ -125,7 +137,8 @@ export function useRouter() {
         const targetUrl = sectionKey
           ? getSectionHref(sectionKey, lang)
           : `${homePath}#${targetId}`;
-        const currentlyOnHome = parsePathname(window.location.pathname).type === 'home';
+        const currentlyOnHome =
+          parseLocation(window.location.pathname, window.location.hash).type === 'home';
 
         if (!currentlyOnHome) {
           window.history.pushState({}, '', targetUrl);
@@ -151,12 +164,12 @@ export function useRouter() {
         return;
       }
 
-      // 3. Full path navigation (project or research detail routes)
+      // 3. Full path navigation (project, research, or inbox routes)
       const normalized = to.startsWith('/') ? to : `/${to}`;
       if (currentFullUrl !== normalized) {
         window.history.pushState({}, '', normalized);
       }
-      setRoute(parsePathname(normalized));
+      setRoute(parseLocation(normalized));
       trackPageView(normalized);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },

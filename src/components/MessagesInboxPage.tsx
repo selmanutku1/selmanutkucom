@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { onAuthStateChanged, signInWithPopup, signOut, type User } from 'firebase/auth';
 import {
   collection,
@@ -16,15 +16,18 @@ import {
   Archive,
   ArchiveRestore,
   ArrowLeft,
+  BookOpen,
   Check,
   Copy,
   Inbox,
+  KeyRound,
   Lock,
   LogOut,
   Mail,
   MailOpen,
   Reply,
   Search,
+  ShieldCheck,
   Trash2,
 } from 'lucide-react';
 import {
@@ -39,9 +42,11 @@ import {
 import { useLanguage } from '../lib/i18n';
 import { getHomePath } from '../lib/routes';
 import { useDocumentSEO } from '../lib/seo';
+import { ResearchAdminModule } from './ResearchAdminModule';
 
 type MessageStatus = 'unread' | 'read' | 'archived';
 type FilterTab = 'all' | 'unread' | 'read' | 'archived';
+type PanelModule = 'messages' | 'research';
 
 interface ContactMessageRecord {
   id: string;
@@ -57,6 +62,30 @@ interface ContactMessageRecord {
 
 interface MessagesInboxPageProps {
   onNavigate: (to: string) => void;
+}
+
+const PASSCODE_STORAGE_KEY = 'selmanutku_panel_unlocked_v1';
+const PASSCODE_SALT = 'selmanutku:panel:';
+const PASSCODE_HASH_HEX =
+  '5bc6311796f80a7dd8249c544b4bf04477a5a27871977535077c6ddd428fc06d';
+
+async function verifyPasscode(rawInput: string): Promise<boolean> {
+  const normalized = rawInput.trim();
+  if (!normalized) return false;
+  const candidate = `${PASSCODE_SALT}${normalized}`;
+
+  if (typeof window !== 'undefined' && window.crypto?.subtle) {
+    const encoded = new TextEncoder().encode(candidate);
+    const buffer = await window.crypto.subtle.digest('SHA-256', encoded);
+    const hex = Array.from(new Uint8Array(buffer))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+    return hex === PASSCODE_HASH_HEX;
+  }
+
+  // Fallback for non-secure HTTP contexts where SubtleCrypto is unavailable
+  const expected = String.fromCharCode(50, 48, 50, 55);
+  return normalized === expected;
 }
 
 function formatMessageDate(ts: Timestamp | null, lang: 'tr' | 'en'): string {
@@ -77,20 +106,38 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
   const homePath = getHomePath(lang);
 
   useDocumentSEO({
-    title: isTr ? 'Mesaj Kutusu | Selman Utku' : 'Inbox | Selman Utku',
+    title: isTr ? 'Yönetim Paneli | Selman Utku' : 'Admin Panel | Selman Utku',
     description: isTr
-      ? 'İletişim formu mesajları yönetim ekranı.'
-      : 'Private contact form submissions inbox.',
+      ? 'İletişim formu mesajları ve araştırma içerikleri yönetim paneli.'
+      : 'Private contact form inbox and research content management panel.',
     path: isTr ? '/mesajlar' : '/inbox',
     lang,
     noIndex: true,
   });
 
+  // Step 1: Passcode Gate State
+  const [passcodeUnlocked, setPasscodeUnlocked] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    try {
+      return window.sessionStorage.getItem(PASSCODE_STORAGE_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const [passcodeInput, setPasscodeInput] = useState('');
+  const [passcodeError, setPasscodeError] = useState<string | null>(null);
+  const [checkingPasscode, setCheckingPasscode] = useState(false);
+
+  // Step 2: Firebase Owner Auth State
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
+  // Active Module Tab
+  const [activeModule, setActiveModule] = useState<PanelModule>('messages');
+
+  // Form Messages Inbox State
   const [messages, setMessages] = useState<ContactMessageRecord[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [firestoreError, setFirestoreError] = useState<string | null>(null);
@@ -114,7 +161,7 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
   }, []);
 
   useEffect(() => {
-    if (!authReady) return;
+    if (!passcodeUnlocked || !authReady) return;
     if (!isAuthorizedAdmin) {
       setMessages([]);
       setLoadingMessages(false);
@@ -168,7 +215,7 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
     );
 
     return () => unsubscribe();
-  }, [authReady, isAuthorizedAdmin, isTr]);
+  }, [passcodeUnlocked, authReady, isAuthorizedAdmin, isTr]);
 
   const counts = useMemo(() => {
     let unread = 0;
@@ -206,6 +253,43 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
     return filteredMessages[0];
   }, [filteredMessages, selectedId]);
 
+  const handlePasscodeSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPasscodeError(null);
+    setCheckingPasscode(true);
+    try {
+      const ok = await verifyPasscode(passcodeInput);
+      if (!ok) {
+        setPasscodeError(
+          isTr
+            ? 'Erişim şifresi hatalı. Lütfen tekrar deneyin.'
+            : 'Incorrect passcode. Please try again.',
+        );
+        return;
+      }
+      try {
+        window.sessionStorage.setItem(PASSCODE_STORAGE_KEY, '1');
+      } catch {
+        // Ignore storage errors in private browsing
+      }
+      setPasscodeInput('');
+      setPasscodeUnlocked(true);
+    } finally {
+      setCheckingPasscode(false);
+    }
+  };
+
+  const handleLockPanel = () => {
+    try {
+      window.sessionStorage.removeItem(PASSCODE_STORAGE_KEY);
+    } catch {
+      // Ignore storage errors
+    }
+    setPasscodeUnlocked(false);
+    setPasscodeInput('');
+    setPasscodeError(null);
+  };
+
   const handleSignIn = async () => {
     setAuthError(null);
     setAuthLoading(true);
@@ -233,6 +317,7 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
 
   const handleSignOut = async () => {
     setAuthError(null);
+    handleLockPanel();
     await signOut(auth);
   };
 
@@ -301,40 +386,123 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
     }
   };
 
-  // Loading auth state
+  // GATE 1: Passcode prompt (2027)
+  if (!passcodeUnlocked) {
+    return (
+      <section className="mx-auto max-w-[1200px] px-6 py-20 lg:px-8 lg:py-28">
+        <div className="mx-auto max-w-[440px] rounded-lg border border-[#DCE7F2] bg-white p-8 sm:p-10">
+          <div className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-[#DCE7F2] bg-[#F3F8FC] text-[#0C2340]">
+            <KeyRound className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+          </div>
+
+          <h1 className="mt-5 text-[24px] font-bold tracking-[-0.025em] text-[#0A192F]">
+            {isTr ? 'Yönetim Paneli Girişi' : 'Panel Access'}
+          </h1>
+
+          <p className="mt-2.5 text-[14.5px] leading-[1.65] text-[#465B71]">
+            {isTr
+              ? 'Form mesajları ve araştırma içerikleri paneline erişmek için erişim şifresini girin.'
+              : 'Enter the access passcode to open the form inbox and research studio.'}
+          </p>
+
+          <form onSubmit={handlePasscodeSubmit} className="mt-6 space-y-4">
+            <div>
+              <label
+                htmlFor="panel-passcode"
+                className="block text-[12.5px] font-medium text-[#33485E]"
+              >
+                {isTr ? 'Erişim Şifresi' : 'Access Passcode'}
+              </label>
+              <input
+                id="panel-passcode"
+                type="password"
+                inputMode="numeric"
+                autoComplete="off"
+                autoFocus
+                value={passcodeInput}
+                onChange={(e) => {
+                  setPasscodeInput(e.target.value);
+                  if (passcodeError) setPasscodeError(null);
+                }}
+                placeholder="••••"
+                className="mt-1.5 h-12 w-full rounded-md border border-[#CEDEEA] bg-white px-4 text-[18px] tracking-[0.28em] text-[#0A192F] placeholder:tracking-[0.28em] placeholder:text-[#9BB0C5] focus:border-[#145DA0] focus:outline-none"
+              />
+            </div>
+
+            {passcodeError && (
+              <div
+                role="alert"
+                className="flex items-start gap-2.5 rounded-md border border-red-200 bg-red-50/80 p-3 text-[13px] text-red-800"
+              >
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-700" aria-hidden="true" />
+                <span>{passcodeError}</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={checkingPasscode || !passcodeInput.trim()}
+              className="inline-flex min-h-[46px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-md bg-[#0C2340] px-5 py-3 text-[14px] font-medium text-white transition-colors hover:bg-[#143966] disabled:opacity-55"
+            >
+              <span>
+                {checkingPasscode
+                  ? isTr
+                    ? 'Kontrol ediliyor...'
+                    : 'Verifying...'
+                  : isTr
+                    ? 'Panele Gir'
+                    : 'Unlock Panel'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate(homePath)}
+              className="inline-flex min-h-[42px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-[#DCE7F2] bg-white px-5 py-2.5 text-[13.5px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
+            >
+              <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              <span>{isTr ? 'Siteye Dön' : 'Back to Website'}</span>
+            </button>
+          </form>
+        </div>
+      </section>
+    );
+  }
+
+  // Loading Firebase Auth state after passcode unlocked
   if (!authReady) {
     return (
       <section className="mx-auto max-w-[1200px] px-6 py-24 lg:px-8">
-        <div className="mx-auto max-w-[460px] rounded-lg border border-[#DCE7F2] bg-[#F3F8FC]/60 p-8 text-center">
+        <div className="mx-auto max-w-[440px] rounded-lg border border-[#DCE7F2] bg-[#F3F8FC]/60 p-8 text-center">
           <p className="text-[14.5px] text-[#465B71]">
-            {isTr ? 'Oturum kontrol ediliyor...' : 'Checking session...'}
+            {isTr ? 'Oturum doğrulanıyor...' : 'Verifying session...'}
           </p>
         </div>
       </section>
     );
   }
 
-  // Unauthenticated or wrong Google account gate
+  // GATE 2: Verified Owner Account for Firestore PII & CMS write access
   if (!isAuthorizedAdmin) {
     return (
       <section className="mx-auto max-w-[1200px] px-6 py-20 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-[480px] rounded-lg border border-[#DCE7F2] bg-white p-8 sm:p-10">
           <div className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-[#DCE7F2] bg-[#F3F8FC] text-[#0C2340]">
-            <Lock className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
+            <ShieldCheck className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
           </div>
 
-          <h1 className="mt-5 text-[26px] font-bold tracking-[-0.025em] text-[#0A192F]">
-            {isTr ? 'İletişim Mesajları Paneli' : 'Contact Messages Inbox'}
+          <h1 className="mt-5 text-[24px] font-bold tracking-[-0.025em] text-[#0A192F]">
+            {isTr ? 'Yönetici Hesabını Doğrula' : 'Verify Owner Account'}
           </h1>
 
-          <p className="mt-3 text-[15px] leading-[1.7] text-[#465B71]">
+          <p className="mt-3 text-[14.5px] leading-[1.7] text-[#465B71]">
             {user
               ? isTr
-                ? `Şu an ${user.email} hesabı ile giriş yaptınız. Bu panel yalnızca yönetici hesabına açıktır.`
-                : `You are signed in as ${user.email}. This inbox is restricted to the site owner.`
+                ? `Şu an ${user.email} hesabı açık. Veritabanı güvenliği nedeniyle yalnızca yönetici Google hesabıyla devam edilebilir.`
+                : `Signed in as ${user.email}. Database security rules require the verified site owner account.`
               : isTr
-                ? 'Siteden gelen iletişim formu mesajlarını görüntülemek için yetkili Google hesabınızla giriş yapın.'
-                : 'Sign in with your authorized Google account to view incoming contact form submissions.'}
+                ? 'Şifre doğrulandı. Form mesajlarını güvenle okumak ve araştırma içeriği yayınlamak için yönetici Google hesabınızla tek seferlik oturum açın.'
+                : 'Passcode accepted. Sign in once with your authorized Google account to load messages and publish research.'}
           </p>
 
           {authError && (
@@ -367,22 +535,22 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
                 <span>
                   {authLoading
                     ? isTr
-                      ? 'Giriş yapılıyor...'
+                      ? 'Doğrulanıyor...'
                       : 'Signing in...'
                     : isTr
-                      ? 'Google ile Giriş Yap'
-                      : 'Sign in with Google'}
+                      ? 'Google ile Doğrula ve Aç'
+                      : 'Verify with Google'}
                 </span>
               </button>
             )}
 
             <button
               type="button"
-              onClick={() => onNavigate(homePath)}
-              className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-[#DCE7F2] bg-white px-5 py-2.5 text-[13.5px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
+              onClick={handleLockPanel}
+              className="inline-flex min-h-[42px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-md border border-[#DCE7F2] bg-white px-5 py-2.5 text-[13.5px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
             >
-              <ArrowLeft className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-              <span>{isTr ? 'Ana Sayfaya Dön' : 'Back to Website'}</span>
+              <Lock className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              <span>{isTr ? 'Kilitle' : 'Lock'}</span>
             </button>
           </div>
         </div>
@@ -404,10 +572,10 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
   };
 
   return (
-    <section className="min-h-[75vh] bg-white py-12 lg:py-16">
+    <section className="min-h-[78vh] bg-white py-10 lg:py-14">
       <div className="mx-auto max-w-[1200px] px-6 lg:px-8">
         {/* Top Utility Header */}
-        <div className="flex flex-col justify-between gap-5 border-b border-[#DCE7F2] pb-7 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-5 border-b border-[#DCE7F2] pb-6 md:flex-row md:items-end">
           <div>
             <button
               type="button"
@@ -417,26 +585,31 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
               <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
               <span>{isTr ? 'Siteye Dön' : 'Back to Site'}</span>
             </button>
-            <h1 className="mt-3 text-[28px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[34px]">
-              {isTr ? 'Gelen Form Mesajları' : 'Contact Form Inbox'}
+            <h1 className="mt-2.5 text-[26px] font-bold tracking-[-0.025em] text-[#0A192F] lg:text-[32px]">
+              {activeModule === 'messages'
+                ? isTr
+                  ? 'Form Mesajları'
+                  : 'Form Messages'
+                : isTr
+                  ? 'Araştırma İçerikleri'
+                  : 'Research Content'}
             </h1>
-            <p className="mt-1.5 text-[14px] text-[#465B71]">
-              <span className="tabular-nums font-medium text-[#0A192F]">{counts.unread}</span>{' '}
-              {isTr ? 'okunmamış' : 'unread'}
-              <span className="mx-2 text-[#8FA4BA]" aria-hidden="true">
-                ·
-              </span>
-              <span className="tabular-nums">{messages.length}</span>{' '}
-              {isTr ? 'toplam mesaj' : 'total messages'}
-            </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-[13px] text-[#5B7086]">{user?.email}</span>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="hidden text-[13px] text-[#5B7086] sm:inline">{user?.email}</span>
+            <button
+              type="button"
+              onClick={handleLockPanel}
+              className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-md border border-[#DCE7F2] bg-white px-3 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
+            >
+              <Lock className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+              <span>{isTr ? 'Kilitle' : 'Lock'}</span>
+            </button>
             <button
               type="button"
               onClick={handleSignOut}
-              className="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-md border border-[#DCE7F2] bg-white px-3.5 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
+              className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-md border border-[#DCE7F2] bg-white px-3 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:bg-[#F3F8FC] hover:text-[#0A192F]"
             >
               <LogOut className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
               <span>{isTr ? 'Çıkış' : 'Sign Out'}</span>
@@ -444,333 +617,385 @@ export function MessagesInboxPage({ onNavigate }: MessagesInboxPageProps) {
           </div>
         </div>
 
-        {/* Filter Tabs & Search Bar */}
-        <div className="mt-6 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
-          <div
-            role="tablist"
-            aria-label={isTr ? 'Mesaj filtreleri' : 'Message filters'}
-            className="inline-flex flex-wrap items-center gap-1 rounded-lg bg-[#F3F8FC] p-1"
+        {/* Clean 2-Module Switcher */}
+        <div
+          role="tablist"
+          aria-label={isTr ? 'Panel modülleri' : 'Panel modules'}
+          className="mt-6 flex flex-wrap items-center gap-2 border-b border-[#DCE7F2] pb-4"
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'messages'}
+            onClick={() => setActiveModule('messages')}
+            className={`inline-flex min-h-[42px] items-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-[13.5px] font-medium transition-colors ${
+              activeModule === 'messages'
+                ? 'bg-[#0C2340] text-white'
+                : 'border border-[#DCE7F2] bg-white text-[#33485E] hover:border-[#145DA0] hover:text-[#0A192F]'
+            }`}
           >
-            {filterTabs.map((tab) => {
-              const active = filter === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  role="tab"
-                  aria-selected={active}
-                  onClick={() => {
-                    setFilter(tab.key);
-                    setConfirmDeleteId(null);
-                  }}
-                  className={`inline-flex min-h-[38px] items-center gap-2 whitespace-nowrap rounded-md px-3.5 py-1.5 text-[13px] font-medium transition-colors ${
-                    active
-                      ? 'bg-white text-[#0A192F] shadow-xs'
-                      : 'text-[#4B6075] hover:text-[#0A192F]'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <span
-                    className={`tabular-nums text-[12px] ${
-                      active ? 'text-[#145DA0]' : 'text-[#7D95AE]'
-                    }`}
-                  >
-                    {tab.count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+            <Inbox className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            <span>{isTr ? 'Form Mesajları' : 'Form Messages'}</span>
+            {counts.unread > 0 && (
+              <span
+                className={`tabular-nums text-[12px] font-semibold ${
+                  activeModule === 'messages' ? 'text-[#93C5FD]' : 'text-[#145DA0]'
+                }`}
+              >
+                ({counts.unread})
+              </span>
+            )}
+          </button>
 
-          <div className="relative w-full lg:w-[320px]">
-            <Search
-              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7D95AE]"
-              strokeWidth={1.75}
-              aria-hidden="true"
-            />
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isTr ? 'Ad, e-posta veya konu ara...' : 'Search name, email, or subject...'}
-              aria-label={isTr ? 'Mesajlarda ara' : 'Search messages'}
-              className="h-10 w-full rounded-md border border-[#CEDEEA] bg-white pl-10 pr-4 text-[13.5px] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:border-[#145DA0] focus:outline-none"
-            />
-          </div>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeModule === 'research'}
+            onClick={() => setActiveModule('research')}
+            className={`inline-flex min-h-[42px] items-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-[13.5px] font-medium transition-colors ${
+              activeModule === 'research'
+                ? 'bg-[#0C2340] text-white'
+                : 'border border-[#DCE7F2] bg-white text-[#33485E] hover:border-[#145DA0] hover:text-[#0A192F]'
+            }`}
+          >
+            <BookOpen className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            <span>{isTr ? 'Araştırma Modülü' : 'Research Module'}</span>
+          </button>
         </div>
 
-        {firestoreError && (
-          <div
-            role="alert"
-            className="mt-5 flex items-center gap-2.5 rounded-md border border-red-200 bg-red-50/80 p-4 text-[13.5px] text-red-800"
-          >
-            <AlertCircle className="h-4 w-4 shrink-0 text-red-700" aria-hidden="true" />
-            <span>{firestoreError}</span>
-          </div>
-        )}
+        {/* MODULE 1: Dedicated Contact Form Messages Inbox */}
+        {activeModule === 'messages' ? (
+          <>
+            <div className="mt-6 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+              <div
+                role="tablist"
+                aria-label={isTr ? 'Mesaj filtreleri' : 'Message filters'}
+                className="inline-flex flex-wrap items-center gap-1 rounded-lg bg-[#F3F8FC] p-1"
+              >
+                {filterTabs.map((tab) => {
+                  const active = filter === tab.key;
+                  return (
+                    <button
+                      key={tab.key}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => {
+                        setFilter(tab.key);
+                        setConfirmDeleteId(null);
+                      }}
+                      className={`inline-flex min-h-[38px] items-center gap-2 whitespace-nowrap rounded-md px-3.5 py-1.5 text-[13px] font-medium transition-colors ${
+                        active
+                          ? 'bg-white text-[#0A192F] shadow-xs'
+                          : 'text-[#4B6075] hover:text-[#0A192F]'
+                      }`}
+                    >
+                      <span>{tab.label}</span>
+                      <span
+                        className={`tabular-nums text-[12px] ${
+                          active ? 'text-[#145DA0]' : 'text-[#7D95AE]'
+                        }`}
+                      >
+                        {tab.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
-        {/* Main Master-Detail Inbox Area */}
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Message List */}
-          <div className="lg:col-span-5">
-            <div className="overflow-hidden rounded-lg border border-[#DCE7F2] bg-white">
-              {loadingMessages ? (
-                <div className="divide-y divide-[#EAF1F8]">
-                  {[0, 1, 2].map((i) => (
-                    <div key={i} className="animate-pulse space-y-2.5 p-5">
-                      <div className="h-3.5 w-1/3 rounded bg-[#EAF1F8]" />
-                      <div className="h-4 w-3/4 rounded bg-[#E4EDF6]" />
-                      <div className="h-3 w-full rounded bg-[#F3F8FC]" />
+              <div className="relative w-full lg:w-[320px]">
+                <Search
+                  className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7D95AE]"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={isTr ? 'Ad, e-posta veya konu ara...' : 'Search name, email, or subject...'}
+                  aria-label={isTr ? 'Mesajlarda ara' : 'Search messages'}
+                  className="h-10 w-full rounded-md border border-[#CEDEEA] bg-white pl-10 pr-4 text-[13.5px] text-[#0A192F] placeholder:text-[#8FA4BA] transition-colors focus:border-[#145DA0] focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {firestoreError && (
+              <div
+                role="alert"
+                className="mt-5 flex items-center gap-2.5 rounded-md border border-red-200 bg-red-50/80 p-4 text-[13.5px] text-red-800"
+              >
+                <AlertCircle className="h-4 w-4 shrink-0 text-red-700" aria-hidden="true" />
+                <span>{firestoreError}</span>
+              </div>
+            )}
+
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+              {/* Message List */}
+              <div className="lg:col-span-5">
+                <div className="overflow-hidden rounded-lg border border-[#DCE7F2] bg-white">
+                  {loadingMessages ? (
+                    <div className="divide-y divide-[#EAF1F8]">
+                      {[0, 1, 2].map((i) => (
+                        <div key={i} className="animate-pulse space-y-2.5 p-5">
+                          <div className="h-3.5 w-1/3 rounded bg-[#EAF1F8]" />
+                          <div className="h-4 w-3/4 rounded bg-[#E4EDF6]" />
+                          <div className="h-3 w-full rounded bg-[#F3F8FC]" />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              ) : filteredMessages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-                  <Inbox className="h-7 w-7 text-[#8FA4BA]" strokeWidth={1.5} aria-hidden="true" />
-                  <p className="mt-3 text-[15px] font-medium text-[#0A192F]">
-                    {isTr ? 'Bu görünümde mesaj yok.' : 'No messages in this view.'}
-                  </p>
-                  <p className="mt-1 text-[13.5px] text-[#5B7086]">
-                    {isTr
-                      ? 'İletişim formundan yeni bir mesaj geldiğinde burada anında listelenir.'
-                      : 'New contact form submissions will appear here in real time.'}
-                  </p>
-                </div>
-              ) : (
-                <ul className="divide-y divide-[#EAF1F8]">
-                  {filteredMessages.map((item) => {
-                    const isSelected = selectedMessage?.id === item.id;
-                    const isUnread = item.status === 'unread';
-                    return (
-                      <li key={item.id}>
-                        <button
-                          type="button"
-                          onClick={() => handleSelectMessage(item)}
-                          className={`block w-full px-5 py-4 text-left transition-colors ${
-                            isSelected
-                              ? 'bg-[#F3F8FC]'
-                              : 'bg-white hover:bg-[#F8FBFE]'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-3 text-[12px] text-[#5B7086]">
-                            <span
-                              className={`truncate ${
-                                isUnread
-                                  ? 'font-semibold text-[#0A192F]'
-                                  : 'font-medium text-[#33485E]'
+                  ) : filteredMessages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+                      <Inbox className="h-7 w-7 text-[#8FA4BA]" strokeWidth={1.5} aria-hidden="true" />
+                      <p className="mt-3 text-[15px] font-medium text-[#0A192F]">
+                        {isTr ? 'Bu görünümde mesaj yok.' : 'No messages in this view.'}
+                      </p>
+                      <p className="mt-1 text-[13.5px] text-[#5B7086]">
+                        {isTr
+                          ? 'İletişim formundan yeni bir mesaj geldiğinde burada anında listelenir.'
+                          : 'New contact form submissions will appear here in real time.'}
+                      </p>
+                    </div>
+                  ) : (
+                    <ul className="divide-y divide-[#EAF1F8]">
+                      {filteredMessages.map((item) => {
+                        const isSelected = selectedMessage?.id === item.id;
+                        const isUnread = item.status === 'unread';
+                        return (
+                          <li key={item.id}>
+                            <button
+                              type="button"
+                              onClick={() => handleSelectMessage(item)}
+                              className={`block w-full px-5 py-4 text-left transition-colors ${
+                                isSelected
+                                  ? 'bg-[#F3F8FC]'
+                                  : 'bg-white hover:bg-[#F8FBFE]'
                               }`}
                             >
-                              {item.fullName}
-                            </span>
-                            <span className="shrink-0 tabular-nums">
-                              {formatMessageDate(item.createdAt, lang)}
-                            </span>
-                          </div>
-                          <p
-                            className={`mt-1.5 truncate text-[14.5px] ${
-                              isUnread
-                                ? 'font-semibold text-[#0A192F]'
-                                : 'font-medium text-[#33485E]'
-                            }`}
-                          >
-                            {item.subject}
-                          </p>
-                          <p className="mt-1 line-clamp-2 text-[13px] leading-[1.55] text-[#5B7086]">
-                            {item.message}
-                          </p>
-                          <div className="mt-2 flex items-center gap-2 text-[11.5px] text-[#7D95AE]">
+                              <div className="flex items-center justify-between gap-3 text-[12px] text-[#5B7086]">
+                                <span
+                                  className={`truncate ${
+                                    isUnread
+                                      ? 'font-semibold text-[#0A192F]'
+                                      : 'font-medium text-[#33485E]'
+                                  }`}
+                                >
+                                  {item.fullName}
+                                </span>
+                                <span className="shrink-0 tabular-nums">
+                                  {formatMessageDate(item.createdAt, lang)}
+                                </span>
+                              </div>
+                              <p
+                                className={`mt-1.5 truncate text-[14.5px] ${
+                                  isUnread
+                                    ? 'font-semibold text-[#0A192F]'
+                                    : 'font-medium text-[#33485E]'
+                                }`}
+                              >
+                                {item.subject}
+                              </p>
+                              <p className="mt-1 line-clamp-2 text-[13px] leading-[1.55] text-[#5B7086]">
+                                {item.message}
+                              </p>
+                              <div className="mt-2 flex items-center gap-2 text-[11.5px] text-[#7D95AE]">
+                                <span
+                                  className={
+                                    isUnread ? 'font-semibold text-[#145DA0]' : ''
+                                  }
+                                >
+                                  {statusLabel(item.status)}
+                                </span>
+                                <span aria-hidden="true">·</span>
+                                <span className="truncate">{item.email}</span>
+                              </div>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              {/* Selected Message Reader */}
+              <div className="lg:col-span-7">
+                <div className="min-h-[360px] rounded-lg border border-[#DCE7F2] bg-[#F8FBFE]/60 p-6 lg:p-8">
+                  {selectedMessage ? (
+                    <div className="flex h-full flex-col justify-between gap-8">
+                      <div>
+                        <div className="flex flex-wrap items-center justify-between gap-2 text-[12.5px] text-[#5B7086]">
+                          <div className="flex items-center gap-2">
                             <span
                               className={
-                                isUnread ? 'font-semibold text-[#145DA0]' : ''
+                                selectedMessage.status === 'unread'
+                                  ? 'font-semibold text-[#145DA0]'
+                                  : 'font-medium text-[#33485E]'
                               }
                             >
-                              {statusLabel(item.status)}
+                              {statusLabel(selectedMessage.status)}
                             </span>
                             <span aria-hidden="true">·</span>
-                            <span className="truncate">{item.email}</span>
+                            <span>{selectedMessage.lang.toUpperCase()}</span>
                           </div>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          </div>
+                          <span className="tabular-nums">
+                            {formatMessageDate(selectedMessage.createdAt, lang)}
+                          </span>
+                        </div>
 
-          {/* Selected Message Reader */}
-          <div className="lg:col-span-7">
-            <div className="min-h-[360px] rounded-lg border border-[#DCE7F2] bg-[#F8FBFE]/60 p-6 lg:p-8">
-              {selectedMessage ? (
-                <div className="flex h-full flex-col justify-between gap-8">
-                  <div>
-                    <div className="flex flex-wrap items-center justify-between gap-2 text-[12.5px] text-[#5B7086]">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={
-                            selectedMessage.status === 'unread'
-                              ? 'font-semibold text-[#145DA0]'
-                              : 'font-medium text-[#33485E]'
-                          }
-                        >
-                          {statusLabel(selectedMessage.status)}
-                        </span>
-                        <span aria-hidden="true">·</span>
-                        <span>{selectedMessage.lang.toUpperCase()}</span>
+                        <h2 className="mt-3 text-[22px] font-bold tracking-[-0.02em] text-[#0A192F]">
+                          {selectedMessage.subject}
+                        </h2>
+
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-y border-[#DCE7F2] py-4">
+                          <div>
+                            <p className="text-[15px] font-semibold text-[#0A192F]">
+                              {selectedMessage.fullName}
+                            </p>
+                            <a
+                              href={`mailto:${selectedMessage.email}`}
+                              className="mt-0.5 inline-block text-[13.5px] text-[#145DA0] hover:underline"
+                            >
+                              {selectedMessage.email}
+                            </a>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleCopySenderEmail(selectedMessage.email)}
+                            className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3 text-[12.5px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:text-[#0A192F]"
+                          >
+                            {copiedEmail ? (
+                              <>
+                                <Check className="h-3.5 w-3.5 text-[#145DA0]" strokeWidth={2} />
+                                <span>{isTr ? 'Kopyalandı' : 'Copied'}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
+                                <span>{isTr ? 'E-postayı Kopyala' : 'Copy Email'}</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        <div className="mt-6 whitespace-pre-wrap text-[15px] leading-[1.75] text-[#1E3248]">
+                          {selectedMessage.message}
+                        </div>
                       </div>
-                      <span className="tabular-nums">
-                        {formatMessageDate(selectedMessage.createdAt, lang)}
-                      </span>
-                    </div>
 
-                    <h2 className="mt-3 text-[22px] font-bold tracking-[-0.02em] text-[#0A192F]">
-                      {selectedMessage.subject}
-                    </h2>
+                      {/* Action Bar */}
+                      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#DCE7F2] pt-5">
+                        <div className="flex flex-wrap items-center gap-2.5">
+                          <a
+                            href={`mailto:${selectedMessage.email}?subject=${encodeURIComponent(
+                              `Re: ${selectedMessage.subject}`,
+                            )}`}
+                            className="inline-flex min-h-[40px] items-center gap-2 whitespace-nowrap rounded-md bg-[#0C2340] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#143966]"
+                          >
+                            <Reply className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                            <span>{isTr ? 'Yanıtla' : 'Reply'}</span>
+                          </a>
 
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-y border-[#DCE7F2] py-4">
-                      <div>
-                        <p className="text-[15px] font-semibold text-[#0A192F]">
-                          {selectedMessage.fullName}
-                        </p>
-                        <a
-                          href={`mailto:${selectedMessage.email}`}
-                          className="mt-0.5 inline-block text-[13.5px] text-[#145DA0] hover:underline"
-                        >
-                          {selectedMessage.email}
-                        </a>
+                          <button
+                            type="button"
+                            disabled={busyMessageId === selectedMessage.id}
+                            onClick={() =>
+                              handleUpdateStatus(
+                                selectedMessage,
+                                selectedMessage.status === 'unread' ? 'read' : 'unread',
+                              )
+                            }
+                            className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3.5 py-2 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:text-[#0A192F] disabled:opacity-50"
+                          >
+                            {selectedMessage.status === 'unread' ? (
+                              <>
+                                <MailOpen className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                                <span>{isTr ? 'Okundu İşaretle' : 'Mark Read'}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Mail className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                                <span>{isTr ? 'Okunmadı İşaretle' : 'Mark Unread'}</span>
+                              </>
+                            )}
+                          </button>
+
+                          <button
+                            type="button"
+                            disabled={busyMessageId === selectedMessage.id}
+                            onClick={() =>
+                              handleUpdateStatus(
+                                selectedMessage,
+                                selectedMessage.status === 'archived' ? 'read' : 'archived',
+                              )
+                            }
+                            className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3.5 py-2 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:text-[#0A192F] disabled:opacity-50"
+                          >
+                            {selectedMessage.status === 'archived' ? (
+                              <>
+                                <ArchiveRestore
+                                  className="h-3.5 w-3.5"
+                                  strokeWidth={1.75}
+                                  aria-hidden="true"
+                                />
+                                <span>{isTr ? 'Arşivden Çıkar' : 'Unarchive'}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Archive className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                                <span>{isTr ? 'Arşivle' : 'Archive'}</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+
+                        {confirmDeleteId === selectedMessage.id ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              disabled={busyMessageId === selectedMessage.id}
+                              onClick={() => handleDelete(selectedMessage.id)}
+                              className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md bg-red-700 px-3.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-red-800 disabled:opacity-50"
+                            >
+                              <span>{isTr ? 'Silmeyi Onayla' : 'Confirm Delete'}</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="inline-flex min-h-[40px] items-center whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3 py-2 text-[13px] font-medium text-[#4B6075] hover:text-[#0A192F]"
+                            >
+                              {isTr ? 'Vazgeç' : 'Cancel'}
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDeleteId(selectedMessage.id)}
+                            className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md border border-[#E6D4D4] bg-white px-3.5 py-2 text-[13px] font-medium text-red-700 transition-colors hover:border-red-300 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+                            <span>{isTr ? 'Sil' : 'Delete'}</span>
+                          </button>
+                        )}
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleCopySenderEmail(selectedMessage.email)}
-                        className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3 text-[12.5px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:text-[#0A192F]"
-                      >
-                        {copiedEmail ? (
-                          <>
-                            <Check className="h-3.5 w-3.5 text-[#145DA0]" strokeWidth={2} />
-                            <span>{isTr ? 'Kopyalandı' : 'Copied'}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="h-3.5 w-3.5" strokeWidth={1.75} />
-                            <span>{isTr ? 'E-postayı Kopyala' : 'Copy Email'}</span>
-                          </>
-                        )}
-                      </button>
                     </div>
-
-                    <div className="mt-6 whitespace-pre-wrap text-[15px] leading-[1.75] text-[#1E3248]">
-                      {selectedMessage.message}
+                  ) : (
+                    <div className="flex h-full min-h-[300px] flex-col items-center justify-center text-center">
+                      <p className="text-[14.5px] text-[#5B7086]">
+                        {isTr
+                          ? 'Detayını görmek için soldan bir mesaj seçin.'
+                          : 'Select a message from the list to inspect its details.'}
+                      </p>
                     </div>
-                  </div>
-
-                  {/* Action Bar */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#DCE7F2] pt-5">
-                    <div className="flex flex-wrap items-center gap-2.5">
-                      <a
-                        href={`mailto:${selectedMessage.email}?subject=${encodeURIComponent(
-                          `Re: ${selectedMessage.subject}`,
-                        )}`}
-                        className="inline-flex min-h-[40px] items-center gap-2 whitespace-nowrap rounded-md bg-[#0C2340] px-4 py-2 text-[13px] font-medium text-white transition-colors hover:bg-[#143966]"
-                      >
-                        <Reply className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                        <span>{isTr ? 'Yanıtla' : 'Reply'}</span>
-                      </a>
-
-                      <button
-                        type="button"
-                        disabled={busyMessageId === selectedMessage.id}
-                        onClick={() =>
-                          handleUpdateStatus(
-                            selectedMessage,
-                            selectedMessage.status === 'unread' ? 'read' : 'unread',
-                          )
-                        }
-                        className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3.5 py-2 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:text-[#0A192F] disabled:opacity-50"
-                      >
-                        {selectedMessage.status === 'unread' ? (
-                          <>
-                            <MailOpen className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                            <span>{isTr ? 'Okundu İşaretle' : 'Mark Read'}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Mail className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                            <span>{isTr ? 'Okunmadı İşaretle' : 'Mark Unread'}</span>
-                          </>
-                        )}
-                      </button>
-
-                      <button
-                        type="button"
-                        disabled={busyMessageId === selectedMessage.id}
-                        onClick={() =>
-                          handleUpdateStatus(
-                            selectedMessage,
-                            selectedMessage.status === 'archived' ? 'read' : 'archived',
-                          )
-                        }
-                        className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3.5 py-2 text-[13px] font-medium text-[#33485E] transition-colors hover:border-[#145DA0] hover:text-[#0A192F] disabled:opacity-50"
-                      >
-                        {selectedMessage.status === 'archived' ? (
-                          <>
-                            <ArchiveRestore
-                              className="h-3.5 w-3.5"
-                              strokeWidth={1.75}
-                              aria-hidden="true"
-                            />
-                            <span>{isTr ? 'Arşivden Çıkar' : 'Unarchive'}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Archive className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                            <span>{isTr ? 'Arşivle' : 'Archive'}</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {confirmDeleteId === selectedMessage.id ? (
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          disabled={busyMessageId === selectedMessage.id}
-                          onClick={() => handleDelete(selectedMessage.id)}
-                          className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md bg-red-700 px-3.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-red-800 disabled:opacity-50"
-                        >
-                          <span>{isTr ? 'Silmeyi Onayla' : 'Confirm Delete'}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setConfirmDeleteId(null)}
-                          className="inline-flex min-h-[40px] items-center whitespace-nowrap rounded-md border border-[#D4E2F0] bg-white px-3 py-2 text-[13px] font-medium text-[#4B6075] hover:text-[#0A192F]"
-                        >
-                          {isTr ? 'Vazgeç' : 'Cancel'}
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setConfirmDeleteId(selectedMessage.id)}
-                        className="inline-flex min-h-[40px] items-center gap-1.5 whitespace-nowrap rounded-md border border-[#E6D4D4] bg-white px-3.5 py-2 text-[13px] font-medium text-red-700 transition-colors hover:border-red-300 hover:bg-red-50"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-                        <span>{isTr ? 'Sil' : 'Delete'}</span>
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
-              ) : (
-                <div className="flex h-full min-h-[300px] flex-col items-center justify-center text-center">
-                  <p className="text-[14.5px] text-[#5B7086]">
-                    {isTr
-                      ? 'Detayını görmek için soldan bir mesaj seçin.'
-                      : 'Select a message from the list to inspect its details.'}
-                  </p>
-                </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        ) : (
+          /* MODULE 2: Research Content Management Module */
+          <ResearchAdminModule onNavigate={onNavigate} />
+        )}
       </div>
     </section>
   );

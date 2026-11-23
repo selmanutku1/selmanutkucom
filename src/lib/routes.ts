@@ -124,24 +124,32 @@ export function resolveSectionKeyFromHash(hash: string): SectionKey | null {
 
 export function detectLanguageFromLocation(pathname: string, hash: string): RouteLanguage {
   const clean = pathname.replace(/\/+$/, '') || '/';
+  const lower = clean.toLowerCase();
 
   if (
-    clean === '/tr' ||
-    clean === '/mesajlar' ||
-    clean.startsWith('/tr/') ||
-    clean.startsWith('/projeler/') ||
-    clean.startsWith('/arastirma/') ||
-    clean.startsWith('/yazilar/')
+    lower === '/tr' ||
+    lower === '/mesajlar' ||
+    lower === '/tr/mesajlar' ||
+    lower.startsWith('/tr/') ||
+    lower.startsWith('/projeler/') ||
+    lower.startsWith('/arastirma/') ||
+    lower.startsWith('/yazilar/')
   ) {
     return 'tr';
   }
 
-  if (clean === '/inbox' || clean.startsWith('/projects/') || clean.startsWith('/research/')) {
+  if (lower === '/inbox' || lower.startsWith('/projects/') || lower.startsWith('/research/')) {
     return 'en';
   }
 
   const cleanHash = hash.replace(/^#/, '').trim().toLowerCase();
   if (cleanHash) {
+    if (cleanHash === 'mesajlar') {
+      return 'tr';
+    }
+    if (cleanHash === 'inbox') {
+      return 'en';
+    }
     if (
       cleanHash === 'yazilar' ||
       Object.values(SECTION_IDS_BY_LANG.tr).includes(cleanHash)
@@ -162,8 +170,16 @@ export function translateUrlForLanguage(
   targetLang: RouteLanguage,
 ): string {
   const clean = pathname.replace(/\/+$/, '') || '/';
+  const lower = clean.toLowerCase();
+  const cleanHash = hash.replace(/^#/, '').trim().toLowerCase();
 
-  if (clean === '/mesajlar' || clean === '/tr/mesajlar' || clean === '/inbox') {
+  if (
+    lower === '/mesajlar' ||
+    lower === '/tr/mesajlar' ||
+    lower === '/inbox' ||
+    cleanHash === 'mesajlar' ||
+    cleanHash === 'inbox'
+  ) {
     return targetLang === 'tr' ? '/mesajlar' : '/inbox';
   }
 

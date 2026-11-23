@@ -57,6 +57,7 @@ function buildRouteHtml(
     ogImageHeight?: number;
     publishedTime?: string;
     routeSchema?: Record<string, unknown>;
+    noIndex?: boolean;
     prerenderHtml: string;
   },
 ): string {
@@ -68,6 +69,10 @@ function buildRouteHtml(
   html = html.replace(/<html\s+lang="[^"]*"/i, `<html lang="${options.lang}"`);
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(options.title)}</title>`);
   html = replaceMetaByName(html, 'description', options.description);
+  if (options.noIndex) {
+    html = replaceMetaByName(html, 'robots', 'noindex, nofollow');
+    html = replaceMetaByName(html, 'googlebot', 'noindex, nofollow');
+  }
   html = replaceMetaByProperty(html, 'og:type', options.ogType);
   html = replaceMetaByProperty(html, 'og:locale', options.lang === 'tr' ? 'tr_TR' : 'en_US');
   html = replaceMetaByProperty(
@@ -502,6 +507,60 @@ export default defineConfig(() => {
               fs.mkdirSync(outDir, {recursive: true});
               fs.writeFileSync(path.join(outDir, 'index.html'), routeHtml, 'utf-8');
             }
+          }
+
+          // 4. Pre-generate private noindex inbox shells (/mesajlar, /tr/mesajlar, /inbox)
+          // so static hosts like Vercel with cleanUrls:true always return HTTP 200 directly.
+          const inboxRoutes: Array<{
+            dirParts: string[];
+            routePath: string;
+            lang: RouteLanguage;
+            title: string;
+            description: string;
+            loadingText: string;
+          }> = [
+            {
+              dirParts: ['mesajlar'],
+              routePath: '/mesajlar',
+              lang: 'tr',
+              title: 'Mesaj Kutusu | Selman Utku',
+              description: 'İletişim formu mesajları yönetim ekranı.',
+              loadingText: 'Mesaj kutusu yükleniyor...',
+            },
+            {
+              dirParts: ['tr', 'mesajlar'],
+              routePath: '/tr/mesajlar',
+              lang: 'tr',
+              title: 'Mesaj Kutusu | Selman Utku',
+              description: 'İletişim formu mesajları yönetim ekranı.',
+              loadingText: 'Mesaj kutusu yükleniyor...',
+            },
+            {
+              dirParts: ['inbox'],
+              routePath: '/inbox',
+              lang: 'en',
+              title: 'Inbox | Selman Utku',
+              description: 'Private contact form submissions inbox.',
+              loadingText: 'Loading inbox...',
+            },
+          ];
+
+          for (const inboxRoute of inboxRoutes) {
+            const inboxHtml = buildRouteHtml(templateHtml, {
+              origin: resolvedSiteOrigin,
+              lang: inboxRoute.lang,
+              routePath: inboxRoute.routePath,
+              enPath: '/inbox',
+              trPath: '/mesajlar',
+              title: inboxRoute.title,
+              description: inboxRoute.description,
+              ogType: 'website',
+              noIndex: true,
+              prerenderHtml: `<main lang="${inboxRoute.lang}" class="mx-auto max-w-[480px] px-6 py-24 text-center text-[#465B71]"><p class="text-[14.5px]">${escapeHtml(inboxRoute.loadingText)}</p></main>`,
+            });
+            const inboxOutDir = path.join(distDir, ...inboxRoute.dirParts);
+            fs.mkdirSync(inboxOutDir, {recursive: true});
+            fs.writeFileSync(path.join(inboxOutDir, 'index.html'), inboxHtml, 'utf-8');
           }
         },
       },

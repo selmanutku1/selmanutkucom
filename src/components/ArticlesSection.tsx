@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import {
   getArticleCategories,
-  getArticles,
   type ArticleCategoryKey,
 } from '../data/articles';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { useAllArticles } from '../lib/researchStore';
 import { getArticlePath, getSectionId } from '../lib/routes';
 
 interface ArticlesSectionProps {
@@ -18,7 +18,7 @@ export function ArticlesSection({ onNavigate }: ArticlesSectionProps) {
   const { lang } = useLanguage();
   const copy = UI_COPY[lang].articles;
   const categories = getArticleCategories(lang);
-  const researchItems = getArticles(lang);
+  const { articles: researchItems } = useAllArticles(lang);
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all');
 
   const filteredItems =

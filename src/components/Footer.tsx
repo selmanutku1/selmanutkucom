@@ -126,7 +126,17 @@ export function Footer({ onNavigate }: FooterProps) {
           <p className="tabular-nums">
             © {currentYear} {SITE_CONFIG.fullName}. {footerCopy.rights}
           </p>
-          <p>{SITE_CONFIG.domain}</p>
+          <a
+            href="/mesajlar"
+            rel="nofollow"
+            onClick={(e) => {
+              e.preventDefault();
+              onNavigate('/mesajlar');
+            }}
+            className="text-[13px] text-[#5B7086] transition-colors hover:text-[#145DA0]"
+          >
+            {SITE_CONFIG.domain}
+          </a>
         </div>
       </div>
     </footer>

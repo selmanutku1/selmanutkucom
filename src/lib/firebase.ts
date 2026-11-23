@@ -10,6 +10,7 @@ export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 export const CONTACT_MESSAGES_COLLECTION = 'contact_messages';
+export const RESEARCH_ARTICLES_COLLECTION = 'research_articles';
 export const ADMIN_EMAIL = 'selmanutkumarmara@gmail.com';
 
 // Synchronized verbatim with firebase-blueprint.json & firestore.rules
@@ -24,7 +25,24 @@ export const CONTACT_LIMITS = {
   messageMax: 4000,
 } as const;
 
+export const RESEARCH_LIMITS = {
+  slugMin: 3,
+  slugMax: 120,
+  titleMin: 3,
+  titleMax: 200,
+  excerptMin: 10,
+  excerptMax: 600,
+  takeawaysMaxCount: 8,
+  takeawayMaxLength: 300,
+  bodyMin: 20,
+  bodyMax: 20000,
+  readTimeMin: 1,
+  readTimeMax: 60,
+} as const;
+
 export const CONTACT_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const RESEARCH_SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export const RESEARCH_DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 export enum OperationType {
   CREATE = 'create',

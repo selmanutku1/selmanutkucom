@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { getArticles, type ArticleItem } from '../data/articles';
+import { type ArticleItem } from '../data/articles';
 import { SITE_CONFIG } from '../data/profile';
 import { UI_COPY, useLanguage } from '../lib/i18n';
+import { useAllArticles } from '../lib/researchStore';
 import { getArticlePath, getHomePath, getSectionHref } from '../lib/routes';
 import { useDocumentSEO } from '../lib/seo';
 import { ArticleSportTechCover } from './ArticleSportTechCover';
@@ -16,7 +17,7 @@ interface ArticleDetailPageProps {
 export function ArticleDetailPage({ article, onNavigate }: ArticleDetailPageProps) {
   const { lang } = useLanguage();
   const copy = UI_COPY[lang].articles;
-  const allArticles = getArticles(lang);
+  const { articles: allArticles } = useAllArticles(lang);
   const articleIndex = Math.max(
     0,
     allArticles.findIndex((a) => a.slug === article.slug),

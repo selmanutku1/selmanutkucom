@@ -36,6 +36,24 @@ service cloud.firestore {
           exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
     }
 
+    function isValidCategoryKey(key) {
+      return key is string &&
+        key.size() >= 2 &&
+        key.size() <= 32 &&
+        (key == 'digital-transformation' ||
+          key == 'ai' ||
+          key == 'sports-tech' ||
+          key == 'tech-strategy' ||
+          key == 'entrepreneurship' ||
+          key == 'innovation');
+    }
+
+    function isValidTakeawaysList(items) {
+      return items is list &&
+        items.size() <= 8 &&
+        (items.size() == 0 || (items[0] is string && items[0].size() >= 1 && items[0].size() <= 300));
+    }
+
     // --- Validation Blueprints ---
     function isValidContactMessage(data) {
       return data.keys().hasAll([
@@ -82,6 +100,81 @@ service cloud.firestore {
         data.updatedAt is timestamp;
     }
 
+    function isValidResearchArticle(data) {
+      return data.keys().hasAll([
+          'slug',
+          'categoryKey',
+          'lang',
+          'titleTr',
+          'titleEn',
+          'excerptTr',
+          'excerptEn',
+          'keyTakeawaysTr',
+          'keyTakeawaysEn',
+          'bodyTr',
+          'bodyEn',
+          'readTimeMinutes',
+          'published',
+          'publishedAt',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'slug',
+          'categoryKey',
+          'lang',
+          'titleTr',
+          'titleEn',
+          'excerptTr',
+          'excerptEn',
+          'keyTakeawaysTr',
+          'keyTakeawaysEn',
+          'bodyTr',
+          'bodyEn',
+          'readTimeMinutes',
+          'published',
+          'publishedAt',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.slug is string &&
+        data.slug.size() >= 3 &&
+        data.slug.size() <= 120 &&
+        data.slug.matches('^[a-z0-9]+(?:-[a-z0-9]+)*$') &&
+        isValidCategoryKey(data.categoryKey) &&
+        data.lang is string &&
+        data.lang.size() >= 2 &&
+        data.lang.size() <= 4 &&
+        (data.lang == 'tr' || data.lang == 'en' || data.lang == 'both') &&
+        data.titleTr is string &&
+        data.titleTr.size() <= 200 &&
+        data.titleEn is string &&
+        data.titleEn.size() <= 200 &&
+        data.excerptTr is string &&
+        data.excerptTr.size() <= 600 &&
+        data.excerptEn is string &&
+        data.excerptEn.size() <= 600 &&
+        isValidTakeawaysList(data.keyTakeawaysTr) &&
+        isValidTakeawaysList(data.keyTakeawaysEn) &&
+        data.bodyTr is string &&
+        data.bodyTr.size() <= 20000 &&
+        data.bodyEn is string &&
+        data.bodyEn.size() <= 20000 &&
+        ((data.lang != 'tr' && data.lang != 'both') ||
+          (data.titleTr.size() >= 3 && data.excerptTr.size() >= 10 && data.bodyTr.size() >= 20)) &&
+        ((data.lang != 'en' && data.lang != 'both') ||
+          (data.titleEn.size() >= 3 && data.excerptEn.size() >= 10 && data.bodyEn.size() >= 20)) &&
+        data.readTimeMinutes is int &&
+        data.readTimeMinutes >= 1 &&
+        data.readTimeMinutes <= 60 &&
+        data.published is bool &&
+        data.publishedAt is string &&
+        data.publishedAt.size() == 10 &&
+        data.publishedAt.matches('^\\d{4}-\\d{2}-\\d{2}$') &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
     // --- Collections ---
     match /contact_messages/{messageId} {
       // Strictly isolate visitor PII: only verified owner/admin may read or list
@@ -110,6 +203,47 @@ service cloud.firestore {
         incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
 
       allow delete: if isSignedIn() && isValidId(messageId) && isAdmin();
+    }
+
+    match /research_articles/{articleId} {
+      // Public visitors may only read/list published research articles; drafts stay admin-only
+      allow get: if isValidId(articleId) && (existing().published == true || isAdmin());
+      allow list: if existing().published == true || isVerifiedAdminEmail();
+
+      // Admin-only create with strict schema validation and server timestamps
+      allow create: if isSignedIn() &&
+        isValidId(articleId) &&
+        isValidResearchArticle(incoming()) &&
+        isAdmin() &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      // Admin-only update with immutable createdAt and explicit field allowlist
+      allow update: if isSignedIn() &&
+        isValidId(articleId) &&
+        isValidResearchArticle(incoming()) &&
+        isAdmin() &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly([
+          'slug',
+          'categoryKey',
+          'lang',
+          'titleTr',
+          'titleEn',
+          'excerptTr',
+          'excerptEn',
+          'keyTakeawaysTr',
+          'keyTakeawaysEn',
+          'bodyTr',
+          'bodyEn',
+          'readTimeMinutes',
+          'published',
+          'publishedAt',
+          'updatedAt'
+        ]);
+
+      allow delete: if isSignedIn() && isValidId(articleId) && isAdmin();
     }
 
     match /admins/{adminId} {

@@ -16,10 +16,10 @@ import { Footer } from './components/Footer';
 import { MessagesInboxPage } from './components/MessagesInboxPage';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { getProjectBySlug } from './data/projects';
-import { getArticleBySlug } from './data/articles';
 import { SITE_CONFIG } from './data/profile';
 import { initAnalytics, trackPageView } from './lib/analytics';
 import { LanguageProvider, UI_COPY, useLanguage } from './lib/i18n';
+import { ResearchProvider, useArticleBySlug } from './lib/researchStore';
 import { useRouter } from './lib/router';
 import {
   getHomePath,
@@ -126,6 +126,11 @@ function AppShell() {
   const { lang } = useLanguage();
   const { route, navigate } = useRouter();
   const [activeSection, setActiveSection] = useState<SectionKey>('home');
+  const activeArticleSlug = route.type === 'article' ? route.slug : '';
+  const { article: resolvedArticle, loading: loadingArticles } = useArticleBySlug(
+    activeArticleSlug,
+    lang,
+  );
 
   useEffect(() => {
     initAnalytics();
@@ -188,12 +193,19 @@ function AppShell() {
     }
 
     if (route.type === 'article') {
-      const article = getArticleBySlug(route.slug, lang);
-      return article ? (
-        <ArticleDetailPage article={article} onNavigate={navigate} />
-      ) : (
-        <NotFoundView onNavigate={navigate} />
-      );
+      if (resolvedArticle) {
+        return <ArticleDetailPage article={resolvedArticle} onNavigate={navigate} />;
+      }
+      if (loadingArticles) {
+        return (
+          <section className="mx-auto max-w-[720px] px-6 py-28 text-center lg:px-8">
+            <p className="text-[14.5px] text-[#5B7086]">
+              {lang === 'tr' ? 'İçerik yükleniyor...' : 'Loading research brief...'}
+            </p>
+          </section>
+        );
+      }
+      return <NotFoundView onNavigate={navigate} />;
     }
 
     if (route.type === 'messages') {
@@ -231,7 +243,9 @@ function AppShell() {
 export default function App() {
   return (
     <LanguageProvider>
-      <AppShell />
+      <ResearchProvider>
+        <AppShell />
+      </ResearchProvider>
     </LanguageProvider>
   );
 }

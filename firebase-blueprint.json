@@ -65,9 +65,125 @@
         "updatedAt"
       ]
     },
+    "ResearchArticle": {
+      "title": "ResearchArticle",
+      "description": "A dynamic research article managed in the owner admin panel and published to the public Research section.",
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "URL-safe unique slug for the research article.",
+          "minLength": 3,
+          "maxLength": 120,
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "categoryKey": {
+          "type": "string",
+          "description": "Category key matching the website research taxonomy.",
+          "enum": [
+            "digital-transformation",
+            "ai",
+            "sports-tech",
+            "tech-strategy",
+            "entrepreneurship",
+            "innovation"
+          ],
+          "minLength": 2,
+          "maxLength": 32
+        },
+        "lang": {
+          "type": "string",
+          "description": "Language visibility for the article.",
+          "enum": ["tr", "en", "both"],
+          "minLength": 2,
+          "maxLength": 4
+        },
+        "titleTr": {
+          "type": "string",
+          "description": "Turkish title.",
+          "maxLength": 200
+        },
+        "titleEn": {
+          "type": "string",
+          "description": "English title.",
+          "maxLength": 200
+        },
+        "excerptTr": {
+          "type": "string",
+          "description": "Turkish summary excerpt.",
+          "maxLength": 600
+        },
+        "excerptEn": {
+          "type": "string",
+          "description": "English summary excerpt.",
+          "maxLength": 600
+        },
+        "keyTakeawaysTr": {
+          "type": "array",
+          "description": "Turkish key findings bullet list (max 8 items)."
+        },
+        "keyTakeawaysEn": {
+          "type": "array",
+          "description": "English key findings bullet list (max 8 items)."
+        },
+        "bodyTr": {
+          "type": "string",
+          "description": "Turkish structured article body using ## headings and blank-line paragraphs.",
+          "maxLength": 20000
+        },
+        "bodyEn": {
+          "type": "string",
+          "description": "English structured article body using ## headings and blank-line paragraphs.",
+          "maxLength": 20000
+        },
+        "readTimeMinutes": {
+          "type": "integer",
+          "description": "Estimated reading time in minutes (1-60)."
+        },
+        "published": {
+          "type": "boolean",
+          "description": "Whether the article is publicly visible on the website."
+        },
+        "publishedAt": {
+          "type": "string",
+          "description": "Publication date in YYYY-MM-DD format.",
+          "minLength": 10,
+          "maxLength": 10,
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the article was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the article was last updated."
+        }
+      },
+      "required": [
+        "slug",
+        "categoryKey",
+        "lang",
+        "titleTr",
+        "titleEn",
+        "excerptTr",
+        "excerptEn",
+        "keyTakeawaysTr",
+        "keyTakeawaysEn",
+        "bodyTr",
+        "bodyEn",
+        "readTimeMinutes",
+        "published",
+        "publishedAt",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
     "AdminUser": {
       "title": "AdminUser",
-      "description": "Server-provisioned admin record granting inbox access.",
+      "description": "Server-provisioned admin record granting inbox and CMS access.",
       "type": "object",
       "properties": {
         "email": {
@@ -92,6 +208,12 @@
         "$ref": "#/entities/ContactMessage"
       },
       "description": "Stores incoming website contact form messages. Public write-only create with strict schema validation; admin-only read, status update, and delete."
+    },
+    "/research_articles/{articleId}": {
+      "schema": {
+        "$ref": "#/entities/ResearchArticle"
+      },
+      "description": "Stores dynamic research articles authored in the admin panel. Public read/list restricted to published == true; admin-only create, update, delete, and draft read."
     },
     "/admins/{adminId}": {
       "schema": {
