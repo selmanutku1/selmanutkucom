@@ -4,6 +4,7 @@ import { getProfileContent, SITE_CONFIG } from '../data/profile';
 import { useLanguage } from '../lib/i18n';
 import { getSectionHref, getSectionId } from '../lib/routes';
 import { MediaFrame } from './MediaFrame';
+import { PressLogoBar } from './PressLogoBar';
 
 interface HeroSectionProps {
   onNavigate: (to: string) => void;
@@ -135,8 +136,11 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
           </motion.div>
         </div>
 
-        {/* Full-width 3-Column Brand Positioning Strip below hero split */}
-        <div className="mt-16 border-t border-[#DCE7F2] pt-10 lg:mt-24 lg:pt-12">
+        {/* Press & Media Transparent Logo Strip */}
+        <PressLogoBar lang={lang} />
+
+        {/* Full-width 3-Column Brand Positioning Strip below press logos */}
+        <div className="border-t border-[#DCE7F2] pt-10 lg:pt-12">
           <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-3 md:gap-10 md:text-left">
             {profile.brandPillars.map((pillar) => (
               <div key={pillar.index} className="space-y-2.5">
