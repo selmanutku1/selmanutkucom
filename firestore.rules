@@ -1,0 +1,120 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Primitive Helpers ---
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedAdminEmail() {
+      return isSignedIn() &&
+        request.auth.token.email == 'selmanutkumarmara@gmail.com' &&
+        request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedAdminEmail() ||
+        (isSignedIn() &&
+          request.auth.token.email_verified == true &&
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    // --- Validation Blueprints ---
+    function isValidContactMessage(data) {
+      return data.keys().hasAll([
+          'fullName',
+          'email',
+          'subject',
+          'message',
+          'lang',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'fullName',
+          'email',
+          'subject',
+          'message',
+          'lang',
+          'status',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.fullName is string &&
+        data.fullName.size() >= 2 &&
+        data.fullName.size() <= 120 &&
+        data.email is string &&
+        data.email.size() >= 5 &&
+        data.email.size() <= 180 &&
+        data.email.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$') &&
+        data.subject is string &&
+        data.subject.size() >= 3 &&
+        data.subject.size() <= 180 &&
+        data.message is string &&
+        data.message.size() >= 15 &&
+        data.message.size() <= 4000 &&
+        data.lang is string &&
+        data.lang.size() == 2 &&
+        (data.lang == 'tr' || data.lang == 'en') &&
+        data.status is string &&
+        data.status.size() >= 4 &&
+        data.status.size() <= 16 &&
+        (data.status == 'unread' || data.status == 'read' || data.status == 'archived') &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    // --- Collections ---
+    match /contact_messages/{messageId} {
+      // Strictly isolate visitor PII: only verified owner/admin may read or list
+      allow get: if isValidId(messageId) && isAdmin();
+      allow list: if isVerifiedAdminEmail();
+
+      // Public website visitors can submit strictly validated contact messages
+      allow create: if isValidId(messageId) &&
+        isValidContactMessage(incoming()) &&
+        incoming().status == 'unread' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      // Action-based update: verified admin can only update inbox triage status + updatedAt
+      allow update: if isSignedIn() &&
+        isValidId(messageId) &&
+        isValidContactMessage(incoming()) &&
+        isAdmin() &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().fullName == existing().fullName &&
+        incoming().email == existing().email &&
+        incoming().subject == existing().subject &&
+        incoming().message == existing().message &&
+        incoming().lang == existing().lang &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']);
+
+      allow delete: if isSignedIn() && isValidId(messageId) && isAdmin();
+    }
+
+    match /admins/{adminId} {
+      allow get: if isSignedIn() && isValidId(adminId) && (request.auth.uid == adminId || isVerifiedAdminEmail());
+      allow list, create, update, delete: if false;
+    }
+  }
+}

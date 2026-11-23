@@ -11,7 +11,9 @@ import { ArticlesSection } from './components/ArticlesSection';
 import { ArticleDetailPage } from './components/ArticleDetailPage';
 import { AcademicSection } from './components/AcademicSection';
 import { ContactSection } from './components/ContactSection';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Footer } from './components/Footer';
+import { MessagesInboxPage } from './components/MessagesInboxPage';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { getProjectBySlug } from './data/projects';
 import { getArticleBySlug } from './data/articles';
@@ -139,6 +141,10 @@ function AppShell() {
       setActiveSection('research');
       return;
     }
+    if (route.type === 'messages') {
+      setActiveSection('contact');
+      return;
+    }
 
     const idToKey = new Map<string, SectionKey>();
     const elements: HTMLElement[] = [];
@@ -187,6 +193,14 @@ function AppShell() {
         <ArticleDetailPage article={article} onNavigate={navigate} />
       ) : (
         <NotFoundView onNavigate={navigate} />
+      );
+    }
+
+    if (route.type === 'messages') {
+      return (
+        <ErrorBoundary>
+          <MessagesInboxPage onNavigate={navigate} />
+        </ErrorBoundary>
       );
     }
 

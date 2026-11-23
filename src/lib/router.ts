@@ -11,10 +11,15 @@ import {
 export type AppRoute =
   | { type: 'home' }
   | { type: 'project'; slug: string }
-  | { type: 'article'; slug: string };
+  | { type: 'article'; slug: string }
+  | { type: 'messages' };
 
 function parsePathname(pathname: string): AppRoute {
   const clean = pathname.replace(/\/+$/, '') || '/';
+
+  if (clean === '/mesajlar' || clean === '/tr/mesajlar' || clean === '/inbox') {
+    return { type: 'messages' };
+  }
 
   if (clean.startsWith('/projects/')) {
     const slug = decodeURIComponent(clean.slice('/projects/'.length));

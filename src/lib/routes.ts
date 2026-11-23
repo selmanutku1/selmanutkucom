@@ -127,6 +127,7 @@ export function detectLanguageFromLocation(pathname: string, hash: string): Rout
 
   if (
     clean === '/tr' ||
+    clean === '/mesajlar' ||
     clean.startsWith('/tr/') ||
     clean.startsWith('/projeler/') ||
     clean.startsWith('/arastirma/') ||
@@ -135,7 +136,7 @@ export function detectLanguageFromLocation(pathname: string, hash: string): Rout
     return 'tr';
   }
 
-  if (clean.startsWith('/projects/') || clean.startsWith('/research/')) {
+  if (clean === '/inbox' || clean.startsWith('/projects/') || clean.startsWith('/research/')) {
     return 'en';
   }
 
@@ -161,6 +162,10 @@ export function translateUrlForLanguage(
   targetLang: RouteLanguage,
 ): string {
   const clean = pathname.replace(/\/+$/, '') || '/';
+
+  if (clean === '/mesajlar' || clean === '/tr/mesajlar' || clean === '/inbox') {
+    return targetLang === 'tr' ? '/mesajlar' : '/inbox';
+  }
 
   if (clean.startsWith('/projeler/')) {
     const slug = decodeURIComponent(clean.slice('/projeler/'.length));

@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { AlertCircle, ArrowUpRight, Check, CheckCircle2, ChevronDown, Copy, Mail } from 'lucide-react';
 import { SITE_CONFIG } from '../data/profile';
 import { trackEvent } from '../lib/analytics';
+import {
+  CONTACT_EMAIL_REGEX,
+  CONTACT_LIMITS,
+  CONTACT_MESSAGES_COLLECTION,
+  db,
+  handleFirestoreError,
+  OperationType,
+} from '../lib/firebase';
 import { UI_COPY, useLanguage } from '../lib/i18n';
 import { getSectionId } from '../lib/routes';
 
@@ -26,7 +35,7 @@ const INITIAL_VALUES: FormValues = {
   message: '',
 };
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_PATTERN = CONTACT_EMAIL_REGEX;
 
 export function ContactSection() {
   const { lang } = useLanguage();
@@ -63,16 +72,34 @@ export function ContactSection() {
 
   const validate = (data: FormValues): FormErrors => {
     const nextErrors: FormErrors = {};
-    if (!data.fullName.trim() || data.fullName.trim().length < 2) {
+    const trimmedName = data.fullName.trim();
+    const trimmedEmail = data.email.trim();
+    const trimmedSubject = data.subject.trim();
+    const trimmedMessage = data.message.trim();
+
+    if (
+      trimmedName.length < CONTACT_LIMITS.fullNameMin ||
+      trimmedName.length > CONTACT_LIMITS.fullNameMax
+    ) {
       nextErrors.fullName = copy.errors.fullName;
     }
-    if (!data.email.trim() || !EMAIL_PATTERN.test(data.email.trim())) {
+    if (
+      trimmedEmail.length < CONTACT_LIMITS.emailMin ||
+      trimmedEmail.length > CONTACT_LIMITS.emailMax ||
+      !EMAIL_PATTERN.test(trimmedEmail)
+    ) {
       nextErrors.email = copy.errors.email;
     }
-    if (!data.subject.trim() || data.subject.trim().length < 3) {
+    if (
+      trimmedSubject.length < CONTACT_LIMITS.subjectMin ||
+      trimmedSubject.length > CONTACT_LIMITS.subjectMax
+    ) {
       nextErrors.subject = copy.errors.subject;
     }
-    if (!data.message.trim() || data.message.trim().length < 15) {
+    if (
+      trimmedMessage.length < CONTACT_LIMITS.messageMin ||
+      trimmedMessage.length > CONTACT_LIMITS.messageMax
+    ) {
       nextErrors.message = copy.errors.message;
     }
     return nextErrors;
@@ -105,99 +132,28 @@ export function ContactSection() {
     setStatus('submitting');
 
     const payload = {
-      fullName: values.fullName.trim(),
-      email: values.email.trim(),
-      subject: values.subject.trim(),
-      message: values.message.trim(),
-      _honey: honeypot,
+      fullName: values.fullName.trim().slice(0, CONTACT_LIMITS.fullNameMax),
+      email: values.email.trim().slice(0, CONTACT_LIMITS.emailMax),
+      subject: values.subject.trim().slice(0, CONTACT_LIMITS.subjectMax),
+      message: values.message.trim().slice(0, CONTACT_LIMITS.messageMax),
+      lang,
+      status: 'unread' as const,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
     };
 
     try {
-      let delivered = false;
-      let needsActivation = false;
-      let apiHandled = false;
-
-      // 1. Try Vercel Serverless API (/api/contact — Resend or server-side FormSubmit relay)
-      try {
-        const apiRes = await fetch('/api/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
-
-        const contentType = apiRes.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          const apiData = (await apiRes.json().catch(() => ({}))) as {
-            ok?: boolean;
-            needsActivation?: boolean;
-            message?: string;
-          };
-
-          if (apiRes.ok && apiData.ok) {
-            delivered = true;
-            apiHandled = true;
-          } else if (apiData.needsActivation || /activat/i.test(String(apiData.message || ''))) {
-            needsActivation = true;
-            apiHandled = true;
-          }
-        }
-      } catch {
-        // Ignore network/404 errors when running outside Vercel (e.g. local preview)
-      }
-
-      // 2. Fallback to direct FormSubmit AJAX endpoint when /api/contact is not available
-      if (!delivered && !apiHandled) {
-        const formSubmitRes = await fetch(
-          `https://formsubmit.co/ajax/${SITE_CONFIG.email}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-            body: JSON.stringify({
-              name: payload.fullName,
-              email: payload.email,
-              _replyto: payload.email,
-              _subject: `[${SITE_CONFIG.domain}] ${payload.subject}`,
-              subject: payload.subject,
-              message: payload.message,
-              _template: 'table',
-              _captcha: 'false',
-              _honey: honeypot,
-            }),
-          },
-        );
-
-        const result = (await formSubmitRes.json().catch(() => ({}))) as {
-          success?: boolean | string;
-          message?: string;
-        };
-
-        if (result.success === true || result.success === 'true') {
-          delivered = true;
-        } else if (/activat/i.test(String(result.message || ''))) {
-          needsActivation = true;
-        } else {
-          throw new Error(result.message || 'FormSubmit delivery failed');
-        }
-      }
-
-      if (delivered) {
-        setStatus('submitted');
-        trackEvent('contact_form_submit', { subject_category: payload.subject.slice(0, 40) });
-      } else if (needsActivation) {
-        setStatus('idle');
-        setSubmitError(copy.errors.activationError);
-      } else {
-        throw new Error('Delivery failed');
-      }
-    } catch {
+      await addDoc(collection(db, CONTACT_MESSAGES_COLLECTION), payload);
+      setStatus('submitted');
+      trackEvent('contact_form_submit', { subject_category: payload.subject.slice(0, 40) });
+    } catch (error) {
       setStatus('idle');
       setSubmitError(copy.errors.submitError);
+      try {
+        handleFirestoreError(error, OperationType.CREATE, CONTACT_MESSAGES_COLLECTION);
+      } catch {
+        // Structured FirestoreErrorInfo logged for diagnostics; friendly error shown in UI
+      }
     }
   };
 
@@ -370,6 +326,7 @@ export function ContactSection() {
                         name="fullName"
                         type="text"
                         autoComplete="name"
+                        maxLength={CONTACT_LIMITS.fullNameMax}
                         required
                         value={values.fullName}
                         onChange={(e) => handleChange('fullName', e.target.value)}
@@ -405,6 +362,7 @@ export function ContactSection() {
                         name="email"
                         type="email"
                         autoComplete="email"
+                        maxLength={CONTACT_LIMITS.emailMax}
                         required
                         value={values.email}
                         onChange={(e) => handleChange('email', e.target.value)}
@@ -536,6 +494,7 @@ export function ContactSection() {
                         id="contact-subject"
                         name="subject"
                         type="text"
+                        maxLength={CONTACT_LIMITS.subjectMax}
                         required
                         autoFocus
                         value={values.subject}
@@ -573,6 +532,7 @@ export function ContactSection() {
                       id="contact-message"
                       name="message"
                       rows={5}
+                      maxLength={CONTACT_LIMITS.messageMax}
                       required
                       value={values.message}
                       onChange={(e) => handleChange('message', e.target.value)}

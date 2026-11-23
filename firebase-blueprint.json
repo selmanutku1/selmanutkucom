@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "ContactMessage": {
+      "title": "ContactMessage",
+      "description": "A contact form submission sent by a website visitor and readable only by the site owner.",
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "description": "Sender full name.",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Sender email address.",
+          "minLength": 5,
+          "maxLength": 180,
+          "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Selected or custom subject of the inquiry.",
+          "minLength": 3,
+          "maxLength": 180
+        },
+        "message": {
+          "type": "string",
+          "description": "Body of the inquiry message.",
+          "minLength": 15,
+          "maxLength": 4000
+        },
+        "lang": {
+          "type": "string",
+          "description": "Website language used when submitting the form.",
+          "enum": ["tr", "en"],
+          "minLength": 2,
+          "maxLength": 2
+        },
+        "status": {
+          "type": "string",
+          "description": "Inbox triage state of the message.",
+          "enum": ["unread", "read", "archived"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the message was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the message status was last updated."
+        }
+      },
+      "required": [
+        "fullName",
+        "email",
+        "subject",
+        "message",
+        "lang",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Server-provisioned admin record granting inbox access.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Verified administrator email address.",
+          "minLength": 5,
+          "maxLength": 180
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        }
+      },
+      "required": ["email", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/contact_messages/{messageId}": {
+      "schema": {
+        "$ref": "#/entities/ContactMessage"
+      },
+      "description": "Stores incoming website contact form messages. Public write-only create with strict schema validation; admin-only read, status update, and delete."
+    },
+    "/admins/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/AdminUser"
+      },
+      "description": "Locked collection for optional additional admin UIDs; client writes are completely forbidden."
+    }
+  }
+}
