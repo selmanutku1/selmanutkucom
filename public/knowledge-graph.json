@@ -23,17 +23,51 @@
           "@type": "OrganizationRole",
           "roleName": "Sports Technology Mentor",
           "alternateName": "Spor Teknolojileri Mentoru",
+          "description": "Mentoring SportTech and sports informatics startups within the Bilişim Vadisi innovation ecosystem on product strategy, business modeling, commercialization, and sports industry partnerships.",
           "affiliation": {
             "@type": "Organization",
+            "@id": "https://www.selmanutku.com/#bilisim-vadisi",
             "name": "Bilişim Vadisi",
-            "url": "https://bilisimvadisi.com.tr"
+            "url": "https://bilisimvadisi.com.tr",
+            "address": {
+              "@type": "PostalAddress",
+              "addressRegion": "Kocaeli",
+              "addressCountry": "TR"
+            }
           }
         },
         {
-          "@id": "https://www.selmanutku.com/#sporttech-turkiye"
+          "@type": "OrganizationRole",
+          "roleName": "Founder",
+          "alternateName": "Kurucu",
+          "affiliation": {
+            "@type": "Organization",
+            "@id": "https://www.selmanutku.com/#sporttech-turkiye",
+            "name": "SportTech Türkiye",
+            "url": "https://sporttech.com.tr"
+          }
         },
         {
-          "@id": "https://www.selmanutku.com/#sporsepeti"
+          "@type": "OrganizationRole",
+          "roleName": "Founder",
+          "alternateName": "Kurucu",
+          "affiliation": {
+            "@type": "Organization",
+            "@id": "https://www.selmanutku.com/#sporsepeti",
+            "name": "Sporsepeti",
+            "url": "https://sporsepeti.com.tr"
+          }
+        },
+        {
+          "@type": "OrganizationRole",
+          "roleName": "Founder",
+          "alternateName": "Kurucu",
+          "affiliation": {
+            "@type": "Organization",
+            "@id": "https://www.selmanutku.com/#sportsfly-org",
+            "name": "SportsFly",
+            "url": "https://sportsfly.com.tr"
+          }
         }
       ],
       "alumniOf": [

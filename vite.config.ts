@@ -5,6 +5,7 @@ import path from 'path';
 import {defineConfig} from 'vite';
 import {getArticles} from './src/data/articles';
 import {getProjects} from './src/data/projects';
+import {buildHomeProfileSchema} from './src/data/schema';
 import {
   getArticlePath,
   getHomePath,
@@ -268,24 +269,26 @@ export default defineConfig(() => {
         </footer>
       </main>`;
 
+          const trHomeTitle = 'Selman Utku – Dijital Dönüşüm, İnovasyon & Spor Teknolojileri';
+          const trHomeDesc =
+            'Selman Utku – Tech Analyst, Bilişim Vadisi Spor Teknolojileri Mentoru ve SportTech Türkiye, Sporsepeti & SportsFly kurucusu. Spor teknolojileri, spor bilişimi ve spor yönetimi referans portfolyosu.';
+
           const trHomeHtml = buildRouteHtml(templateHtml, {
             origin: resolvedSiteOrigin,
             lang: 'tr',
             routePath: '/tr',
             enPath: '/',
             trPath: '/tr',
-            title: 'Selman Utku – Dijital Dönüşüm, İnovasyon & Spor Teknolojileri',
-            description:
-              'Selman Utku – Tech Analyst, Bilişim Vadisi Spor Teknolojileri Mentoru ve SportTech Türkiye, Sporsepeti & SportsFly kurucusu. Spor teknolojileri, spor bilişimi ve spor yönetimi referans portfolyosu.',
+            title: trHomeTitle,
+            description: trHomeDesc,
             ogType: 'profile',
-            routeSchema: {
-              '@context': 'https://schema.org',
-              '@type': 'ProfilePage',
-              name: 'Selman Utku – Dijital Dönüşüm, İnovasyon & Spor Teknolojileri',
-              url: `${resolvedSiteOrigin}/tr`,
-              inLanguage: 'tr-TR',
-              mainEntity: {'@id': `${resolvedSiteOrigin}/#person`},
-            },
+            routeSchema: buildHomeProfileSchema({
+              siteUrl: resolvedSiteOrigin,
+              lang: 'tr',
+              title: trHomeTitle,
+              description: trHomeDesc,
+              homePath: '/tr',
+            }),
             prerenderHtml: trHomePrerender,
           });
           const trDir = path.join(distDir, 'tr');

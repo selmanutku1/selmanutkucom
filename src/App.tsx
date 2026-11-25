@@ -17,6 +17,7 @@ import { MessagesInboxPage } from './components/MessagesInboxPage';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { getProjectBySlug } from './data/projects';
 import { SITE_CONFIG } from './data/profile';
+import { buildHomeProfileSchema } from './data/schema';
 import { initAnalytics, trackPageView } from './lib/analytics';
 import { LanguageProvider, UI_COPY, useLanguage } from './lib/i18n';
 import { ResearchProvider, useArticleBySlug } from './lib/researchStore';
@@ -33,27 +34,20 @@ function HomePage({ onNavigate }: { onNavigate: (to: string) => void }) {
   const { lang } = useLanguage();
   const seo = UI_COPY[lang].seo;
   const homePath = getHomePath(lang);
-  const homeUrl = `${SITE_CONFIG.siteUrl}${homePath}`;
 
   const homeJsonLd = useMemo(
-    () => ({
-      '@context': 'https://schema.org',
-      '@type': 'ProfilePage',
-      name: seo.homeTitle,
-      url: homeUrl,
-      inLanguage: lang === 'tr' ? 'tr-TR' : 'en-US',
-      description: seo.homeDesc,
-      primaryImageOfPage: {
-        '@type': 'ImageObject',
-        url: `${SITE_CONFIG.siteUrl}${SITE_CONFIG.ogImage}`,
-        width: SITE_CONFIG.ogImageWidth,
-        height: SITE_CONFIG.ogImageHeight,
-      },
-      mainEntity: {
-        '@id': `${SITE_CONFIG.siteUrl}/#person`,
-      },
-    }),
-    [lang, homeUrl, seo.homeDesc, seo.homeTitle],
+    () =>
+      buildHomeProfileSchema({
+        siteUrl: SITE_CONFIG.siteUrl,
+        lang,
+        title: seo.homeTitle,
+        description: seo.homeDesc,
+        homePath,
+        ogImage: SITE_CONFIG.ogImage,
+        ogImageWidth: SITE_CONFIG.ogImageWidth,
+        ogImageHeight: SITE_CONFIG.ogImageHeight,
+      }),
+    [lang, homePath, seo.homeDesc, seo.homeTitle],
   );
 
   useDocumentSEO({
